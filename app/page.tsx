@@ -677,6 +677,12 @@ section.ctaBand{
   grid-template-columns: 1.05fr .95fr;
   gap: 16px;
   align-items:stretch;
+  width: 100%;
+}
+
+/* IMPORTANT: prevent grid children from overflowing the viewport */
+.formWrap > *{
+  min-width: 0;
 }
 .formCard{
   background:#fff;color:var(--text);
@@ -711,7 +717,26 @@ section.ctaBand{
   flex:none;
   margin-top:1px;
 }
+/* Fix “cut off” right edge on mobile */
+.formCard,
+.formAside{
+  min-width: 0;
+  overflow: hidden;
+}
 
+.row2 > div{
+  min-width: 0;
+}
+
+input, select, textarea{
+  max-width: 100%;
+}
+
+.turnstileWrap{
+  max-width: 100%;
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
 form{display:grid;gap:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 label{font-size:12px;font-weight:1000;color:#0f172a}
@@ -1365,7 +1390,7 @@ footer{
                 )}
 
                 {/* Turnstile */}
-                <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+                <div className="turnstileWrap" style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
                   {TURNSTILE_SITE_KEY ? (
                     <Turnstile
                       sitekey={TURNSTILE_SITE_KEY}
