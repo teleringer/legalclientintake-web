@@ -249,6 +249,9 @@ body{ padding-top: 92px; }
 .btn[disabled]{opacity:.65;cursor:not-allowed;transform:none}
 
 /* Header */
+.topbar, .topbar *{
+  pointer-events: auto;
+}
 .topbar{
   position:fixed;
   top:0; left:0; right:0;
@@ -293,6 +296,13 @@ body{ padding-top: 92px; }
   cursor:pointer;
   align-items:center;
   justify-content:center;
+
+  /* IMPORTANT: guarantee tap/click works */
+  position: relative;
+  z-index: 10002;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .menuBtn span{
   display:block;
@@ -842,7 +852,7 @@ footer{
             <button
               className="menuBtn"
               id="menuBtn"
-              aria-label="Open menu"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileMenuOpen ? "true" : "false"}
               aria-controls="mobileMenu"
               onClick={() => setMobileMenuOpen((v) => !v)}
