@@ -242,6 +242,15 @@ img{max-width:100%;display:block}
 .btn[disabled]{opacity:.65;cursor:not-allowed;transform:none}
 
 /* Header */
+/* Prevent sticky header from covering the target when scrolling */
+#contactForm{
+  scroll-margin-top: calc(92px + env(safe-area-inset-top) + 12px);
+}
+@media (max-width: 520px){
+  #contactForm{
+    scroll-margin-top: calc(72px + env(safe-area-inset-top) + 12px);
+  }
+}
 .topbar, .topbar *{ pointer-events:auto; }
 .topbar{
   width: 100%;
@@ -907,20 +916,9 @@ footer{
   className="btn btn-primary"
   type="button"
   onClick={() => {
-    // close menu first
+    const el = document.getElementById("contactForm");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
     setMobileMenuOpen(false);
-
-    // then scroll (more reliable than scrollIntoView on mobile + sticky header)
-    requestAnimationFrame(() => {
-      const el = document.getElementById("demo");
-      if (!el) return;
-
-      const headerOffset = window.innerWidth <= 520 ? 72 : 92; // match your header sizing
-      const y = el.getBoundingClientRect().top + window.scrollY - headerOffset - 8;
-
-      window.location.hash = "demo";
-      window.scrollTo({ top: y, behavior: "smooth" });
-    });
   }}
 >
   Contact Us
