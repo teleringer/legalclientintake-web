@@ -219,10 +219,6 @@ body{
 a{color:inherit}
 img{max-width:100%;display:block}
 
-body{ padding-top: 92px; }
-@media (max-width: 520px){
-  body{ padding-top: 72px; }
-}
 
 .container{max-width:var(--max);margin:0 auto;padding:0 18px}
 .btn{
@@ -253,7 +249,8 @@ body{ padding-top: 92px; }
   pointer-events: auto;
 }
 .topbar{
-  position:fixed;
+  width: 100%;
+  position:sticky;
   top:0; left:0; right:0;
   z-index:9999;
   background:rgba(255,255,255,.78);
@@ -269,7 +266,6 @@ body{ padding-top: 92px; }
 .topbar{
   padding-top: env(safe-area-inset-top);
 }
-
 /* Make sure the page content starts below the header + safe-area */
 body{
   padding-top: calc(92px + env(safe-area-inset-top));
