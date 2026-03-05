@@ -903,17 +903,28 @@ footer{
       Plans
     </button>
 
-    <button
-      className="btn btn-primary"
-      type="button"
-      onClick={() => {
-        const el = document.querySelector("#demo");
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-        setMobileMenuOpen(false);
-      }}
-    >
-      Contact Us
-    </button>
+<button
+  className="btn btn-primary"
+  type="button"
+  onClick={() => {
+    // close menu first
+    setMobileMenuOpen(false);
+
+    // then scroll (more reliable than scrollIntoView on mobile + sticky header)
+    requestAnimationFrame(() => {
+      const el = document.getElementById("demo");
+      if (!el) return;
+
+      const headerOffset = window.innerWidth <= 520 ? 72 : 92; // match your header sizing
+      const y = el.getBoundingClientRect().top + window.scrollY - headerOffset - 8;
+
+      window.location.hash = "demo";
+      window.scrollTo({ top: y, behavior: "smooth" });
+    });
+  }}
+>
+  Contact Us
+</button>
   </div>
 </div>
         </div>
