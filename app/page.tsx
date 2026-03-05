@@ -207,7 +207,7 @@ export default function Home() {
 }
 
 *{box-sizing:border-box}
-html,body{height:100%}
+html,body{height:100%; overflow-x:hidden;}
 body{
   margin:0;
   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
@@ -265,7 +265,20 @@ body{ padding-top: 92px; }
   background: rgba(11,18,32,.92);
   border-bottom: 1px solid rgba(255,255,255,.10);
 }
+/* Prevent fixed header from hiding under mobile safe-area / browser chrome */
+.topbar{
+  padding-top: env(safe-area-inset-top);
+}
 
+/* Make sure the page content starts below the header + safe-area */
+body{
+  padding-top: calc(92px + env(safe-area-inset-top));
+}
+@media (max-width: 520px){
+  body{
+    padding-top: calc(72px + env(safe-area-inset-top));
+  }
+}
 .nav{
   display:flex;align-items:center;justify-content:space-between;
   gap:14px;
