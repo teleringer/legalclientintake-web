@@ -1,8 +1,11 @@
 "use client";
 
+import Turnstile from "react-turnstile";
 import { useEffect, useMemo, useState } from "react";
+import { IMaskInput } from "react-imask";
 
-type BillingKey = "core" | "pro" | "elite";
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
+
 type BillingState = "monthly" | "annual";
 
 export default function Home() {
@@ -14,10 +17,12 @@ export default function Home() {
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
 
-  const [formStatus, setFormStatus] = useState<{ type: "idle" | "ok" | "err" | "sending"; text: string }>({
-    type: "idle",
-    text: "",
-  });
+  const [turnstileToken, setTurnstileToken] = useState("");
+
+  const [formStatus, setFormStatus] = useState<{
+    type: "idle" | "ok" | "err" | "sending";
+    text: string;
+  }>({ type: "idle", text: "" });
 
   const [submitText, setSubmitText] = useState("Submit Request");
   const [submitDisabled, setSubmitDisabled] = useState(false);
@@ -72,11 +77,9 @@ export default function Home() {
       setShowToTop(y > 400);
 
       // header style
-      if (topbar) {
-        topbar.classList.toggle("scrolled", y > 8);
-      }
+      if (topbar) topbar.classList.toggle("scrolled", y > 8);
 
-      // close mobile menu on scroll (matches your old behavior)
+      // close mobile menu on scroll
       if (mobileMenuOpen) setMobileMenuOpen(false);
     };
 
@@ -88,6 +91,21 @@ export default function Home() {
 
   async function submitContact(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+
+    // If Turnstile isn't configured, don't allow submit.
+    if (!TURNSTILE_SITE_KEY) {
+      setFormStatus({
+        type: "err",
+        text: "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).",
+      });
+      return;
+    }
+
+    // Turnstile must be completed
+    if (!turnstileToken) {
+      setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
+      return;
+    }
 
     const form = e.currentTarget;
     const fd = new FormData(form);
@@ -103,15 +121,17 @@ export default function Home() {
     setSubmitDisabled(true);
     setSubmitText("Sending…");
 
+    const [firstName, ...rest] = name.split(" ").filter(Boolean);
+    const lastName = rest.length ? rest.join(" ") : "(not provided)";
+
     const payload = {
-      to: "office@legalclientintake.com",
-      name,
-      firm,
+      firstName,
+      lastName,
       email,
       phone,
-      practice,
-      message,
-      page: typeof window !== "undefined" ? window.location.href : "",
+      turnstileToken, // IMPORTANT: send token to backend
+      message: `Firm: ${firm}\nPractice Area: ${practice}\n\n${message}`,
+      company: "", // honeypot placeholder (leave blank)
     };
 
     try {
@@ -134,6 +154,7 @@ export default function Home() {
       setSubmitText("Sent");
       form.reset();
       setMsg("");
+      setTurnstileToken(""); // force user to complete Turnstile again if they submit again
 
       setTimeout(() => {
         setSubmitText("Submit Request");
@@ -1276,7 +1297,15 @@ footer{
                   </div>
                   <div>
                     <label htmlFor="phone">Phone *</label>
-                    <input id="phone" name="phone" required placeholder="(555) 123-4567" />
+                    <IMaskInput
+                      mask="(000) 000-0000"
+                      unmask={false}
+                      placeholder="(555) 123-4567"
+                      id="phone"
+                      name="phone"
+                      required
+                      onAccept={() => {}}
+                    />
                   </div>
                 </div>
 
@@ -1334,6 +1363,22 @@ footer{
                     {formStatus.text}
                   </div>
                 )}
+
+                {/* Turnstile */}
+                <div style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
+                  {TURNSTILE_SITE_KEY ? (
+                    <Turnstile
+                      sitekey={TURNSTILE_SITE_KEY}
+                      onVerify={(token) => setTurnstileToken(token)}
+                      onExpire={() => setTurnstileToken("")}
+                      onError={() => setTurnstileToken("")}
+                    />
+                  ) : (
+                    <div className="notice err" style={{ maxWidth: 520 }}>
+                      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
+                    </div>
+                  )}
+                </div>
 
                 <div className="formActions">
                   <button
@@ -1399,9 +1444,7 @@ footer{
               <a className="footerBrand" href="#top" aria-label="Back to top">
                 <img src="/images/logo-LCI-light2.png" alt="Legal Client Intake" />
               </a>
-              <p className="footerP">
-                Intelligent after-hours intake for law firms. Never miss a potential client again.
-              </p>
+              <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
             </div>
 
             <div className="footerCol">
