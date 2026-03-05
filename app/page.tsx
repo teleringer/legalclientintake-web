@@ -80,7 +80,7 @@ export default function Home() {
       if (topbar) topbar.classList.toggle("scrolled", y > 8);
 
       // close mobile menu on scroll
-      if (mobileMenuOpen) setMobileMenuOpen(false);
+  
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
