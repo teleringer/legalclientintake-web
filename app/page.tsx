@@ -42,7 +42,7 @@ export default function Home() {
     setYear(new Date().getFullYear());
   }, []);
 
-  // Smooth scroll for internal hash links + close mobile menu on scroll
+  // Smooth scroll for internal hash links + close mobile menu on click
   useEffect(() => {
     const onDocClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
@@ -66,7 +66,7 @@ export default function Home() {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  // Back-to-top + header scrolled styling
+  // Back-to-top + header scrolled styling (DO NOT auto-close menu on scroll)
   useEffect(() => {
     const topbar = document.getElementById("topbar");
 
@@ -78,16 +78,13 @@ export default function Home() {
 
       // header style
       if (topbar) topbar.classList.toggle("scrolled", y > 8);
-
-      // close mobile menu on scroll
-  
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
     onScroll();
 
     return () => window.removeEventListener("scroll", onScroll);
-  }, [mobileMenuOpen]);
+  }, []);
 
   async function submitContact(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -210,6 +207,7 @@ export default function Home() {
 html,body{height:100%; overflow-x:hidden;}
 body{
   margin:0;
+  padding-top: 0 !important; /* IMPORTANT: no spacer with sticky header */
   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   color:var(--text);
   background: radial-gradient(1200px 500px at 50% 0%, #dff6f3 0%, var(--bg) 55%, #ffffff 100%);
@@ -218,7 +216,6 @@ body{
 }
 a{color:inherit}
 img{max-width:100%;display:block}
-
 
 .container{max-width:var(--max);margin:0 auto;padding:0 18px}
 .btn{
@@ -245,36 +242,25 @@ img{max-width:100%;display:block}
 .btn[disabled]{opacity:.65;cursor:not-allowed;transform:none}
 
 /* Header */
-.topbar, .topbar *{
-  pointer-events: auto;
-}
+.topbar, .topbar *{ pointer-events:auto; }
 .topbar{
   width: 100%;
-  position:sticky;
-  top:0; left:0; right:0;
-  z-index:9999;
+  position: sticky; /* Android-safe */
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
   background:rgba(255,255,255,.78);
   backdrop-filter: blur(10px);
   border-bottom:1px solid rgba(226,232,240,.65);
   transition: .2s background, .2s border-color;
+  padding-top: 0; /* REMOVE safe-area padding (Android) */
 }
 .topbar.scrolled{
   background: rgba(11,18,32,.92);
   border-bottom: 1px solid rgba(255,255,255,.10);
 }
-/* Prevent fixed header from hiding under mobile safe-area / browser chrome */
-.topbar{
-  padding-top: env(safe-area-inset-top);
-}
-/* Make sure the page content starts below the header + safe-area */
-body{
-  padding-top: calc(92px + env(safe-area-inset-top));
-}
-@media (max-width: 520px){
-  body{
-    padding-top: calc(72px + env(safe-area-inset-top));
-  }
-}
+
 .nav{
   display:flex;align-items:center;justify-content:space-between;
   gap:14px;
@@ -288,10 +274,7 @@ body{
   transition: .15s opacity;
 }
 @media (max-width: 520px){
-  .brand img{
-    height:48px;
-    max-width:180px;
-  }
+  .brand img{ height:48px; max-width:180px; }
 }
 
 .navlinks{display:flex;align-items:center;gap:10px}
@@ -305,8 +288,6 @@ body{
   cursor:pointer;
   align-items:center;
   justify-content:center;
-
-  /* IMPORTANT: guarantee tap/click works */
   position: relative;
   z-index: 10002;
   pointer-events: auto;
