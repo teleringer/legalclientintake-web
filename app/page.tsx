@@ -878,18 +878,44 @@ footer{
           </div>
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-            <div className="menuPanel">
-              <a className="btn btn-outline" href="#how">
-                How it works
-              </a>
-              <a className="btn btn-outline" href="#plans">
-                Plans
-              </a>
-              <a className="btn btn-primary" href="#demo">
-                Contact Us
-              </a>
-            </div>
-          </div>
+  <div className="menuPanel">
+    <button
+      className="btn btn-outline"
+      type="button"
+      onClick={() => {
+        const el = document.querySelector("#how");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setMobileMenuOpen(false);
+      }}
+    >
+      How it works
+    </button>
+
+    <button
+      className="btn btn-outline"
+      type="button"
+      onClick={() => {
+        const el = document.querySelector("#plans");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setMobileMenuOpen(false);
+      }}
+    >
+      Plans
+    </button>
+
+    <button
+      className="btn btn-primary"
+      type="button"
+      onClick={() => {
+        const el = document.querySelector("#demo");
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        setMobileMenuOpen(false);
+      }}
+    >
+      Contact Us
+    </button>
+  </div>
+</div>
         </div>
       </div>
 
