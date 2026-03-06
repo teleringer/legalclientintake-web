@@ -13,6 +13,7 @@ export default function Home() {
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
   const [year, setYear] = useState<number>(new Date().getFullYear());
+const [activeSection, setActiveSection] = useState("how");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -67,6 +68,33 @@ export default function Home() {
   }, []);
 
   // Back-to-top + header scrolled styling (DO NOT auto-close menu on scroll)
+ // Track visible section to update nav button highlight
+useEffect(() => {
+  const sections = ["how", "plans", "demo"];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    },
+{
+  root: null,
+  // Active when the section's top is in the "band" below the sticky header.
+  rootMargin: "-120px 0px -60% 0px",
+  threshold: 0,
+}
+  );
+
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+  return () => observer.disconnect();
+}, []);
   useEffect(() => {
     const topbar = document.getElementById("topbar");
 
@@ -361,6 +389,15 @@ section{
   padding:52px 0;
   position:relative;
   background: transparent;
+
+  /* FIX: ensure anchor scroll shows the section title below sticky header */
+  scroll-margin-top: 110px;
+}
+
+@media (max-width: 520px){
+  section{
+    scroll-margin-top: 86px;
+  }
 }
 section::before{
   content:"";
@@ -861,17 +898,19 @@ footer{
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
-            <div className="navlinks">
-              <a className="btn btn-outline" href="#how">
-                How it works
-              </a>
-              <a className="btn btn-outline" href="#plans">
-                Plans
-              </a>
-              <a className="btn btn-primary" href="#demo">
-                Contact Us
-              </a>
-            </div>
+<div className="navlinks">
+  <a className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`} href="#how">
+    How it works
+  </a>
+
+  <a className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`} href="#plans">
+    Plans
+  </a>
+
+  <a className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`} href="#demo">
+    Contact Us
+  </a>
+</div>
 
             <button
               className="menuBtn"
@@ -893,7 +932,10 @@ footer{
       type="button"
       onClick={() => {
         const el = document.querySelector("#how");
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+if (el) {
+  const y = el.getBoundingClientRect().top + window.scrollY - 100;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
         setMobileMenuOpen(false);
       }}
     >
@@ -904,8 +946,11 @@ footer{
       className="btn btn-outline"
       type="button"
       onClick={() => {
-        const el = document.querySelector("#plans");
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+ const el = document.querySelector("#plans");
+if (el) {
+  const y = el.getBoundingClientRect().top + window.scrollY - 100;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
         setMobileMenuOpen(false);
       }}
     >
@@ -916,8 +961,11 @@ footer{
   className="btn btn-primary"
   type="button"
   onClick={() => {
-    const el = document.getElementById("contactForm");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+ const el = document.getElementById("demo");
+if (el) {
+  const y = el.getBoundingClientRect().top + window.scrollY - 100;
+  window.scrollTo({ top: y, behavior: "smooth" });
+}
     setMobileMenuOpen(false);
   }}
 >
