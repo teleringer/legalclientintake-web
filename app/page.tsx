@@ -1,7 +1,7 @@
 "use client";
 
 import Turnstile from "react-turnstile";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { IMaskInput } from "react-imask";
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
@@ -12,8 +12,8 @@ export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
-  const [year, setYear] = useState<number>(new Date().getFullYear());
-const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
+  const year = new Date().getFullYear();
+  const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -38,17 +38,16 @@ const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "de
   );
 
   const isAnnual = billing === "annual";
-const HEADER_OFFSET = 110; // adjust if you change header height
+  const HEADER_OFFSET = 110;
 
-const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
-  const el = document.getElementById(id);
-  if (!el) return;
+  const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+    const el = document.getElementById(id);
+    if (!el) return;
 
-  const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
-  window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
-  setActiveSection(id);
-};
- 
+    const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+    window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+    setActiveSection(id);
+  };
 
   // Smooth scroll for internal hash links + close mobile menu on click
   useEffect(() => {
@@ -74,153 +73,68 @@ const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
- // Track visible section to update nav button highlight
-useEffect(() => {
-  const sections = ["how", "plans", "demo"] as const;
+  // Track visible section to update nav button highlight
+  useEffect(() => {
+    const sections = ["how", "plans", "demo"] as const;
 
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
 
-        const id = entry.target.id;
-        if (id === "how" || id === "plans" || id === "demo") {
-          setActiveSection(id);
-        }
-      });
-    },
-    {
-      root: null,
-      // Active when the section's top is in the band below the sticky header
-      rootMargin: "-120px 0px -60% 0px",
-      threshold: 0,
-    }
-  );
+          const id = entry.target.id;
+          if (id === "how" || id === "plans" || id === "demo") {
+            setActiveSection(id);
+          }
+        });
+      },
+      {
+        root: null,
+        rootMargin: "-120px 0px -60% 0px",
+        threshold: 0,
+      }
+    );
 
-  sections.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
-
-  return () => observer.disconnect();
-}, []);
-
-useEffect(() => {
-  const onScroll = () => {
-    if (window.scrollY < 120) {
-      setActiveSection("top");
-    }
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-
-  return () => window.removeEventListener("scroll", onScroll);
-}, []);
-
-// Back-to-top + header scrolled styling (DO NOT auto-close menu on scroll)
-useEffect(() => {
-  const topbar = document.getElementById("topbar");
-
-  const onScroll = () => {
-    const y = window.scrollY || 0;
-
-    // back to top
-    setShowToTop(y > 400);
-
-    // header style
-    if (topbar) topbar.classList.toggle("scrolled", y > 8);
-  };
-
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-
-  return () => window.removeEventListener("scroll", onScroll);
-}, []);
-
-async function submitContact(e: React.FormEvent<HTMLFormElement>) {
-  e.preventDefault();
-
-  // If Turnstile isn't configured, don't allow submit.
-  if (!TURNSTILE_SITE_KEY) {
-    setFormStatus({
-      type: "err",
-      text: "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).",
-    });
-    return;
-  }
-
-  // Turnstile must be completed
-  if (!turnstileToken) {
-    setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
-    return;
-  }
-
-  const form = e.currentTarget;
-  const fd = new FormData(form);
-
-  const name = String(fd.get("name") || "").trim();
-  const firm = String(fd.get("firm") || "").trim();
-  const email = String(fd.get("email") || "").trim();
-  const phone = String(fd.get("phone") || "").trim();
-  const practice = String(fd.get("practice") || "").trim();
-  const message = String(fd.get("message") || "").trim();
-
-  setFormStatus({ type: "sending", text: "Sending…" });
-  setSubmitDisabled(true);
-  setSubmitText("Sending…");
-
-  const [firstName, ...rest] = name.split(" ").filter(Boolean);
-  const lastName = rest.length ? rest.join(" ") : "(not provided)";
-
-  const payload = {
-    firstName,
-    lastName,
-    email,
-    phone,
-    turnstileToken,
-    message: `Firm: ${firm}\nPractice Area: ${practice}\n\n${message}`,
-    company: "",
-  };
-
-  try {
-    const res = await fetch("/api/contact", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+    sections.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
     });
 
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      throw new Error(text || "Request failed");
-    }
+    return () => observer.disconnect();
+  }, []);
 
-    setFormStatus({
-      type: "ok",
-      text: "Success! Your request was sent. Please check your email for confirmation.",
-    });
+  useEffect(() => {
+    const onScroll = () => {
+      if (window.scrollY < 120) {
+        setActiveSection("top");
+      }
+    };
 
-    setSubmitText("Sent");
-    form.reset();
-    setMsg("");
-    setTurnstileToken("");
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
 
-    setTimeout(() => {
-      setSubmitText("Submit Request");
-      setSubmitDisabled(false);
-    }, 1600);
-  } catch {
-    setFormStatus({
-      type: "err",
-      text:
-        "This form is ready, but the email-sending endpoint isn’t connected yet. Next step: create /api/contact so it can email office@legalclientintake.com and send a confirmation to you.",
-    });
-    setSubmitText("Submit Request");
-    setSubmitDisabled(false);
-  }
-}
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
-    // If Turnstile isn't configured, don't allow submit.
+  // Back-to-top + header scrolled styling
+  useEffect(() => {
+    const topbar = document.getElementById("topbar");
+
+    const onScroll = () => {
+      const y = window.scrollY || 0;
+      setShowToTop(y > 400);
+      if (topbar) topbar.classList.toggle("scrolled", y > 8);
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  async function submitContact(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+
     if (!TURNSTILE_SITE_KEY) {
       setFormStatus({
         type: "err",
@@ -229,7 +143,6 @@ async function submitContact(e: React.FormEvent<HTMLFormElement>) {
       return;
     }
 
-    // Turnstile must be completed
     if (!turnstileToken) {
       setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
       return;
@@ -257,9 +170,9 @@ async function submitContact(e: React.FormEvent<HTMLFormElement>) {
       lastName,
       email,
       phone,
-      turnstileToken, // IMPORTANT: send token to backend
+      turnstileToken,
       message: `Firm: ${firm}\nPractice Area: ${practice}\n\n${message}`,
-      company: "", // honeypot placeholder (leave blank)
+      company: "",
     };
 
     try {
@@ -282,7 +195,7 @@ async function submitContact(e: React.FormEvent<HTMLFormElement>) {
       setSubmitText("Sent");
       form.reset();
       setMsg("");
-      setTurnstileToken(""); // force user to complete Turnstile again if they submit again
+      setTurnstileToken("");
 
       setTimeout(() => {
         setSubmitText("Submit Request");
@@ -301,8 +214,6 @@ async function submitContact(e: React.FormEvent<HTMLFormElement>) {
 
   return (
     <main>
-      {/* Head tags (title/meta/fonts/favicon) move to app/layout.tsx in a later step. */}
-
       <style>{`
 :root{
   --bg:#f6fbfb;
@@ -338,7 +249,7 @@ async function submitContact(e: React.FormEvent<HTMLFormElement>) {
 html,body{height:100%; overflow-x:hidden;}
 body{
   margin:0;
-  padding-top: 0 !important; /* IMPORTANT: no spacer with sticky header */
+  padding-top: 0 !important;
   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   color:var(--text);
   background: radial-gradient(1200px 500px at 50% 0%, #dff6f3 0%, var(--bg) 55%, #ffffff 100%);
@@ -372,8 +283,6 @@ img{max-width:100%;display:block}
 .btn-gold:hover{filter:brightness(.98);box-shadow:0 12px 26px rgba(246,212,75,.25)}
 .btn[disabled]{opacity:.65;cursor:not-allowed;transform:none}
 
-/* Header */
-/* Prevent sticky header from covering the target when scrolling */
 #contactForm{
   scroll-margin-top: calc(92px + env(safe-area-inset-top) + 12px);
 }
@@ -385,7 +294,7 @@ img{max-width:100%;display:block}
 .topbar, .topbar *{ pointer-events:auto; }
 .topbar{
   width: 100%;
-  position: sticky; /* Android-safe */
+  position: sticky;
   top: 0;
   left: 0;
   right: 0;
@@ -394,7 +303,7 @@ img{max-width:100%;display:block}
   backdrop-filter: blur(10px);
   border-bottom:1px solid rgba(226,232,240,.65);
   transition: .2s background, .2s border-color;
-  padding-top: 0; /* REMOVE safe-area padding (Android) */
+  padding-top: 0;
 }
 .topbar.scrolled{
   background: rgba(11,18,32,.92);
@@ -487,13 +396,10 @@ img{max-width:100%;display:block}
   .mobileMenu.open{ display:block; }
 }
 
-/* Sections */
 section{
   padding:52px 0;
   position:relative;
   background: transparent;
-
-  /* FIX: ensure anchor scroll shows the section title below sticky header */
   scroll-margin-top: 110px;
 }
 
@@ -521,7 +427,6 @@ section.alt{
 .sectionTitle{font-size:36px;line-height:1.12;margin:0 0 10px;text-align:center;letter-spacing:-0.02em}
 .sectionSub{margin:0 auto 28px;max-width:72ch;color:var(--muted);text-align:center}
 
-/* Hero (Executive) */
 .hero{
   padding: 64px 0 34px;
   background: linear-gradient(180deg, var(--execTop), var(--execBottom));
@@ -654,7 +559,6 @@ section.alt{
   display:block;
 }
 
-/* Simple 3 cards */
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 .card{
   background:var(--card);
@@ -666,10 +570,8 @@ section.alt{
 .card h4{margin:0 0 8px;font-size:16px;letter-spacing:-0.01em}
 .card p{margin:0;color:var(--muted);font-size:14px}
 
-/* Practice areas */
 .practice{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
 
-/* Plans section */
 section.plansBand::before{ display:none; }
 section.plansBand{
   background: linear-gradient(180deg, var(--execTop), var(--execBottom));
@@ -695,7 +597,6 @@ section.plansBand .container{ position:relative; z-index:1; }
 section.plansBand .sectionTitle{ color: var(--execText); }
 section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
 
-/* Ribbon */
 .ribbon {
   position: absolute;
   top: 14px;
@@ -718,7 +619,6 @@ section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
   z-index: 5;
 }
 
-/* Toggle */
 .billingToggleWrap{display:flex;justify-content:center;margin: 10px 0 18px;}
 .billingToggle{
   display:flex;align-items:center;gap:12px;
@@ -808,7 +708,6 @@ section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
 .planFoot{font-size: 13px;color: rgba(71,85,105,.90);font-weight:800;}
 .plansNote{margin-top: 18px;text-align:center;color: rgba(248,250,252,.78);font-size:13px;font-weight:800;}
 
-/* Contact / Demo */
 section.ctaBand::before{ display:none; }
 section.ctaBand{
   background: linear-gradient(180deg, rgba(15,118,110,.95), rgba(15,118,110,.88));
@@ -829,7 +728,6 @@ section.ctaBand{
   width: 100%;
 }
 
-/* IMPORTANT: prevent grid children from overflowing the viewport */
 .formWrap > *{
   min-width: 0;
 }
@@ -866,7 +764,6 @@ section.ctaBand{
   flex:none;
   margin-top:1px;
 }
-/* Fix “cut off” right edge on mobile */
 .formCard,
 .formAside{
   min-width: 0;
@@ -921,7 +818,6 @@ textarea{min-height:110px;resize:vertical}
 .notice.ok{background: var(--okBg);border-color: var(--okBorder);color: var(--okText);}
 .notice.err{background: var(--errBg);border-color: var(--errBorder);color: var(--errText);}
 
-/* Footer */
 footer{
   background: radial-gradient(900px 600px at 50% 0%, rgba(255,255,255,.06), rgba(255,255,255,0) 60%),
               linear-gradient(180deg, #0b1220, #070c16);
@@ -950,7 +846,6 @@ footer{
 .footerBottom a{color:rgba(255,255,255,.85);text-decoration:none;}
 .footerBottom a:hover{color:#fff}
 
-/* Back-to-top */
 .toTop{
   position: fixed;
   right: 18px;
@@ -967,7 +862,6 @@ footer{
   pointer-events: auto;
 }
 
-/* Responsive */
 @media (max-width: 980px){
   .heroGrid{ grid-template-columns: 1fr; gap: 22px; }
   .heroTitle{ font-size: 44px; }
@@ -993,7 +887,6 @@ footer{
 }
       `}</style>
 
-      {/* Header */}
       <div className="topbar" id="topbar">
         <div className="container">
           <div className="nav">
@@ -1001,40 +894,40 @@ footer{
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
-<div className="navlinks">
-  <a
-    className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-    href="#how"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("how");
-    }}
-  >
-    How it works
-  </a>
+            <div className="navlinks">
+              <a
+                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                href="#how"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
+              >
+                How it works
+              </a>
 
-  <a
-    className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-    href="#plans"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("plans");
-    }}
-  >
-    Plans
-  </a>
+              <a
+                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                href="#plans"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
+              >
+                Plans
+              </a>
 
-  <a
-    className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-    href="#demo"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("demo");
-    }}
-  >
-    Contact Us
-  </a>
-</div>
+              <a
+                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                Contact Us
+              </a>
+            </div>
 
             <button
               className="menuBtn"
@@ -1050,45 +943,44 @@ footer{
           </div>
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-  <div className="menuPanel">
-    <button
-      className="btn btn-outline"
-      type="button"
-onClick={() => {
-  scrollToId("how");
-  setMobileMenuOpen(false);
-}}
-    >
-      How it works
-    </button>
+            <div className="menuPanel">
+              <button
+                className="btn btn-outline"
+                type="button"
+                onClick={() => {
+                  scrollToId("how");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                How it works
+              </button>
 
-    <button
-      className="btn btn-outline"
-      type="button"
-onClick={() => {
-  scrollToId("plans");
-  setMobileMenuOpen(false);
-}}
-    >
-      Plans
-    </button>
+              <button
+                className="btn btn-outline"
+                type="button"
+                onClick={() => {
+                  scrollToId("plans");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Plans
+              </button>
 
-<button
-  className="btn btn-primary"
-  type="button"
-onClick={() => {
-  scrollToId("demo");
-  setMobileMenuOpen(false);
-}}
->
-  Contact Us
-</button>
-  </div>
-</div>
+              <button
+                className="btn btn-primary"
+                type="button"
+                onClick={() => {
+                  scrollToId("demo");
+                  setMobileMenuOpen(false);
+                }}
+              >
+                Contact Us
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Hero */}
       <div id="top" className="hero">
         <div className="container">
           <div className="heroGrid">
@@ -1139,7 +1031,6 @@ onClick={() => {
         </div>
       </div>
 
-      {/* How it works */}
       <section id="how" className="alt">
         <div className="container">
           <h2 className="sectionTitle">How It Works</h2>
@@ -1164,7 +1055,6 @@ onClick={() => {
         </div>
       </section>
 
-      {/* Practice areas */}
       <section>
         <div className="container">
           <h2 className="sectionTitle">Practice Area Use Cases</h2>
@@ -1230,7 +1120,6 @@ onClick={() => {
         </div>
       </section>
 
-      {/* Plans */}
       <section id="plans" className="plansBand">
         <div className="container">
           <h2 className="sectionTitle">Plans Built for After-Hours Intake</h2>
@@ -1269,7 +1158,6 @@ onClick={() => {
           </div>
 
           <div className="plansGrid">
-            {/* Core */}
             <div className="planCard core" data-plan="core">
               <div className="ribbon">&nbsp;&nbsp;Best Value</div>
               <div className="planTop">
@@ -1342,7 +1230,6 @@ onClick={() => {
               </div>
             </div>
 
-            {/* Pro */}
             <div className="planCard pro" data-plan="pro">
               <div className="planTop">
                 <div>
@@ -1408,7 +1295,6 @@ onClick={() => {
               </div>
             </div>
 
-            {/* Elite */}
             <div className="planCard elite" data-plan="elite">
               <div className="planTop">
                 <div>
@@ -1482,7 +1368,6 @@ onClick={() => {
         </div>
       </section>
 
-      {/* Contact / Demo */}
       <section id="demo" className="ctaBand">
         <div className="container">
           <h2 className="sectionTitle">Book a Demo / Contact Us</h2>
@@ -1584,7 +1469,6 @@ onClick={() => {
                   </div>
                 )}
 
-                {/* Turnstile */}
                 <div className="turnstileWrap" style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
                   {TURNSTILE_SITE_KEY ? (
                     <Turnstile
@@ -1656,7 +1540,6 @@ onClick={() => {
         </div>
       </section>
 
-      {/* Footer */}
       <footer>
         <div className="container">
           <div className="footerGrid">
