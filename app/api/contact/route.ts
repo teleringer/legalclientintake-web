@@ -44,7 +44,7 @@ export async function POST(req: Request) {
       return Response.json({ ok: true });
     }
 
-    const fullName = [firstName, lastName].filter(Boolean).join(" ");
+    
     const firstName = String(body.firstName ?? "").trim();
     const lastName = String(body.lastName ?? "").trim();
     const email = String(body.email ?? "").trim();
