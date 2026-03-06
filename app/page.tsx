@@ -49,29 +49,6 @@ export default function Home() {
     setActiveSection(id);
   };
 
-  // Smooth scroll for internal hash links + close mobile menu on click
-  useEffect(() => {
-    const onDocClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target) return;
-
-      const a = target.closest('a[href^="#"]') as HTMLAnchorElement | null;
-      if (!a) return;
-
-      const href = a.getAttribute("href");
-      if (!href || href === "#") return;
-
-      const el = document.querySelector(href);
-      if (!el) return;
-
-      e.preventDefault();
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-      setMobileMenuOpen(false);
-    };
-
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, []);
 
   // Track visible section to update nav button highlight
   useEffect(() => {
@@ -942,42 +919,45 @@ footer{
             </button>
           </div>
 
-          <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-            <div className="menuPanel">
-              <button
-                className="btn btn-outline"
-                type="button"
-                onClick={() => {
-                  scrollToId("how");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                How it works
-              </button>
+ <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
+  <div className="menuPanel">
+    <a
+      className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+      href="#how"
+      onClick={(e) => {
+        e.preventDefault();
+        scrollToId("how");
+        setMobileMenuOpen(false);
+      }}
+    >
+      How it works
+    </a>
 
-              <button
-                className="btn btn-outline"
-                type="button"
-                onClick={() => {
-                  scrollToId("plans");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Plans
-              </button>
+    <a
+      className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+      href="#plans"
+      onClick={(e) => {
+        e.preventDefault();
+        scrollToId("plans");
+        setMobileMenuOpen(false);
+      }}
+    >
+      Plans
+    </a>
 
-              <button
-                className="btn btn-primary"
-                type="button"
-                onClick={() => {
-                  scrollToId("demo");
-                  setMobileMenuOpen(false);
-                }}
-              >
-                Contact Us
-              </button>
-            </div>
-          </div>
+    <a
+      className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+      href="#demo"
+      onClick={(e) => {
+        e.preventDefault();
+        scrollToId("demo");
+        setMobileMenuOpen(false);
+      }}
+    >
+      Contact Us
+    </a>
+  </div>
+</div>
         </div>
       </div>
 
@@ -1000,14 +980,28 @@ footer{
                 details that matter, and sends you an instant intake summary—so you can call back first.
               </p>
 
-              <div className="heroActions">
-                <a className="btn btn-primary" href="#demo">
-                  Book a Demo
-                </a>
-                <a className="btn btn-outline" href="#how">
-                  See How It Works
-                </a>
-              </div>
+ <div className="heroActions">
+  <a
+    className="btn btn-primary"
+    href="#demo"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("demo");
+    }}
+  >
+    Book a Demo
+  </a>
+  <a
+    className="btn btn-outline"
+    href="#how"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("how");
+    }}
+  >
+    See How It Works
+  </a>
+</div>
 
               <div className="heroTrustRow">
                 <span>
@@ -1550,18 +1544,58 @@ footer{
               <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
             </div>
 
-            <div className="footerCol">
-              <h5>Company</h5>
-              <a href="#how">How it works</a>
-              <a href="#plans">Plans</a>
-              <a href="#demo">Contact Us</a>
-            </div>
+ <div className="footerCol">
+  <h5>Company</h5>
+  <a
+    href="#how"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("how");
+    }}
+  >
+    How it works
+  </a>
+  <a
+    href="#plans"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("plans");
+    }}
+  >
+    Plans
+  </a>
+  <a
+    href="#demo"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("demo");
+    }}
+  >
+    Contact Us
+  </a>
+</div>
 
-            <div className="footerCol">
-              <h5>Contact</h5>
-              <a href="#demo">Book a demo / send a message</a>
-              <a href="#demo">office@legalclientintake.com</a>
-            </div>
+<div className="footerCol">
+  <h5>Contact</h5>
+  <a
+    href="#demo"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("demo");
+    }}
+  >
+    Book a demo / send a message
+  </a>
+  <a
+    href="#demo"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("demo");
+    }}
+  >
+    office@legalclientintake.com
+  </a>
+</div>
           </div>
 
           <div className="footerBottom">
@@ -1579,9 +1613,19 @@ footer{
         </div>
       </footer>
 
-      <a href="#top" className={`btn btn-outline toTop ${showToTop ? "show" : ""}`} id="toTopBtn" aria-label="Back to top">
-        ↑ Top
-      </a>
+<a
+  href="#top"
+  className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
+  id="toTopBtn"
+  aria-label="Back to top"
+  onClick={(e) => {
+    e.preventDefault();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setActiveSection("top");
+  }}
+>
+  ↑ Top
+</a>
     </main>
   );
 }
