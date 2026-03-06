@@ -44,6 +44,7 @@ export async function POST(req: Request) {
       return Response.json({ ok: true });
     }
 
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
     const firstName = String(body.firstName ?? "").trim();
     const lastName = String(body.lastName ?? "").trim();
     const email = String(body.email ?? "").trim();
@@ -51,9 +52,9 @@ export async function POST(req: Request) {
     const message = String(body.message ?? "").trim();
     const turnstileToken = String(body.turnstileToken ?? "").trim();
 
-    if (!firstName || !lastName || !email || !message) {
-      return Response.json({ ok: false, error: "MISSING_FIELDS" }, { status: 400 });
-    }
+    if (!firstName || !email || !message) {
+  return Response.json({ ok: false, error: "MISSING_FIELDS" }, { status: 400 });
+}
 
     if (!isValidEmail(email)) {
       return Response.json({ ok: false, error: "INVALID_EMAIL" }, { status: 400 });
