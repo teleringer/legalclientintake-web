@@ -13,7 +13,7 @@ export default function Home() {
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
   const [year, setYear] = useState<number>(new Date().getFullYear());
-const [activeSection, setActiveSection] = useState("how");
+const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -38,10 +38,17 @@ const [activeSection, setActiveSection] = useState("how");
   );
 
   const isAnnual = billing === "annual";
+const HEADER_OFFSET = 110; // adjust if you change header height
 
-  useEffect(() => {
-    setYear(new Date().getFullYear());
-  }, []);
+const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+  const el = document.getElementById(id);
+  if (!el) return;
+
+  const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
+  window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+  setActiveSection(id);
+};
+ 
 
   // Smooth scroll for internal hash links + close mobile menu on click
   useEffect(() => {
@@ -94,6 +101,47 @@ useEffect(() => {
   });
 
   return () => observer.disconnect();
+}, []);
+// Track visible section to update nav button highlight
+useEffect(() => {
+  const sections = ["how", "plans", "demo"];
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          setActiveSection(entry.target.id);
+        }
+      });
+    },
+    {
+      root: null,
+      rootMargin: "-120px 0px -60% 0px",
+      threshold: 0,
+    }
+  );
+
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+
+  return () => observer.disconnect();
+}, []);
+
+
+// 🔽 PASTE THIS NEW BLOCK RIGHT HERE
+useEffect(() => {
+  const onScroll = () => {
+    if (window.scrollY < 120) {
+      setActiveSection("top");
+    }
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  return () => window.removeEventListener("scroll", onScroll);
 }, []);
   useEffect(() => {
     const topbar = document.getElementById("topbar");
@@ -899,15 +947,36 @@ footer{
             </a>
 
 <div className="navlinks">
-  <a className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`} href="#how">
+  <a
+    className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+    href="#how"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("how");
+    }}
+  >
     How it works
   </a>
 
-  <a className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`} href="#plans">
+  <a
+    className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+    href="#plans"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("plans");
+    }}
+  >
     Plans
   </a>
 
-  <a className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`} href="#demo">
+  <a
+    className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+    href="#demo"
+    onClick={(e) => {
+      e.preventDefault();
+      scrollToId("demo");
+    }}
+  >
     Contact Us
   </a>
 </div>
@@ -930,14 +999,10 @@ footer{
     <button
       className="btn btn-outline"
       type="button"
-      onClick={() => {
-        const el = document.querySelector("#how");
-if (el) {
-  const y = el.getBoundingClientRect().top + window.scrollY - 100;
-  window.scrollTo({ top: y, behavior: "smooth" });
-}
-        setMobileMenuOpen(false);
-      }}
+onClick={() => {
+  scrollToId("how");
+  setMobileMenuOpen(false);
+}}
     >
       How it works
     </button>
@@ -945,14 +1010,10 @@ if (el) {
     <button
       className="btn btn-outline"
       type="button"
-      onClick={() => {
- const el = document.querySelector("#plans");
-if (el) {
-  const y = el.getBoundingClientRect().top + window.scrollY - 100;
-  window.scrollTo({ top: y, behavior: "smooth" });
-}
-        setMobileMenuOpen(false);
-      }}
+onClick={() => {
+  scrollToId("plans");
+  setMobileMenuOpen(false);
+}}
     >
       Plans
     </button>
@@ -960,14 +1021,10 @@ if (el) {
 <button
   className="btn btn-primary"
   type="button"
-  onClick={() => {
- const el = document.getElementById("demo");
-if (el) {
-  const y = el.getBoundingClientRect().top + window.scrollY - 100;
-  window.scrollTo({ top: y, behavior: "smooth" });
-}
-    setMobileMenuOpen(false);
-  }}
+onClick={() => {
+  scrollToId("demo");
+  setMobileMenuOpen(false);
+}}
 >
   Contact Us
 </button>
