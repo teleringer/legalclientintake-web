@@ -30,7 +30,7 @@ const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "de
 
   const prices = useMemo(
     () => ({
-      core: { monthly: "$297", annual: "$267.25", mins: "300 / mo" },
+      core: { monthly: "$297", annual: "$272.25", mins: "200 / mo" },
       pro: { monthly: "$397", annual: "$330.83", mins: "400 / mo" },
       elite: { monthly: "$597", annual: "$447.75", mins: "600 / mo" },
     }),
@@ -137,6 +137,88 @@ useEffect(() => {
 
   return () => window.removeEventListener("scroll", onScroll);
 }, []);
+
+async function submitContact(e: React.FormEvent<HTMLFormElement>) {
+  e.preventDefault();
+
+  // If Turnstile isn't configured, don't allow submit.
+  if (!TURNSTILE_SITE_KEY) {
+    setFormStatus({
+      type: "err",
+      text: "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).",
+    });
+    return;
+  }
+
+  // Turnstile must be completed
+  if (!turnstileToken) {
+    setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
+    return;
+  }
+
+  const form = e.currentTarget;
+  const fd = new FormData(form);
+
+  const name = String(fd.get("name") || "").trim();
+  const firm = String(fd.get("firm") || "").trim();
+  const email = String(fd.get("email") || "").trim();
+  const phone = String(fd.get("phone") || "").trim();
+  const practice = String(fd.get("practice") || "").trim();
+  const message = String(fd.get("message") || "").trim();
+
+  setFormStatus({ type: "sending", text: "Sending…" });
+  setSubmitDisabled(true);
+  setSubmitText("Sending…");
+
+  const [firstName, ...rest] = name.split(" ").filter(Boolean);
+  const lastName = rest.length ? rest.join(" ") : "(not provided)";
+
+  const payload = {
+    firstName,
+    lastName,
+    email,
+    phone,
+    turnstileToken,
+    message: `Firm: ${firm}\nPractice Area: ${practice}\n\n${message}`,
+    company: "",
+  };
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      throw new Error(text || "Request failed");
+    }
+
+    setFormStatus({
+      type: "ok",
+      text: "Success! Your request was sent. Please check your email for confirmation.",
+    });
+
+    setSubmitText("Sent");
+    form.reset();
+    setMsg("");
+    setTurnstileToken("");
+
+    setTimeout(() => {
+      setSubmitText("Submit Request");
+      setSubmitDisabled(false);
+    }, 1600);
+  } catch {
+    setFormStatus({
+      type: "err",
+      text:
+        "This form is ready, but the email-sending endpoint isn’t connected yet. Next step: create /api/contact so it can email office@legalclientintake.com and send a confirmation to you.",
+    });
+    setSubmitText("Submit Request");
+    setSubmitDisabled(false);
+  }
+}
 
     // If Turnstile isn't configured, don't allow submit.
     if (!TURNSTILE_SITE_KEY) {
@@ -1201,7 +1283,7 @@ onClick={() => {
                 {isAnnual ? prices.core.annual : prices.core.monthly} <small>/ mo</small>
               </div>
               <div className="priceSub" id="sub-core" style={{ opacity: isAnnual ? 1 : 0.55 }}>
-                Yearly: $267.75<small>/ mo</small> *paid in full
+                Yearly: $272.25<small>/ mo</small> *paid in full
               </div>
 
               <div className="planMeta">
