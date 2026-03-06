@@ -83,7 +83,10 @@ useEffect(() => {
     (entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+          const id = entry.target.id;
+if (id === "how" || id === "plans" || id === "demo") {
+  setActiveSection(id);
+}
         }
       });
     },
