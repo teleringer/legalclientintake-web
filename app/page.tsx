@@ -74,51 +74,24 @@ const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  // Back-to-top + header scrolled styling (DO NOT auto-close menu on scroll)
  // Track visible section to update nav button highlight
 useEffect(() => {
-  const sections = ["how", "plans", "demo"];
+  const sections = ["how", "plans", "demo"] as const;
 
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-if (id === "how" || id === "plans" || id === "demo") {
-  setActiveSection(id);
-}
-        }
-      });
-    },
-{
-  root: null,
-  // Active when the section's top is in the "band" below the sticky header.
-  rootMargin: "-120px 0px -60% 0px",
-  threshold: 0,
-}
-  );
+        if (!entry.isIntersecting) return;
 
-  sections.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el) observer.observe(el);
-  });
-
-  return () => observer.disconnect();
-}, []);
-// Track visible section to update nav button highlight
-useEffect(() => {
-  const sections = ["how", "plans", "demo"];
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveSection(entry.target.id);
+        const id = entry.target.id;
+        if (id === "how" || id === "plans" || id === "demo") {
+          setActiveSection(id);
         }
       });
     },
     {
       root: null,
+      // Active when the section's top is in the band below the sticky header
       rootMargin: "-120px 0px -60% 0px",
       threshold: 0,
     }
@@ -132,8 +105,6 @@ useEffect(() => {
   return () => observer.disconnect();
 }, []);
 
-
-// 🔽 PASTE THIS NEW BLOCK RIGHT HERE
 useEffect(() => {
   const onScroll = () => {
     if (window.scrollY < 120) {
@@ -146,27 +117,26 @@ useEffect(() => {
 
   return () => window.removeEventListener("scroll", onScroll);
 }, []);
-  useEffect(() => {
-    const topbar = document.getElementById("topbar");
 
-    const onScroll = () => {
-      const y = window.scrollY || 0;
+// Back-to-top + header scrolled styling (DO NOT auto-close menu on scroll)
+useEffect(() => {
+  const topbar = document.getElementById("topbar");
 
-      // back to top
-      setShowToTop(y > 400);
+  const onScroll = () => {
+    const y = window.scrollY || 0;
 
-      // header style
-      if (topbar) topbar.classList.toggle("scrolled", y > 8);
-    };
+    // back to top
+    setShowToTop(y > 400);
 
-    window.addEventListener("scroll", onScroll, { passive: true });
-    onScroll();
+    // header style
+    if (topbar) topbar.classList.toggle("scrolled", y > 8);
+  };
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 
-  async function submitContact(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+  return () => window.removeEventListener("scroll", onScroll);
+}, []);
 
     // If Turnstile isn't configured, don't allow submit.
     if (!TURNSTILE_SITE_KEY) {
