@@ -149,7 +149,7 @@ export async function POST(req: Request) {
 
     await transporter.verify();
 
-    const fullName = `${firstName} ${lastName}`.trim();
+    const fullName = [firstName, lastName].filter(Boolean).join(" ");
     const safeName = escapeHtml(fullName);
     const safeEmail = escapeHtml(email);
     const safePhone = escapeHtml(phone || "");

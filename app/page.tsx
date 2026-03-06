@@ -139,8 +139,9 @@ export default function Home() {
     setSubmitDisabled(true);
     setSubmitText("Sending…");
 
-    const [firstName, ...rest] = name.split(" ").filter(Boolean);
-    const lastName = rest.length ? rest.join(" ") : "(not provided)";
+    const parts = name.split(" ").filter(Boolean);
+const firstName = parts[0] || "";
+const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
 
     const payload = {
       firstName,
