@@ -224,6 +224,7 @@ export default function Home() {
 
 *{box-sizing:border-box}
 html,body{height:100%; overflow-x:hidden;}
+html{scroll-behavior:smooth;}
 body{
   margin:0;
   padding-top: 0 !important;
@@ -871,40 +872,28 @@ footer{
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
-            <div className="navlinks">
-              <a
-                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                href="#how"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("how");
-                }}
-              >
-                How it works
-              </a>
+ <div className="navlinks">
+  <a
+    className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+    href="#how"
+  >
+    How it works
+  </a>
 
-              <a
-                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                href="#plans"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("plans");
-                }}
-              >
-                Plans
-              </a>
+  <a
+    className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+    href="#plans"
+  >
+    Plans
+  </a>
 
-              <a
-                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                Contact Us
-              </a>
-            </div>
+  <a
+    className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+    href="#demo"
+  >
+    Contact Us
+  </a>
+</div>
 
             <button
               className="menuBtn"
@@ -924,11 +913,7 @@ footer{
     <a
       className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
       href="#how"
-      onClick={(e) => {
-        e.preventDefault();
-        scrollToId("how");
-        setMobileMenuOpen(false);
-      }}
+      onClick={() => setMobileMenuOpen(false)}
     >
       How it works
     </a>
@@ -936,11 +921,7 @@ footer{
     <a
       className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
       href="#plans"
-      onClick={(e) => {
-        e.preventDefault();
-        scrollToId("plans");
-        setMobileMenuOpen(false);
-      }}
+      onClick={() => setMobileMenuOpen(false)}
     >
       Plans
     </a>
@@ -948,11 +929,7 @@ footer{
     <a
       className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
       href="#demo"
-      onClick={(e) => {
-        e.preventDefault();
-        scrollToId("demo");
-        setMobileMenuOpen(false);
-      }}
+      onClick={() => setMobileMenuOpen(false)}
     >
       Contact Us
     </a>
@@ -981,24 +958,10 @@ footer{
               </p>
 
  <div className="heroActions">
-  <a
-    className="btn btn-primary"
-    href="#demo"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("demo");
-    }}
-  >
+  <a className="btn btn-primary" href="#demo">
     Book a Demo
   </a>
-  <a
-    className="btn btn-outline"
-    href="#how"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("how");
-    }}
-  >
+  <a className="btn btn-outline" href="#how">
     See How It Works
   </a>
 </div>
@@ -1546,55 +1509,21 @@ footer{
 
  <div className="footerCol">
   <h5>Company</h5>
-  <a
-    href="#how"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("how");
-    }}
-  >
-    How it works
-  </a>
-  <a
-    href="#plans"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("plans");
-    }}
-  >
-    Plans
-  </a>
-  <a
-    href="#demo"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("demo");
-    }}
-  >
-    Contact Us
-  </a>
+  <a href="#how">How it works</a>
+  <a href="#plans">Plans</a>
+  <a href="#demo">Contact Us</a>
 </div>
 
 <div className="footerCol">
   <h5>Contact</h5>
-  <a
-    href="#demo"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("demo");
-    }}
-  >
-    Book a demo / send a message
-  </a>
-  <a
-    href="#demo"
-    onClick={(e) => {
-      e.preventDefault();
-      scrollToId("demo");
-    }}
-  >
-    office@legalclientintake.com
-  </a>
+  <a href="#demo">Book a demo / send a message</a>
+  <a href="#demo">office@legalclientintake.com</a>
+</div>
+
+<div className="footerCol">
+  <h5>Contact</h5>
+ <a href="#demo">Book a demo / send a message</a>
+  <a href="#demo">office@legalclientintake.com</a>
 </div>
           </div>
 
@@ -1618,11 +1547,6 @@ footer{
   className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
   id="toTopBtn"
   aria-label="Back to top"
-  onClick={(e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setActiveSection("top");
-  }}
 >
   ↑ Top
 </a>
