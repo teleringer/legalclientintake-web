@@ -1452,7 +1452,7 @@ footer{
                 </a>
               </div>
 
-              <div className="heroTrustRow">
+                         <div className="heroTrustRow">
                 <span>
                   <i>✓</i> Built for law firms
                 </span>
@@ -1463,6 +1463,7 @@ footer{
                   <i>✓</i> White-glove onboarding
                 </span>
               </div>
+            </div>
 
             <div className="heroImageWrap" aria-label="Hero image">
               <div className="heroImageCard">
