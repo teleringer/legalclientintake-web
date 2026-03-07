@@ -58,7 +58,7 @@ function emailShell({
   <img
     src="https://legalclientintake.com/images/logo-LCI-light2.png"
     alt="Legal Client Intake"
-    style="height:48px;display:block;"
+    style="height:62px;display:block;"
   />
 </div>
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>

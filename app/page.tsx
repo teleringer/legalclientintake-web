@@ -773,11 +773,11 @@ section.ctaBand{
 }
 
 .formCard{
-  background:#fff;
+  background:rgba(255,255,255,.98);
   color:var(--text);
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.35);
-  box-shadow:0 18px 45px rgba(2,8,23,.25);
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.42);
+  box-shadow:0 22px 55px rgba(2,8,23,.22);
   padding:24px;
 
   max-width:900px;
@@ -786,6 +786,7 @@ section.ctaBand{
   min-width:0;
   overflow:hidden;
 }
+
 .formCard > div{
   margin-bottom:18px;
 }
@@ -794,8 +795,15 @@ section.ctaBand{
   min-width: 0;
 }
 
-input, select, textarea{
-  max-width: 100%;
+input,select,textarea{
+  width:100%;
+  padding:12px 12px;
+  border-radius:12px;
+  border:1px solid #cfd8e3;
+  font:inherit;
+  outline:none;
+  background:#fff;
+  transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
 }
 
 .turnstileWrap{
@@ -830,8 +838,9 @@ input,select,textarea{
   background:#fff;
 }
 input:focus,select:focus,textarea:focus{
-  border-color:rgba(15,118,110,.55);
-  box-shadow:0 0 0 4px rgba(15,118,110,.10)
+  border-color:rgba(15,118,110,.70);
+  box-shadow:0 0 0 4px rgba(15,118,110,.12);
+  background:#fcffff;
 }
 textarea{min-height:110px;resize:vertical}
 .small{font-size:12px;color:var(--muted);font-weight:700}
