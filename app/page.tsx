@@ -715,8 +715,9 @@ section.ctaBand{
   max-width: 1040px;
   margin: 18px auto 14px;
   display:grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap:14px;
+  grid-template-columns:repeat(auto-fit,minmax(260px,320px));
+  gap:18px;
+  justify-content:center;
 }
 .infoCard{
   border-radius:18px;
