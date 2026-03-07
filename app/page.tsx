@@ -68,7 +68,7 @@ export default function Home() {
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
   const year = new Date().getFullYear();
-  const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
+  const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "info">("top");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -96,7 +96,7 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-    const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+    const scrollToId = (id: "top" | "how" | "plans" | "info") => {
     const runScroll = () => {
       if (id === "top") {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -106,7 +106,7 @@ export default function Home() {
 
       const target =
         document.getElementById(id) ||
-        (id === "demo" ? document.getElementById("contactForm") : null);
+        (id === "info" ? document.getElementById("contactForm") : null);
 
       if (!target) return;
 
@@ -137,7 +137,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const sections = ["how", "plans", "demo"] as const;
+    const sections = ["how", "plans", "info"] as const;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -145,7 +145,7 @@ export default function Home() {
           if (!entry.isIntersecting) return;
 
           const id = entry.target.id;
-          if (id === "how" || id === "plans" || id === "demo") {
+          if (id === "how" || id === "plans" || id === "info") {
             setActiveSection(id);
           }
         });
@@ -1347,11 +1347,11 @@ footer{
               </a>
 
               <a
-                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                href="#demo"
+                className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 Contact Us
@@ -1413,11 +1413,11 @@ footer{
               </a>
 
               <a
-                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                href="#demo"
+                className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 Contact Us
@@ -1458,20 +1458,20 @@ footer{
                             <div className="heroActions">
                 <a
                   className="btn btn-primary"
-                  href="#demo"
+                  href="#info"
                   onClick={(e) => {
                     e.preventDefault();
-                    scrollToId("demo");
+                    scrollToId("info");
                   }}
                 >
-                  Request a Demo
+                  Request Info
                 </a>
                 <a
   className="btn btn-outline"
-  href="#demo"
+  href="#info"
   onClick={(e) => {
     e.preventDefault();
-    scrollToId("demo");
+    scrollToId("info");
   }}
 >
   Send a Message
@@ -1686,13 +1686,13 @@ footer{
                 <div className="planCta">
                   <a
                     className="btn btn-outline"
-                    href="#demo"
+                    href="#info"
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToId("demo");
+                      scrollToId("info");
                     }}
                   >
-                    Request a Demo
+                    Request Info
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1758,13 +1758,13 @@ footer{
                 <div className="planCta">
                   <a
                     className="btn btn-primary"
-                    href="#demo"
+                    href="#info"
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToId("demo");
+                      scrollToId("info");
                     }}
                   >
-                    Request a Demo
+                    Request Info
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1830,13 +1830,13 @@ footer{
                 <div className="planCta">
                   <a
                     className="btn btn-outline"
-                    href="#demo"
+                    href="#info"
                     onClick={(e) => {
                       e.preventDefault();
-                      scrollToId("demo");
+                      scrollToId("info");
                     }}
                   >
-                    Request a Demo
+                    Request Info
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1853,11 +1853,11 @@ footer{
         </div>
       </section>
 
-            <section id="demo" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
+            <section id="info" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
         <div className="container">
-          <h2 className="sectionTitle">Request a Demo / Contact Us</h2>
+          <h2 className="sectionTitle">Request Info / Contact Us</h2>
           <p className="sectionSub">
-            Tell us about your firm and after-hours call volume. We’ll follow up to schedule a demo and confirm routing
+            Tell us about your firm and after-hours call volume. We’ll follow up with more information and confirm routing
             preferences.
           </p>
 
@@ -1865,7 +1865,7 @@ footer{
             <div className="infoCard">
               <h3 className="infoCardTitle">What happens after you submit</h3>
               <p className="infoCardP">
-                You’ll receive a confirmation email, and our team will follow up to schedule your demo and confirm
+                You’ll receive a confirmation email, and our team will follow up with more information and confirm
                 your after-hours routing preferences.
               </p>
             </div>
@@ -1897,9 +1897,9 @@ footer{
 
                   <div className="intentGrid">
                     <label className="intentBox">
-                      <input type="checkbox" name="requestTypes" value="Demo" />
+                      <input type="checkbox" name="requestTypes" value="Info" />
                       <span className="intentCard">
-                        <span className="intentText">Request Demo</span>
+                        <span className="intentText">Request Info</span>
                       </span>
                     </label>
 
@@ -2289,10 +2289,10 @@ footer{
                 Plans
               </a>
               <a
-                href="#demo"
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 Contact Us
@@ -2302,19 +2302,19 @@ footer{
             <div className="footerCol">
               <h5>Contact</h5>
               <a
-                href="#demo"
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
-                Request a demo / send a message
+                Request a info / send a message
               </a>
               <a
-                href="#demo"
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 demo@legalclientintake.com
@@ -2327,19 +2327,19 @@ footer{
             <div className="footerCol">
               <h5>Legal</h5>
               <a
-                href="#demo"
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 No attorney-client relationship
               </a>
               <a
-                href="#demo"
+                href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("demo");
+                  scrollToId("info");
                 }}
               >
                 Do not send confidential information
