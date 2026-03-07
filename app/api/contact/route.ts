@@ -58,7 +58,7 @@ function emailShell({
   <img
     src="https://legalclientintake.com/images/logo-LCI-light2.png"
     alt="Legal Client Intake"
-    style="height:38px;display:block;"
+    style="height:48px;display:block;"
   />
 </div>
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
@@ -333,11 +333,6 @@ export async function POST(req: Request) {
               <td style="padding:5px 0;">${safePracticeAreas}</td>
             </tr>
           </table>
-        </div>
-
-        <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.7;color:#475569;margin:0 0 18px 0;">
-          <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-          Do not include confidential, privileged, or time-sensitive information in this form.
         </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
