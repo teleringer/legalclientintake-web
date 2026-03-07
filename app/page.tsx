@@ -62,13 +62,14 @@ const US_STATES = [
 ];
 
 type BillingState = "monthly" | "annual";
+type SectionId = "top" | "how" | "plans" | "demo";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
   const year = new Date().getFullYear();
-  const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
+  const [activeSection, setActiveSection] = useState<SectionId>("top");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -96,7 +97,14 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-  const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+  const goToSection = (id: SectionId) => {
+    if (id === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("top");
+      setMobileMenuOpen(false);
+      return;
+    }
+
     const el = document.getElementById(id);
     if (!el) return;
 
@@ -186,10 +194,11 @@ export default function Home() {
     const lastName = String(fd.get("lastName") || "").trim();
     const firmName = String(fd.get("firmName") || "").trim();
     const attorneyCount = String(fd.get("attorneyCount") || "").trim();
-    const address = String(fd.get("address") || "").trim();
-    const city = String(fd.get("city") || "").trim();
-    const state = String(fd.get("state") || "").trim();
-    const zip = String(fd.get("zip") || "").trim();
+    const firmAddress = String(fd.get("firmAddress") || "").trim();
+    const firmCity = String(fd.get("firmCity") || "").trim();
+    const firmCounty = String(fd.get("firmCounty") || "").trim();
+    const firmState = String(fd.get("firmState") || "").trim();
+    const firmZip = String(fd.get("firmZip") || "").trim();
     const email = String(fd.get("email") || "").trim();
     const website = String(fd.get("website") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
@@ -226,10 +235,11 @@ export default function Home() {
       firmName,
       attorneyCount,
       requestTypes,
-      address,
-      city,
-      state,
-      zip,
+      firmAddress,
+      firmCity,
+      firmCounty,
+      firmState,
+      firmZip,
       email,
       website,
       phone,
@@ -271,7 +281,7 @@ export default function Home() {
       setFormStatus({
         type: "err",
         text:
-          "Your form could not be fully processed yet because the backend route still needs the matching field update.",
+          "Your form layout is updated, but the backend route still needs the matching field update before all new fields can appear correctly in the admin and user emails.",
       });
       setSubmitText("Submit Request");
       setSubmitDisabled(false);
@@ -316,12 +326,12 @@ html,body{height:100%; overflow-x:hidden;}
 html{scroll-behavior:smooth;}
 body{
   margin:0;
-  padding-top: 0 !important;
+  padding-top:0 !important;
   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
   color:var(--text);
   background: radial-gradient(1200px 500px at 50% 0%, #dff6f3 0%, var(--bg) 55%, #ffffff 100%);
   line-height:1.45;
-  letter-spacing: -0.01em;
+  letter-spacing:-0.01em;
 }
 a{color:inherit}
 img{max-width:100%;display:block}
@@ -358,19 +368,20 @@ img{max-width:100%;display:block}
     scroll-margin-top: calc(72px + env(safe-area-inset-top) + 12px);
   }
 }
+
 .topbar, .topbar *{ pointer-events:auto; }
 .topbar{
-  width: 100%;
-  position: sticky;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 9999;
+  width:100%;
+  position:sticky;
+  top:0;
+  left:0;
+  right:0;
+  z-index:9999;
   background:rgba(255,255,255,.78);
-  backdrop-filter: blur(10px);
+  backdrop-filter:blur(10px);
   border-bottom:1px solid rgba(226,232,240,.65);
-  transition: .2s background, .2s border-color;
-  padding-top: 0;
+  transition:.2s background, .2s border-color;
+  padding-top:0;
 }
 .topbar.scrolled{
   background: rgba(11,18,32,.92);
@@ -387,7 +398,7 @@ img{max-width:100%;display:block}
   height:66px;
   width:auto;
   max-width:220px;
-  transition: .15s opacity;
+  transition:.15s opacity;
 }
 @media (max-width: 520px){
   .brand img{ height:48px; max-width:180px; }
@@ -410,11 +421,11 @@ img{max-width:100%;display:block}
   cursor:pointer;
   align-items:center;
   justify-content:center;
-  position: relative;
-  z-index: 10002;
-  pointer-events: auto;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
+  position:relative;
+  z-index:10002;
+  pointer-events:auto;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
 }
 .menuBtn span{
   display:block;
@@ -472,14 +483,11 @@ img{max-width:100%;display:block}
 section{
   padding:52px 0;
   position:relative;
-  background: transparent;
-  scroll-margin-top: 110px;
+  background:transparent;
+  scroll-margin-top:110px;
 }
-
 @media (max-width: 520px){
-  section{
-    scroll-margin-top: 86px;
-  }
+  section{ scroll-margin-top:86px; }
 }
 section::before{
   content:"";
@@ -493,18 +501,18 @@ section.alt{
   background:
     radial-gradient(1100px 520px at 50% -10%, rgba(15,118,110,.12), rgba(255,255,255,0) 62%),
     linear-gradient(180deg, rgba(15,118,110,.06), rgba(255,255,255,0) 55%);
-  border-top: 1px solid rgba(226,232,240,.75);
-  border-bottom: 1px solid rgba(226,232,240,.75);
+  border-top:1px solid rgba(226,232,240,.75);
+  border-bottom:1px solid rgba(226,232,240,.75);
 }
 
 .sectionTitle{font-size:36px;line-height:1.12;margin:0 0 10px;text-align:center;letter-spacing:-0.02em}
 .sectionSub{margin:0 auto 28px;max-width:72ch;color:var(--muted);text-align:center}
 
 .hero{
-  padding: 64px 0 34px;
+  padding:64px 0 34px;
   background: linear-gradient(180deg, var(--execTop), var(--execBottom));
-  position: relative;
-  overflow: hidden;
+  position:relative;
+  overflow:hidden;
 }
 .hero::before{ display:none; }
 
@@ -520,18 +528,18 @@ section.alt{
   background-image:
     linear-gradient(to right, rgba(148,163,184,.35) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(148,163,184,.35) 1px, transparent 1px);
-  background-size: 56px 56px;
+  background-size:56px 56px;
   mask-image: radial-gradient(120% 80% at 70% 50%, rgba(0,0,0,1) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%);
 }
 .hero .container,
 .heroGrid{
-  position: relative;
-  z-index: 1;
+  position:relative;
+  z-index:1;
 }
 .heroGrid{
   display:grid;
-  grid-template-columns: 1.15fr .85fr;
-  gap: 40px;
+  grid-template-columns:1.15fr .85fr;
+  gap:40px;
   align-items:center;
 }
 
@@ -547,7 +555,7 @@ section.alt{
   font-weight:900;
   background: rgba(255,255,255,.06);
   color: rgba(248,250,252,.82);
-  border: 1px solid rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.14);
   margin:0 0 14px;
 }
 
@@ -556,31 +564,31 @@ section.alt{
   line-height:1.03;
   letter-spacing:-0.03em;
   font-weight:900;
-  color: var(--execText);
-  margin: 12px 0 10px;
+  color:var(--execText);
+  margin:12px 0 10px;
 }
 .heroGoldRule{
-  width: 88px;
-  height: 2px;
-  background: var(--execGold);
-  border-radius: 999px;
-  margin: 12px 0 18px;
+  width:88px;
+  height:2px;
+  background:var(--execGold);
+  border-radius:999px;
+  margin:12px 0 18px;
 }
 .heroSub{
-  color: var(--execMuted);
-  font-size: 18px;
-  max-width: 64ch;
+  color:var(--execMuted);
+  font-size:18px;
+  max-width:64ch;
   margin:0;
 }
 
 .heroActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .heroActions .btn-primary{
-  background: var(--execGold);
-  color: #0B1220;
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: 0 16px 34px rgba(0,0,0,.28);
+  background:var(--execGold);
+  color:#0B1220;
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 16px 34px rgba(0,0,0,.28);
 }
-.heroActions .btn-primary:hover{ filter: brightness(.98); }
+.heroActions .btn-primary:hover{ filter:brightness(.98); }
 
 .heroTrustRow{
   display:flex;
@@ -610,23 +618,23 @@ section.alt{
   font-style:normal;
   font-weight:1000;
   flex:none;
-  box-shadow: 0 10px 22px rgba(0,0,0,.18);
+  box-shadow:0 10px 22px rgba(0,0,0,.18);
   margin-top:1px;
 }
 
 .heroImageWrap{
-  background: transparent;
-  border: 1px solid rgba(255,255,255,.10);
-  box-shadow: none;
-  padding: 0;
+  background:transparent;
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:none;
+  padding:0;
   border-radius:22px;
   overflow:hidden;
 }
-.heroImageCard{ background: transparent; border: none; }
+.heroImageCard{ background:transparent; border:none; }
 .heroImageCard img{
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.10);
-  opacity: .92;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.10);
+  opacity:.92;
   width:100%;
   height:auto;
   display:block;
@@ -648,11 +656,11 @@ section.alt{
 section.plansBand::before{ display:none; }
 section.plansBand{
   background: linear-gradient(180deg, var(--execTop), var(--execBottom));
-  color: var(--execText);
+  color:var(--execText);
   position:relative;
   overflow:hidden;
-  border-top: 1px solid rgba(255,255,255,.10);
-  border-bottom: 1px solid rgba(255,255,255,.10);
+  border-top:1px solid rgba(255,255,255,.10);
+  border-bottom:1px solid rgba(255,255,255,.10);
 }
 section.plansBand::after{
   content:"";
@@ -663,87 +671,87 @@ section.plansBand::after{
   background-image:
     linear-gradient(to right, rgba(148,163,184,.35) 1px, transparent 1px),
     linear-gradient(to bottom, rgba(148,163,184,.35) 1px, transparent 1px);
-  background-size: 56px 56px;
+  background-size:56px 56px;
   mask-image: radial-gradient(120% 80% at 50% 35%, rgba(0,0,0,1) 0%, rgba(0,0,0,.55) 55%, rgba(0,0,0,0) 100%);
 }
 section.plansBand .container{ position:relative; z-index:1; }
-section.plansBand .sectionTitle{ color: var(--execText); }
-section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
+section.plansBand .sectionTitle{ color:var(--execText); }
+section.plansBand .sectionSub{ color:rgba(248,250,252,.82); }
 
 .ribbon {
-  position: absolute;
-  top: 14px;
-  right: -62px;
-  width: 220px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position:absolute;
+  top:14px;
+  right:-62px;
+  width:220px;
+  height:32px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
   background: linear-gradient(145deg, #f44336, #b71c1c);
-  color: #fff;
-  font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transform: rotate(45deg);
-  transform-origin: center;
-  box-shadow: 0 6px 15px rgba(0,0,0,.25);
-  text-shadow: 0 1px 1px rgba(0,0,0,.35);
-  z-index: 5;
+  color:#fff;
+  font-weight:800;
+  font-size:12px;
+  letter-spacing:1px;
+  text-transform:uppercase;
+  transform:rotate(45deg);
+  transform-origin:center;
+  box-shadow:0 6px 15px rgba(0,0,0,.25);
+  text-shadow:0 1px 1px rgba(0,0,0,.35);
+  z-index:5;
 }
 
-.billingToggleWrap{display:flex;justify-content:center;margin: 10px 0 18px;}
+.billingToggleWrap{display:flex;justify-content:center;margin:10px 0 18px;}
 .billingToggle{
   display:flex;align-items:center;gap:12px;
   padding:10px 12px;border-radius:999px;
   background: rgba(255,255,255,.08);
   border:1px solid rgba(255,255,255,.16);
-  box-shadow: 0 16px 34px rgba(0,0,0,.22);
-  backdrop-filter: blur(8px);
+  box-shadow:0 16px 34px rgba(0,0,0,.22);
+  backdrop-filter:blur(8px);
 }
-.billingLabel{font-size:13px;font-weight:900;letter-spacing: .02em;color: rgba(248,250,252,.88);opacity: .85;user-select:none;white-space:nowrap;}
-.billingLabel.active{opacity: 1;color: rgba(248,250,252,.98);}
+.billingLabel{font-size:13px;font-weight:900;letter-spacing:.02em;color:rgba(248,250,252,.88);opacity:.85;user-select:none;white-space:nowrap;}
+.billingLabel.active{opacity:1;color:rgba(248,250,252,.98);}
 .switch{
   position:relative;width:64px;height:34px;border-radius:999px;
   background: rgba(214,178,74,.22);
   border:1px solid rgba(214,178,74,.45);
-  box-shadow: 0 16px 34px rgba(0,0,0,.28);
+  box-shadow:0 16px 34px rgba(0,0,0,.28);
   cursor:pointer;flex:none;
 }
 .switchKnob{
   position:absolute;top:3px;left:3px;width:28px;height:28px;border-radius:999px;
   background: rgba(248,250,252,.95);
-  box-shadow: 0 10px 24px rgba(0,0,0,.30);
-  transition: .18s transform;
+  box-shadow:0 10px 24px rgba(0,0,0,.30);
+  transition:.18s transform;
 }
 .switch.on .switchKnob{transform: translateX(30px);}
 
 .plansGrid{
   display:grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns:repeat(3, 1fr);
   gap:18px;
   align-items:stretch;
-  margin-top: 14px;
+  margin-top:14px;
 }
 .planCard{
   background: rgba(255,255,255,.96);
-  color: var(--text);
+  color:var(--text);
   border:1px solid rgba(255,255,255,.18);
   border-radius:22px;
-  box-shadow: 0 18px 45px rgba(0,0,0,.30);
+  box-shadow:0 18px 45px rgba(0,0,0,.30);
   padding:18px;
   position:relative;
   overflow:hidden;
   display:flex;
   flex-direction:column;
-  min-height: 660px;
+  min-height:660px;
 }
-.planTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom: 10px;}
+.planTop{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px;}
 .planName{font-size:18px;font-weight:900;margin:0;letter-spacing:-0.02em;}
-.planTag{font-size:13px;font-weight:800;color: rgba(71,85,105,.92);margin-top: 2px;}
-.planPrice{font-size:44px;font-weight:1000;letter-spacing:-0.03em;margin: 10px 0 10px;line-height:1.0;}
-.planPrice small{font-size:14px;font-weight:900;color: rgba(71,85,105,.92);margin-left: 6px;}
-.priceSub{margin-top:-2px;font-size:13px;color: rgba(71,85,105,.92);font-weight:900;}
+.planTag{font-size:13px;font-weight:800;color:rgba(71,85,105,.92);margin-top:2px;}
+.planPrice{font-size:44px;font-weight:1000;letter-spacing:-0.03em;margin:10px 0 10px;line-height:1.0;}
+.planPrice small{font-size:14px;font-weight:900;color:rgba(71,85,105,.92);margin-left:6px;}
+.priceSub{margin-top:-2px;font-size:13px;color:rgba(71,85,105,.92);font-weight:900;}
 
 .planMeta{
   background: rgba(15,118,110,.06);
@@ -752,14 +760,14 @@ section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
   padding:12px;
   display:grid;
   gap:8px;
-  margin: 10px 0 14px;
+  margin:10px 0 14px;
   font-weight:800;
-  color: rgba(15,23,42,.88);
+  color:rgba(15,23,42,.88);
 }
 .planMetaRow{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;}
 .planMetaRow b{font-weight:1000;}
 
-.planList{list-style:none;padding:0;margin: 0 0 10px;display:grid;gap:12px;color: rgba(15,23,42,.88);font-weight:800;font-size:14px;}
+.planList{list-style:none;padding:0;margin:0 0 10px;display:grid;gap:12px;color:rgba(15,23,42,.88);font-weight:800;font-size:14px;}
 .planList li{display:flex;align-items:flex-start;gap:10px;}
 .tickDot{
   flex:none;width:22px;height:22px;border-radius:8px;display:flex;align-items:center;justify-content:center;
@@ -774,12 +782,12 @@ section.plansBand .sectionSub{ color: rgba(248,250,252,.82); }
   border-color: rgba(214,178,74,.45);
   color: rgba(140,104,14,.95);
 }
-.planBottom{margin-top:auto;padding-top: 12px;}
-.planCta{display:flex;justify-content:center;margin-bottom: 10px;}
-.planCta .btn{width:100%;max-width: 340px;padding:14px 16px;border-radius:14px;}
-.planCard.pro .btn-primary{background: var(--teal);box-shadow: 0 18px 38px rgba(15,118,110,.26);}
-.planFoot{font-size: 13px;color: rgba(71,85,105,.90);font-weight:800;}
-.plansNote{margin-top: 18px;text-align:center;color: rgba(248,250,252,.78);font-size:13px;font-weight:800;}
+.planBottom{margin-top:auto;padding-top:12px;}
+.planCta{display:flex;justify-content:center;margin-bottom:10px;}
+.planCta .btn{width:100%;max-width:340px;padding:14px 16px;border-radius:14px;}
+.planCard.pro .btn-primary{background:var(--teal);box-shadow:0 18px 38px rgba(15,118,110,.26);}
+.planFoot{font-size:13px;color:rgba(71,85,105,.90);font-weight:800;}
+.plansNote{margin-top:18px;text-align:center;color:rgba(248,250,252,.78);font-size:13px;font-weight:800;}
 
 section.ctaBand::before{ display:none; }
 section.ctaBand{
@@ -792,8 +800,8 @@ section.ctaBand{
 .ctaBand .sectionSub{color:rgba(255,255,255,.86)}
 
 .formIntroGrid{
-  max-width: 1040px;
-  margin: 18px auto 14px;
+  max-width:1040px;
+  margin:18px auto 14px;
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(260px,320px));
   gap:18px;
@@ -848,9 +856,9 @@ section.ctaBand{
 }
 
 .formWrap{
-  max-width: 1040px;
-  margin: 0 auto;
-  width: 100%;
+  max-width:1040px;
+  margin:0 auto;
+  width:100%;
 }
 
 .formCard{
@@ -860,10 +868,8 @@ section.ctaBand{
   border:1px solid rgba(255,255,255,.42);
   box-shadow:0 22px 55px rgba(2,8,23,.22);
   padding:24px;
-
   max-width:900px;
   margin:40px auto;
-
   min-width:0;
   overflow:hidden;
 }
@@ -873,9 +879,9 @@ section.ctaBand{
 }
   
 .row2 > div,
-.row4 > div,
-.rowAddress > div{
-  min-width: 0;
+.row3 > div,
+.narrowRow > div{
+  min-width:0;
 }
 
 input,select,textarea{
@@ -908,9 +914,23 @@ input,select,textarea{
     transform:scale(0.88);
   }
 }
+
 form{display:grid;gap:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row4{display:grid;grid-template-columns:1.4fr 1fr .8fr .8fr;gap:12px}
+.row3{display:grid;grid-template-columns:1fr .75fr .75fr;gap:12px}
+
+.narrowRowWrap{
+  display:flex;
+  justify-content:center;
+}
+.narrowRow{
+  display:grid;
+  grid-template-columns:minmax(220px,300px) minmax(220px,300px);
+  gap:18px;
+  justify-content:center;
+  width:auto;
+}
+
 label{font-size:12px;font-weight:1000;color:#0f172a}
 input,select,textarea{
   width:100%;
@@ -935,21 +955,26 @@ textarea{min-height:110px;resize:vertical}
 .intentFieldset{
   border:0;
   padding:0;
-  margin:0;
+  margin:0 0 4px 0;
 }
 .intentLegend{
   font-size:12px;
   font-weight:1000;
   color:#0f172a;
-  margin-bottom:8px;
+  margin-bottom:10px;
+  text-align:center;
 }
 .intentGrid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:18px;
+  flex-wrap:wrap;
 }
 .intentBox{
   position:relative;
+  width:170px;
+  max-width:100%;
 }
 .intentBox input{
   position:absolute;
@@ -960,43 +985,46 @@ textarea{min-height:110px;resize:vertical}
 .intentCard{
   display:flex;
   align-items:center;
-  gap:12px;
-  border:1px solid #cfd8e3;
-  border-radius:16px;
-  padding:16px 18px;
-  background:#fff;
-  transition:.15s border-color, .15s box-shadow, .15s background, .15s transform;
-  min-height:64px;
+  justify-content:center;
+  gap:10px;
+  border:1px solid rgba(11,95,89,.28);
+  border-radius:999px;
+  padding:14px 18px;
+  background: linear-gradient(180deg, #0f766e, #0b5f59);
+  color:#fff;
+  transition:.15s border-color, .15s box-shadow, .15s background, .15s transform, .15s filter;
+  min-height:54px;
+  box-shadow:0 10px 24px rgba(15,118,110,.16);
 }
 .intentCard::before{
   content:"";
-  width:22px;
-  height:22px;
-  border-radius:7px;
-  border:2px solid #94a3b8;
-  background:#fff;
+  width:18px;
+  height:18px;
+  border-radius:999px;
+  border:2px solid rgba(255,255,255,.78);
+  background:transparent;
   flex:none;
   box-sizing:border-box;
 }
 .intentText{
-  font-size:15px;
+  font-size:14px;
   font-weight:900;
-  color:#0f172a;
+  color:#fff;
   letter-spacing:-0.01em;
 }
 .intentBox input:checked + .intentCard{
-  border-color:rgba(15,118,110,.70);
-  box-shadow:0 0 0 4px rgba(15,118,110,.12);
-  background:#f7fffe;
+  background: linear-gradient(180deg, #0b5f59, #084b46);
+  border-color:#084b46;
+  box-shadow:0 0 0 4px rgba(15,118,110,.14), 0 12px 26px rgba(11,95,89,.22);
+  transform:translateY(-1px);
 }
 .intentBox input:checked + .intentCard::before{
-  background:var(--teal);
-  border-color:var(--teal);
-  box-shadow: inset 0 0 0 4px #ffffff;
+  background:#fff;
+  border-color:#fff;
+  box-shadow: inset 0 0 0 4px #0f766e;
 }
 .intentBox input:focus-visible + .intentCard{
-  border-color:rgba(15,118,110,.70);
-  box-shadow:0 0 0 4px rgba(15,118,110,.12);
+  box-shadow:0 0 0 4px rgba(15,118,110,.14), 0 12px 26px rgba(11,95,89,.18);
 }
 
 .checkboxFieldset{
@@ -1050,7 +1078,6 @@ textarea{min-height:110px;resize:vertical}
   font-size:12px;
   padding:10px 11px;
 }
-.inlineTopSpace{margin-top:10px;}
 
 .notice{
   border-radius:14px;
@@ -1071,12 +1098,25 @@ footer{
   color:#fff;
   padding:44px 0;
 }
-.footerGrid{display:grid;grid-template-columns: 1.3fr 1fr 1fr;gap:20px;align-items:start;}
+.footerGrid{
+  display:grid;
+  grid-template-columns:1.3fr 1fr 1fr 1fr;
+  gap:20px;
+  align-items:start;
+}
 .footerBrand{display:flex;gap:12px;align-items:flex-start;text-decoration:none;}
 .footerBrand img{height:44px;width:auto;}
-.footerP{margin:10px 0 0;color:rgba(255,255,255,.80);font-size:14px;font-weight:650;max-width: 52ch;}
+.footerP{margin:10px 0 0;color:rgba(255,255,255,.80);font-size:14px;font-weight:650;max-width:52ch;}
 .footerCol h5{margin:0 0 10px;font-size:14px;font-weight:1000;letter-spacing:-.01em;color: rgba(255,255,255,.92);}
-.footerCol a{display:block;color:rgba(255,255,255,.76);text-decoration:none;margin:8px 0;font-size:14px;font-weight:700;}
+.footerCol a{
+  display:block;
+  color:rgba(255,255,255,.76);
+  text-decoration:none;
+  margin:8px 0;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+}
 .footerCol a:hover{ color:#fff; }
 .footerBottom{
   margin-top:22px;
@@ -1094,69 +1134,72 @@ footer{
 .footerBottom a:hover{color:#fff}
 
 .toTop{
-  position: fixed;
-  right: 18px;
-  bottom: 18px;
-  z-index: 9999;
-  opacity: 0;
-  transform: translateY(10px);
-  pointer-events: none;
-  transition: .15s opacity, .15s transform;
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:9999;
+  opacity:0;
+  transform:translateY(10px);
+  pointer-events:none;
+  transition:.15s opacity, .15s transform;
 }
 .toTop.show{
-  opacity: 1;
-  transform: translateY(0);
-  pointer-events: auto;
+  opacity:1;
+  transform:translateY(0);
+  pointer-events:auto;
 }
 
 @media (max-width: 980px){
-  .heroGrid{ grid-template-columns: 1fr; gap: 22px; }
-  .heroTitle{ font-size: 44px; }
-  .hero::after{ width: 100%; opacity: .10; }
+  .heroGrid{ grid-template-columns:1fr; gap:22px; }
+  .heroTitle{ font-size:44px; }
+  .hero::after{ width:100%; opacity:.10; }
   .grid3{grid-template-columns:1fr}
   .practice{grid-template-columns:1fr}
   .plansGrid{grid-template-columns:1fr}
-  .planCard{ min-height: 0; }
-  .formIntroGrid{ grid-template-columns: 1fr; }
+  .planCard{ min-height:0; }
+  .formIntroGrid{ grid-template-columns:1fr; }
   .row2,
-  .row4,
-  .intentGrid{grid-template-columns:1fr}
+  .row3,
+  .narrowRow{grid-template-columns:1fr}
   .checkboxGrid{grid-template-columns:1fr}
-  .footerGrid{ grid-template-columns: 1fr; }
+  .footerGrid{ grid-template-columns:1fr; }
 }
-@media (max-width: 520px){
-  .toTop{ right: 14px; bottom: 14px; }
-}
+
 @media (max-width: 768px){
   .ribbon{
-    top: 12px;
-    right: -58px;
-    width: 175px;
-    font-size: 11px;
+    top:12px;
+    right:-58px;
+    width:175px;
+    font-size:11px;
   }
+  .intentBox{
+    width:100%;
+    max-width:260px;
+  }
+}
+
+@media (max-width: 520px){
+  .toTop{ right:14px; bottom:14px; }
 }
       `}</style>
 
       <div className="topbar" id="topbar">
         <div className="container">
           <div className="nav">
-            <a
-              className="brand"
-              href="#top"
+            <button
+              className="brand navBtn"
               aria-label="Legal Client Intake"
-              onClick={(e) => {
-                e.preventDefault();
-                scrollToId("top");
-              }}
+              onClick={() => goToSection("top")}
+              type="button"
             >
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
-            </a>
+            </button>
 
             <div className="navlinks">
               <button
                 className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("how")}
+                onClick={() => goToSection("how")}
               >
                 How it works
               </button>
@@ -1164,7 +1207,7 @@ footer{
               <button
                 className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("plans")}
+                onClick={() => goToSection("plans")}
               >
                 Plans
               </button>
@@ -1172,7 +1215,7 @@ footer{
               <button
                 className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("demo")}
+                onClick={() => goToSection("demo")}
               >
                 Contact Us
               </button>
@@ -1196,7 +1239,7 @@ footer{
               <button
                 className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("how")}
+                onClick={() => goToSection("how")}
               >
                 How it works
               </button>
@@ -1204,7 +1247,7 @@ footer{
               <button
                 className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("plans")}
+                onClick={() => goToSection("plans")}
               >
                 Plans
               </button>
@@ -1212,7 +1255,7 @@ footer{
               <button
                 className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
                 type="button"
-                onClick={() => scrollToId("demo")}
+                onClick={() => goToSection("demo")}
               >
                 Contact Us
               </button>
@@ -1241,18 +1284,10 @@ footer{
               </p>
 
               <div className="heroActions">
-                <button
-                  className="btn btn-primary navBtn"
-                  type="button"
-                  onClick={() => scrollToId("demo")}
-                >
+                <button className="btn btn-primary navBtn" type="button" onClick={() => goToSection("demo")}>
                   Book a Demo
                 </button>
-                <button
-                  className="btn btn-outline navBtn"
-                  type="button"
-                  onClick={() => scrollToId("how")}
-                >
+                <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("how")}>
                   See How It Works
                 </button>
               </div>
@@ -1377,13 +1412,10 @@ footer{
 
           <div className="billingToggleWrap">
             <div className="billingToggle" role="group" aria-label="Billing period toggle">
-              <span className={`billingLabel ${!isAnnual ? "active" : ""}`} id="lblMonthly">
-                Monthly
-              </span>
+              <span className={`billingLabel ${!isAnnual ? "active" : ""}`}>Monthly</span>
 
               <div
                 className={`switch ${isAnnual ? "on" : ""}`}
-                id="billingSwitch"
                 role="switch"
                 aria-checked={isAnnual ? "true" : "false"}
                 tabIndex={0}
@@ -1399,9 +1431,7 @@ footer{
                 <div className="switchKnob" />
               </div>
 
-              <span className={`billingLabel ${isAnnual ? "active" : ""}`} id="lblAnnual">
-                Yearly (paid in full)
-              </span>
+              <span className={`billingLabel ${isAnnual ? "active" : ""}`}>Yearly (paid in full)</span>
             </div>
           </div>
 
@@ -1415,17 +1445,17 @@ footer{
                 </div>
               </div>
 
-              <div className="planPrice" id="price-core">
+              <div className="planPrice">
                 {isAnnual ? prices.core.annual : prices.core.monthly} <small>/ mo</small>
               </div>
-              <div className="priceSub" id="sub-core" style={{ opacity: isAnnual ? 1 : 0.55 }}>
+              <div className="priceSub" style={{ opacity: isAnnual ? 1 : 0.55 }}>
                 Yearly: $272.25<small>/ mo</small> *paid in full
               </div>
 
               <div className="planMeta">
                 <div className="planMetaRow">
                   <span>Included minutes</span>
-                  <b id="mins-core">{prices.core.mins}</b>
+                  <b>{prices.core.mins}</b>
                 </div>
                 <div className="planMetaRow">
                   <span>Overage</span>
@@ -1468,7 +1498,7 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-outline navBtn" type="button" onClick={() => scrollToId("demo")}>
+                  <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("demo")}>
                     Book a Demo
                   </button>
                 </div>
@@ -1486,17 +1516,17 @@ footer{
                 </div>
               </div>
 
-              <div className="planPrice" id="price-pro">
+              <div className="planPrice">
                 {isAnnual ? prices.pro.annual : prices.pro.monthly} <small>/ mo</small>
               </div>
-              <div className="priceSub" id="sub-pro" style={{ opacity: isAnnual ? 1 : 0.55 }}>
+              <div className="priceSub" style={{ opacity: isAnnual ? 1 : 0.55 }}>
                 Yearly: $330.83<small>/ mo</small> *paid in full
               </div>
 
               <div className="planMeta">
                 <div className="planMetaRow">
                   <span>Included minutes</span>
-                  <b id="mins-pro">{prices.pro.mins}</b>
+                  <b>{prices.pro.mins}</b>
                 </div>
                 <div className="planMetaRow">
                   <span>Overage</span>
@@ -1533,7 +1563,7 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-primary navBtn" type="button" onClick={() => scrollToId("demo")}>
+                  <button className="btn btn-primary navBtn" type="button" onClick={() => goToSection("demo")}>
                     Book a Demo
                   </button>
                 </div>
@@ -1551,17 +1581,17 @@ footer{
                 </div>
               </div>
 
-              <div className="planPrice" id="price-elite">
+              <div className="planPrice">
                 {isAnnual ? prices.elite.annual : prices.elite.monthly} <small>/ mo</small>
               </div>
-              <div className="priceSub" id="sub-elite" style={{ opacity: isAnnual ? 1 : 0.55 }}>
+              <div className="priceSub" style={{ opacity: isAnnual ? 1 : 0.55 }}>
                 Yearly: $447.75<small>/ mo</small> *paid in full
               </div>
 
               <div className="planMeta">
                 <div className="planMetaRow">
                   <span>Included minutes</span>
-                  <b id="mins-elite">{prices.elite.mins}</b>
+                  <b>{prices.elite.mins}</b>
                 </div>
                 <div className="planMetaRow">
                   <span>Overage</span>
@@ -1598,7 +1628,7 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-outline navBtn" type="button" onClick={() => scrollToId("demo")}>
+                  <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("demo")}>
                     Book a Demo
                   </button>
                 </div>
@@ -1656,7 +1686,8 @@ footer{
             <div className="formCard">
               <form id="contactForm" onSubmit={submitContact}>
                 <fieldset className="intentFieldset">
-                  <legend className="intentLegend">What would you like us to do? *</legend>
+                  <legend className="intentLegend">What would you like us to do?</legend>
+
                   <div className="intentGrid">
                     <label className="intentBox">
                       <input type="checkbox" name="requestTypes" value="Request Demo" />
@@ -1708,18 +1739,25 @@ footer{
                   </div>
                 </div>
 
-                <div className="row4">
+                <div className="row2">
                   <div>
-                    <label htmlFor="address">Address</label>
-                    <input id="address" name="address" placeholder="123 Main Street" />
+                    <label htmlFor="firmAddress">Firm Address</label>
+                    <input id="firmAddress" name="firmAddress" placeholder="123 Main Street" />
                   </div>
                   <div>
-                    <label htmlFor="city">City</label>
-                    <input id="city" name="city" placeholder="Scranton" />
+                    <label htmlFor="firmCity">Firm City</label>
+                    <input id="firmCity" name="firmCity" placeholder="Scranton" />
+                  </div>
+                </div>
+
+                <div className="row3">
+                  <div>
+                    <label htmlFor="firmCounty">Firm County</label>
+                    <input id="firmCounty" name="firmCounty" placeholder="Lackawanna" />
                   </div>
                   <div>
-                    <label htmlFor="state">State</label>
-                    <select id="state" name="state" defaultValue="">
+                    <label htmlFor="firmState">Firm State</label>
+                    <select id="firmState" name="firmState" defaultValue="">
                       {US_STATES.map((item) => (
                         <option key={item.value || "blank"} value={item.value}>
                           {item.label}
@@ -1728,17 +1766,15 @@ footer{
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="zip">Zip Code</label>
-                    <input
-                      id="zip"
-                      name="zip"
-                      placeholder="18503"
+                    <label htmlFor="firmZip">Firm Zip</label>
+                    <IMaskInput
+                      mask="00000[-0000]"
+                      unmask={false}
+                      placeholder="18505 or 18505-2908"
+                      id="firmZip"
+                      name="firmZip"
                       inputMode="numeric"
-                      maxLength={10}
-                      onInput={(e) => {
-                        const target = e.currentTarget;
-                        target.value = target.value.replace(/\D/g, "");
-                      }}
+                      onAccept={() => {}}
                     />
                   </div>
                 </div>
@@ -1754,29 +1790,31 @@ footer{
                   </div>
                 </div>
 
-                <div className="row2">
-                  <div>
-                    <label htmlFor="phone">Phone *</label>
-                    <IMaskInput
-                      mask="(000) 000-0000"
-                      unmask={false}
-                      placeholder="(555) 123-4567"
-                      id="phone"
-                      name="phone"
-                      required
-                      onAccept={() => {}}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="fax">Office Fax</label>
-                    <IMaskInput
-                      mask="(000) 000-0000"
-                      unmask={false}
-                      placeholder="(555) 987-6543"
-                      id="fax"
-                      name="fax"
-                      onAccept={() => {}}
-                    />
+                <div className="narrowRowWrap">
+                  <div className="narrowRow">
+                    <div>
+                      <label htmlFor="phone">Phone *</label>
+                      <IMaskInput
+                        mask="(000) 000-0000"
+                        unmask={false}
+                        placeholder="(555) 123-4567"
+                        id="phone"
+                        name="phone"
+                        required
+                        onAccept={() => {}}
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="fax">Office Fax</label>
+                      <IMaskInput
+                        mask="(000) 000-0000"
+                        unmask={false}
+                        placeholder="(555) 987-6543"
+                        id="fax"
+                        name="fax"
+                        onAccept={() => {}}
+                      />
+                    </div>
                   </div>
                 </div>
 
@@ -1907,7 +1945,7 @@ footer{
                     onChange={(e) => setMsg(e.target.value)}
                   />
                   <div className="small">
-                    <span id="count">{msgCount}</span>/700 characters
+                    <span>{msgCount}</span>/700 characters
                   </div>
                 </div>
 
@@ -1926,7 +1964,6 @@ footer{
 
                 {formStatus.type !== "idle" && (
                   <div
-                    id="formStatus"
                     className={`notice ${formStatus.type === "ok" ? "ok" : formStatus.type === "err" ? "err" : ""}`}
                     style={{ display: "block" }}
                   >
@@ -1956,7 +1993,6 @@ footer{
                 <div className="formActions">
                   <button
                     className="btn btn-primary"
-                    id="submitBtn"
                     type="submit"
                     style={{ minWidth: 260 }}
                     disabled={submitDisabled}
@@ -1978,93 +2014,29 @@ footer{
         <div className="container">
           <div className="footerGrid">
             <div>
-              <a
-                className="footerBrand"
-                href="#top"
-                aria-label="Back to top"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("top");
-                }}
-              >
+              <button className="footerBrand navBtn" aria-label="Back to top" onClick={() => goToSection("top")} type="button">
                 <img src="/images/logo-LCI-light2.png" alt="Legal Client Intake" />
-              </a>
+              </button>
               <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
             </div>
 
             <div className="footerCol">
               <h5>Company</h5>
-              <a
-                href="#how"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("how");
-                }}
-              >
-                How it works
-              </a>
-              <a
-                href="#plans"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("plans");
-                }}
-              >
-                Plans
-              </a>
-              <a
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                Contact Us
-              </a>
+              <a onClick={() => goToSection("how")}>How it works</a>
+              <a onClick={() => goToSection("plans")}>Plans</a>
+              <a onClick={() => goToSection("demo")}>Contact Us</a>
             </div>
 
             <div className="footerCol">
               <h5>Contact</h5>
-              <a
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                Book a demo / send a message
-              </a>
-              <a
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                demo@legalclientintake.com
-              </a>
+              <a onClick={() => goToSection("demo")}>Book a demo / send a message</a>
+              <a onClick={() => goToSection("demo")}>demo@legalclientintake.com</a>
             </div>
 
             <div className="footerCol">
               <h5>Legal</h5>
-              <a
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                No attorney-client relationship
-              </a>
-              <a
-                href="#demo"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("demo");
-                }}
-              >
-                Do not send confidential information
-              </a>
+              <a onClick={() => goToSection("demo")}>No attorney-client relationship</a>
+              <a onClick={() => goToSection("demo")}>Do not send confidential information</a>
             </div>
           </div>
 
@@ -2083,18 +2055,14 @@ footer{
         </div>
       </footer>
 
-      <a
-        href="#top"
+      <button
         className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
-        id="toTopBtn"
         aria-label="Back to top"
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToId("top");
-        }}
+        onClick={() => goToSection("top")}
+        type="button"
       >
         ↑ Top
-      </a>
+      </button>
     </main>
   );
 }
