@@ -43,6 +43,21 @@ function isValidEmail(email: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+function isValidWebsite(website?: string) {
+  const value = String(website || "").trim();
+  if (!value) return true;
+
+  return /^(?=.{3,253}$)(?!.*\s)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$/.test(
+    value
+  );
+}
+
+function normalizeWebsiteUrl(website?: string) {
+  const value = String(website || "").trim();
+  if (!value) return "";
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+
 function normalizePhone(phone?: string) {
   if (!phone) return "";
   return phone.replace(/\D/g, "");
@@ -110,6 +125,7 @@ export async function POST(req: Request) {
     const state = String(body.state ?? "").trim();
     const zip = String(body.zip ?? "").trim();
     const website = String(body.website ?? "").trim();
+    const websiteUrl = normalizeWebsiteUrl(website);
     const mobilePhone = String(body.mobilePhone ?? "").trim();
     const officePhone = String(body.officePhone ?? "").trim();
     const officeFax = String(body.officeFax ?? "").trim();
@@ -131,6 +147,10 @@ export async function POST(req: Request) {
 
     if (!isValidEmail(email)) {
       return Response.json({ ok: false, error: "INVALID_EMAIL" }, { status: 400 });
+    }
+
+    if (!isValidWebsite(website)) {
+      return Response.json({ ok: false, error: "INVALID_WEBSITE" }, { status: 400 });
     }
 
     const mobilePhoneDigits = normalizePhone(mobilePhone);
@@ -318,7 +338,7 @@ export async function POST(req: Request) {
     <tr>
       <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Website:</td>
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
-        ${website ? `<a href="${escapeHtml(website)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
+        ${website ? `<a href="${escapeHtml(websiteUrl)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
       </td>
     </tr>
     <tr>
@@ -456,7 +476,7 @@ export async function POST(req: Request) {
     <tr>
       <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Website:</td>
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
-        ${website ? `<a href="${escapeHtml(website)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
+        ${website ? `<a href="${escapeHtml(websiteUrl)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
       </td>
     </tr>
     <tr>
@@ -487,8 +507,7 @@ export async function POST(req: Request) {
 </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
-          <b>Best Regards,<br />
-          Legal Client Intake Team<br /></b>
+          <b>Legal Client Intake Team<br /></b>
           <a href="https://legalclientintake.com">www.legalclientintake.com</a><br />
           <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
         </div>
