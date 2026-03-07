@@ -792,22 +792,22 @@ input, select, textarea{
 }
 
 .turnstileWrap{
-  max-width: 100%;
-  overflow: visible;
-  padding-bottom: 2px;
-  display:flex;
-  justify-content:center;
+  width:100%;
+  max-width:100%;
+  overflow:hidden;
+  padding-bottom:2px;
+  margin-top:10px;
 }
 
 .turnstileInner{
-  display:flex;
-  justify-content:center;
-  transform-origin:center top;
+  width:fit-content;
+  margin:0 auto;
+  transform-origin:top center;
 }
 
 @media (max-width: 520px){
   .turnstileInner{
-    transform: scale(0.88);
+    transform:scale(0.88);
   }
 }
 form{display:grid;gap:12px}
@@ -1664,7 +1664,7 @@ footer{
                   </div>
                 )}
 
- <div className="turnstileWrap" style={{ marginTop: 10 }}>
+ <div className="turnstileWrap">
   {TURNSTILE_SITE_KEY ? (
     <div className="turnstileInner">
       <Turnstile
@@ -1675,6 +1675,12 @@ footer{
         onError={() => setTurnstileToken("")}
       />
     </div>
+  ) : (
+    <div className="notice err" style={{ maxWidth: 520, margin: "0 auto" }}>
+      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
+    </div>
+  )}
+</div>
   ) : (
     <div className="notice err" style={{ maxWidth: 520 }}>
       Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
