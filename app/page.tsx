@@ -646,7 +646,16 @@ section.alt{
   margin:0;
 }
 
-.heroActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.heroActions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:22px;
+}
+.heroActions .btn{
+  min-width:190px;
+  min-height:52px;
+}
 .heroActions .btn-primary{
   background:var(--execGold);
   color:#0B1220;
@@ -654,6 +663,14 @@ section.alt{
   box-shadow:0 16px 34px rgba(0,0,0,.28);
 }
 .heroActions .btn-primary:hover{ filter:brightness(.98); }
+
+.heroCtaNote{
+  margin-top:10px;
+  color:rgba(248,250,252,.82);
+  font-size:14px;
+  font-weight:700;
+  line-height:1.45;
+}
 
 .heroTrustRow{
   display:flex;
@@ -1429,7 +1446,7 @@ footer{
                 details that matter, and sends you an instant intake summary—so you can call back first.
               </p>
 
-              <div className="heroActions">
+                            <div className="heroActions">
                 <a
                   className="btn btn-primary"
                   href="#demo"
@@ -1452,6 +1469,10 @@ footer{
                 </a>
               </div>
 
+              <div className="heroCtaNote">
+                No pressure. Request a demo or send a message and we’ll follow up personally.
+              </div>
+
               <div className="heroTrustRow">
                 <span>
                   <i>✓</i> Built for law firms
@@ -1463,7 +1484,6 @@ footer{
                   <i>✓</i> White-glove onboarding
                 </span>
               </div>
-            </div>
 
             <div className="heroImageWrap" aria-label="Hero image">
               <div className="heroImageCard">
