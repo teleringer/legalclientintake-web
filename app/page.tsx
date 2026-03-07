@@ -170,126 +170,168 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  async function submitContact(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
+async function submitContact(e: FormEvent<HTMLFormElement>) {
+  e.preventDefault();
 
-    if (!TURNSTILE_SITE_KEY) {
-      setFormStatus({
-        type: "err",
-        text: "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).",
-      });
-      return;
+  if (!TURNSTILE_SITE_KEY) {
+    setFormStatus({
+      type: "err",
+      text: "Turnstile is not configured yet (missing NEXT_PUBLIC_TURNSTILE_SITE_KEY).",
+    });
+    return;
+  }
+
+  if (!turnstileToken) {
+    setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
+    return;
+  }
+
+  const form = e.currentTarget;
+  const fd = new FormData(form);
+
+  const firstName = String(fd.get("firstName") || "").trim();
+  const lastName = String(fd.get("lastName") || "").trim();
+  const firmName = String(fd.get("firmName") || "").trim();
+  const attorneyCount = String(fd.get("attorneyCount") || "").trim();
+  const address = String(fd.get("address") || "").trim();
+  const city = String(fd.get("city") || "").trim();
+  const county = String(fd.get("county") || "").trim();
+  const state = String(fd.get("state") || "").trim();
+  const zip = String(fd.get("zip") || "").trim();
+  const email = String(fd.get("email") || "").trim();
+  const website = String(fd.get("website") || "").trim();
+  const mobilePhone = String(fd.get("mobilePhone") || "").trim();
+  const officePhone = String(fd.get("officePhone") || "").trim();
+  const officeFax = String(fd.get("officeFax") || "").trim();
+  const intakeMethod = String(fd.get("intakeMethod") || "").trim();
+  const message = String(fd.get("message") || "").trim();
+
+  const requestTypes = fd
+    .getAll("requestTypes")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  const otherPractices = fd
+    .getAll("otherPractice")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  const practiceAreas = fd
+    .getAll("practiceAreas")
+    .map((value) => String(value).trim())
+    .filter(Boolean);
+
+  const finalPracticeAreas = [
+    ...practiceAreas,
+    ...otherPractices.map((item) => `Other: ${item}`),
+  ];
+
+  setFormStatus({ type: "sending", text: "Sending…" });
+  setSubmitDisabled(true);
+  setSubmitText("Sending…");
+
+  const payload = {
+    firstName,
+    lastName,
+    firmName,
+    attorneyCount,
+    requestTypes,
+    address,
+    city,
+    county,
+    state,
+    zip,
+    email,
+    website,
+    mobilePhone,
+    officePhone,
+    officeFax,
+    intakeMethod,
+    practiceAreas: finalPracticeAreas,
+    turnstileToken,
+    message,
+    company: "",
+  };
+
+  try {
+    const res = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      const errorCode = data?.error || "UNKNOWN_ERROR";
+      throw new Error(errorCode);
     }
 
-    if (!turnstileToken) {
-      setFormStatus({ type: "err", text: "Please complete the anti-spam check and try again." });
-      return;
-    }
+    setFormStatus({
+      type: "ok",
+      text: "Success! Your request was sent. Please check your email for confirmation.",
+    });
 
-    const form = e.currentTarget;
-    const fd = new FormData(form);
+    setSubmitText("Sent");
+    form.reset();
+    setMsg("");
+    setTurnstileToken("");
+    setTurnstileRenderKey((k) => k + 1);
 
-    const firstName = String(fd.get("firstName") || "").trim();
-    const lastName = String(fd.get("lastName") || "").trim();
-    const firmName = String(fd.get("firmName") || "").trim();
-    const attorneyCount = String(fd.get("attorneyCount") || "").trim();
-    const address = String(fd.get("address") || "").trim();
-    const city = String(fd.get("city") || "").trim();
-    const county = String(fd.get("county") || "").trim();
-    const state = String(fd.get("state") || "").trim();
-    const zip = String(fd.get("zip") || "").trim();
-    const email = String(fd.get("email") || "").trim();
-    const website = String(fd.get("website") || "").trim();
-    const mobilePhone = String(fd.get("mobilePhone") || "").trim();
-    const officePhone = String(fd.get("officePhone") || "").trim();
-    const officeFax = String(fd.get("officeFax") || "").trim();
-    const intakeMethod = String(fd.get("intakeMethod") || "").trim();
-    const message = String(fd.get("message") || "").trim();
-
-    const requestTypes = fd
-      .getAll("requestTypes")
-      .map((value) => String(value).trim())
-      .filter(Boolean);
-
-    const otherPractices = fd
-      .getAll("otherPractice")
-      .map((value) => String(value).trim())
-      .filter(Boolean);
-
-    const practiceAreas = fd
-      .getAll("practiceAreas")
-      .map((value) => String(value).trim())
-      .filter(Boolean);
-
-    const finalPracticeAreas = [
-      ...practiceAreas,
-      ...otherPractices.map((item) => `Other: ${item}`),
-    ];
-
-    setFormStatus({ type: "sending", text: "Sending…" });
-    setSubmitDisabled(true);
-    setSubmitText("Sending…");
-
-    const payload = {
-      firstName,
-      lastName,
-      firmName,
-      attorneyCount,
-      requestTypes,
-      address,
-      city,
-      county,
-      state,
-      zip,
-      email,
-      website,
-      mobilePhone,
-      officePhone,
-      officeFax,
-      intakeMethod,
-      practiceAreas: finalPracticeAreas,
-      turnstileToken,
-      message,
-      company: "",
-    };
-
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        throw new Error(text || "Request failed");
-      }
-
-      setFormStatus({
-        type: "ok",
-        text: "Success! Your request was sent. Please check your email for confirmation.",
-      });
-
-      setSubmitText("Sent");
-      form.reset();
-      setMsg("");
-      setTurnstileToken("");
-      setTurnstileRenderKey((k) => k + 1);
-
-      setTimeout(() => {
-        setSubmitText("Submit Request");
-        setSubmitDisabled(false);
-      }, 1600);
-    } catch {
-      setFormStatus({
-        type: "err",
-        text:
-          "The page layout is updated, but the backend route still needs to be updated to include all of these new fields in the admin and user emails.",
-      });
+    setTimeout(() => {
       setSubmitText("Submit Request");
       setSubmitDisabled(false);
+    }, 1600);
+  } catch (err) {
+    const messageText =
+      err instanceof Error ? err.message : "UNKNOWN_ERROR";
+
+    let userMessage = "Something went wrong while submitting the form.";
+
+    switch (messageText) {
+      case "MISSING_FIELDS":
+        userMessage = "Please complete all required fields and try again.";
+        break;
+      case "INVALID_EMAIL":
+        userMessage = "Please enter a valid email address.";
+        break;
+      case "INVALID_MOBILE_PHONE":
+        userMessage = "Please enter a valid mobile phone number or leave it blank.";
+        break;
+      case "INVALID_OFFICE_PHONE":
+        userMessage = "Please enter a valid office phone number.";
+        break;
+      case "INVALID_OFFICE_FAX":
+        userMessage = "Please enter a valid office fax number or leave it blank.";
+        break;
+      case "TURNSTILE_MISSING":
+        userMessage = "Please complete the anti-spam check and try again.";
+        break;
+      case "TURNSTILE_FAILED":
+        userMessage = "Anti-spam verification failed. Please try again.";
+        break;
+      case "TURNSTILE_NOT_CONFIGURED":
+        userMessage = "Turnstile is not configured on the server yet.";
+        break;
+      case "SERVER_NOT_CONFIGURED":
+        userMessage = "The email server is not configured correctly yet.";
+        break;
+      case "SERVER_ERROR":
+        userMessage = "Server error. Please try again in a moment.";
+        break;
+      default:
+        userMessage = `Form error: ${messageText}`;
+        break;
     }
+
+    setFormStatus({
+      type: "err",
+      text: userMessage,
+    });
+    setSubmitText("Submit Request");
+    setSubmitDisabled(false);
   }
+}
 
   return (
     <main>
