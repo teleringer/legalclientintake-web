@@ -6,11 +6,21 @@ type ContactPayload = {
   firstName: string;
   lastName: string;
   firmName?: string;
-  jurisdiction?: string;
+  attorneyCount?: string;
+  requestTypes?: string[];
+  address?: string;
+  city?: string;
+  county?: string;
+  state?: string;
+  zip?: string;
   email: string;
-  phone?: string;
+  website?: string;
+  mobilePhone?: string;
+  officePhone?: string;
+  officeFax?: string;
+  intakeMethod?: string;
   practiceAreas?: string[];
-  message: string;
+  message?: string;
   turnstileToken?: string;
   company?: string;
 };
@@ -55,12 +65,12 @@ function emailShell({
             ${eyebrow ? escapeHtml(eyebrow) : "Legal Client Intake"}
           </div>
           <div style="margin:0;">
-  <img
-    src="https://legalclientintake.com/images/logo-LCI-light2.png"
-    alt="Legal Client Intake"
-    style="height:44px;max-width:100%;width:auto;display:block;"
-  />
-</div>
+            <img
+              src="https://legalclientintake.com/images/logo-LCI-light2.png"
+              alt="Legal Client Intake"
+              style="height:44px;max-width:100%;width:auto;display:block;"
+            />
+          </div>
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
         </div>
 
@@ -76,11 +86,15 @@ function emailShell({
   `;
 }
 
+function displayOrFallback(value?: string) {
+  const v = String(value || "").trim();
+  return v || "(not provided)";
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as Partial<ContactPayload>;
 
-    // Honeypot
     if (body.company && String(body.company).trim().length > 0) {
       return Response.json({ ok: true });
     }
@@ -88,17 +102,30 @@ export async function POST(req: Request) {
     const firstName = String(body.firstName ?? "").trim();
     const lastName = String(body.lastName ?? "").trim();
     const firmName = String(body.firmName ?? "").trim();
-    const jurisdiction = String(body.jurisdiction ?? "").trim();
+    const attorneyCount = String(body.attorneyCount ?? "").trim();
     const email = String(body.email ?? "").trim();
-    const phone = String(body.phone ?? "").trim();
+    const address = String(body.address ?? "").trim();
+    const city = String(body.city ?? "").trim();
+    const county = String(body.county ?? "").trim();
+    const state = String(body.state ?? "").trim();
+    const zip = String(body.zip ?? "").trim();
+    const website = String(body.website ?? "").trim();
+    const mobilePhone = String(body.mobilePhone ?? "").trim();
+    const officePhone = String(body.officePhone ?? "").trim();
+    const officeFax = String(body.officeFax ?? "").trim();
+    const intakeMethod = String(body.intakeMethod ?? "").trim();
     const message = String(body.message ?? "").trim();
     const turnstileToken = String(body.turnstileToken ?? "").trim();
+
+    const requestTypes = Array.isArray(body.requestTypes)
+      ? body.requestTypes.map((item) => String(item).trim()).filter(Boolean)
+      : [];
 
     const practiceAreas = Array.isArray(body.practiceAreas)
       ? body.practiceAreas.map((item) => String(item).trim()).filter(Boolean)
       : [];
 
-    if (!firstName || !lastName || !firmName || !email || !message) {
+    if (!firstName || !lastName || !firmName || !attorneyCount || !email || !officePhone || !intakeMethod) {
       return Response.json({ ok: false, error: "MISSING_FIELDS" }, { status: 400 });
     }
 
@@ -106,9 +133,20 @@ export async function POST(req: Request) {
       return Response.json({ ok: false, error: "INVALID_EMAIL" }, { status: 400 });
     }
 
-    const phoneDigits = normalizePhone(phone);
-    if (phone && phoneDigits.length !== 10) {
-      return Response.json({ ok: false, error: "INVALID_PHONE" }, { status: 400 });
+    const mobilePhoneDigits = normalizePhone(mobilePhone);
+    const officePhoneDigits = normalizePhone(officePhone);
+    const officeFaxDigits = normalizePhone(officeFax);
+
+    if (mobilePhone && mobilePhoneDigits.length !== 10) {
+      return Response.json({ ok: false, error: "INVALID_MOBILE_PHONE" }, { status: 400 });
+    }
+
+    if (!officePhone || officePhoneDigits.length !== 10) {
+      return Response.json({ ok: false, error: "INVALID_OFFICE_PHONE" }, { status: 400 });
+    }
+
+    if (officeFax && officeFaxDigits.length !== 10) {
+      return Response.json({ ok: false, error: "INVALID_OFFICE_FAX" }, { status: 400 });
     }
 
     const turnstileSecret = process.env.TURNSTILE_SECRET_KEY;
@@ -196,19 +234,30 @@ export async function POST(req: Request) {
 
     const fullName = [firstName, lastName].filter(Boolean).join(" ");
     const practiceAreasText = practiceAreas.length > 0 ? practiceAreas.join(", ") : "(not provided)";
+    const requestTypesText = requestTypes.length > 0 ? requestTypes.join(", ") : "(not provided)";
     const submittedAt = new Date().toLocaleString("en-US", {
       timeZone: "America/New_York",
     });
     const currentYear = new Date().getFullYear();
 
     const safeFullName = escapeHtml(fullName);
-    const safeFirmName = escapeHtml(firmName);
-    const safeJurisdiction = escapeHtml(jurisdiction || "(not provided)");
+    const safeFirmName = escapeHtml(displayOrFallback(firmName));
+    const safeAttorneyCount = escapeHtml(displayOrFallback(attorneyCount));
+    const safeRequestTypes = escapeHtml(requestTypesText);
+    const safeAddress = escapeHtml(displayOrFallback(address));
+    const safeCity = escapeHtml(displayOrFallback(city));
+    const safeCounty = escapeHtml(displayOrFallback(county));
+    const safeState = escapeHtml(displayOrFallback(state));
+    const safeZip = escapeHtml(displayOrFallback(zip));
     const safeEmail = escapeHtml(email);
-    const safePhone = escapeHtml(phone || "(not provided)");
+    const safeWebsite = escapeHtml(displayOrFallback(website));
+    const safeMobilePhone = escapeHtml(displayOrFallback(mobilePhone));
+    const safeOfficePhone = escapeHtml(displayOrFallback(officePhone));
+    const safeOfficeFax = escapeHtml(displayOrFallback(officeFax));
+    const safeIntakeMethod = escapeHtml(displayOrFallback(intakeMethod));
     const safePracticeAreas = escapeHtml(practiceAreasText);
     const safeSubmittedAt = escapeHtml(submittedAt);
-    const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
+    const safeMessage = escapeHtml(displayOrFallback(message)).replace(/\n/g, "<br />");
     const safeReplyToInbox = escapeHtml(replyToInbox);
     const safeFirstName = escapeHtml(firstName);
 
@@ -223,28 +272,68 @@ export async function POST(req: Request) {
         <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:110px;">Name:</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:170px;">Name:</td>
               <td style="padding:6px 0;">${safeFullName}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+              <td style="padding:6px 0;">${safeRequestTypes}</td>
             </tr>
             <tr>
               <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
               <td style="padding:6px 0;">${safeFirmName}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Jurisdiction:</td>
-              <td style="padding:6px 0;">${safeJurisdiction}</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+              <td style="padding:6px 0;">${safeAttorneyCount}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Address:</td>
+              <td style="padding:6px 0;">${safeAddress}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">City:</td>
+              <td style="padding:6px 0;">${safeCity}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">County:</td>
+              <td style="padding:6px 0;">${safeCounty}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">State:</td>
+              <td style="padding:6px 0;">${safeState}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Zip:</td>
+              <td style="padding:6px 0;">${safeZip}</td>
             </tr>
             <tr>
               <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email:</td>
               <td style="padding:6px 0;word-break:break-word;overflow-wrap:anywhere;">
-  <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
-    ${safeEmail}
-  </a>
-</td>
+                <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+                  ${safeEmail}
+                </a>
+              </td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Phone:</td>
-              <td style="padding:6px 0;">${safePhone}</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Website:</td>
+              <td style="padding:6px 0;">${safeWebsite}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
+              <td style="padding:6px 0;">${safeMobilePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
+              <td style="padding:6px 0;">${safeOfficePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
+              <td style="padding:6px 0;">${safeOfficeFax}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+              <td style="padding:6px 0;">${safeIntakeMethod}</td>
             </tr>
             <tr>
               <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
@@ -266,39 +355,37 @@ export async function POST(req: Request) {
         </div>
 
         <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+          <div style="margin-bottom:16px;">
+            <a href="https://legalclientintake.com"
+               target="_blank"
+               style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+               Home
+            </a>
 
-  <div style="margin-bottom:16px;">
-    <a href="https://legalclientintake.com"
-       target="_blank"
-       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
-       Home
-    </a>
+            <a href="https://app.legalclientintake.com"
+               target="_blank"
+               style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+               Client Login
+            </a>
+          </div>
 
-    <a href="https://app.legalclientintake.com"
-       target="_blank"
-       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
-       Client Login
-    </a>
-  </div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:14px;">
+            Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
+          </div>
 
-  <div style="font-size:12px;color:#64748b;margin-bottom:14px;">
-  Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
-</div>
+          <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:12px;">
+            <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+            Do not treat website submissions as confidential or time-sensitive without direct follow-up.
+          </div>
 
-<div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:12px;">
-  <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-  Do not treat website submissions as confidential or time-sensitive without direct follow-up.
-</div>
+          <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
-
-<div style="font-size:11px;color:#94a3b8;">
-  LegalClientIntake.com • AI Receptionist for Law Firms
-</div>
-
-</div>
+          <div style="font-size:11px;color:#94a3b8;">
+            LegalClientIntake.com • AI Receptionist for Law Firms
+          </div>
+        </div>
       `,
     });
 
@@ -321,73 +408,117 @@ export async function POST(req: Request) {
 
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:110px;">Name:</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:170px;">Name:</td>
               <td style="padding:5px 0;">${safeFullName}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+              <td style="padding:5px 0;">${safeRequestTypes}</td>
             </tr>
             <tr>
               <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
               <td style="padding:5px 0;">${safeFirmName}</td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Jurisdiction:</td>
-              <td style="padding:5px 0;">${safeJurisdiction}</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+              <td style="padding:5px 0;">${safeAttorneyCount}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Address:</td>
+              <td style="padding:5px 0;">${safeAddress}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">City:</td>
+              <td style="padding:5px 0;">${safeCity}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">County:</td>
+              <td style="padding:5px 0;">${safeCounty}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">State:</td>
+              <td style="padding:5px 0;">${safeState}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Zip:</td>
+              <td style="padding:5px 0;">${safeZip}</td>
             </tr>
             <tr>
               <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email:</td>
               <td style="padding:5px 0;word-break:break-word;overflow-wrap:anywhere;">
-  <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
-    ${safeEmail}
-  </a>
-</td>
+                <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+                  ${safeEmail}
+                </a>
+              </td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Phone:</td>
-              <td style="padding:5px 0;">${safePhone}</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Website:</td>
+              <td style="padding:5px 0;">${safeWebsite}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
+              <td style="padding:5px 0;">${safeMobilePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
+              <td style="padding:5px 0;">${safeOfficePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
+              <td style="padding:5px 0;">${safeOfficeFax}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+              <td style="padding:5px 0;">${safeIntakeMethod}</td>
             </tr>
             <tr>
               <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
               <td style="padding:5px 0;">${safePracticeAreas}</td>
             </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Message:</td>
+              <td style="padding:5px 0;">${safeMessage}</td>
+            </tr>
           </table>
         </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
-  — Legal Client Intake<br />
-  <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
-</div>
+          — Legal Client Intake<br />
+          <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
+        </div>
 
-<div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
-  <div style="margin-bottom:16px;">
-    <a href="https://legalclientintake.com"
-       target="_blank"
-       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
-       Home
-    </a>
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+          <div style="margin-bottom:16px;">
+            <a href="https://legalclientintake.com"
+               target="_blank"
+               style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+               Home
+            </a>
 
-    <a href="https://app.legalclientintake.com"
-       target="_blank"
-       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
-       Client Login
-    </a>
-  </div>
+            <a href="https://app.legalclientintake.com"
+               target="_blank"
+               style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+               Client Login
+            </a>
+          </div>
 
-  <div style="font-size:12px;color:#64748b;margin-bottom:10px;">
-    Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
-  </div>
+          <div style="font-size:12px;color:#64748b;margin-bottom:10px;">
+            Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
+          </div>
 
-<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+          <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-  <div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:10px;">
-    <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-    Do not include confidential, privileged, or time-sensitive information in this form.
-  </div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:10px;">
+            <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+            Do not include confidential, privileged, or time-sensitive information in this form.
+          </div>
 
-  <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+          <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
-  <div style="font-size:11px;color:#64748b;line-height:1.6;">
-    This is an automated confirmation. If you need to add details, reply to this email.
-  </div>
-</div>
+          <div style="font-size:11px;color:#64748b;line-height:1.6;">
+            This is an automated confirmation. If you need to add details, reply to this email.
+          </div>
+        </div>
       `,
     });
 
@@ -398,13 +529,23 @@ export async function POST(req: Request) {
       text:
         `New LegalClientIntake contact submission\n\n` +
         `Name: ${fullName}\n` +
-        `Firm Name: ${firmName}\n` +
-        `Jurisdiction: ${jurisdiction || "(not provided)"}\n` +
+        `Request Type: ${requestTypesText}\n` +
+        `Firm Name: ${displayOrFallback(firmName)}\n` +
+        `Number of Attorneys: ${displayOrFallback(attorneyCount)}\n` +
+        `Address: ${displayOrFallback(address)}\n` +
+        `City: ${displayOrFallback(city)}\n` +
+        `County: ${displayOrFallback(county)}\n` +
+        `State: ${displayOrFallback(state)}\n` +
+        `Zip: ${displayOrFallback(zip)}\n` +
         `Email: ${email}\n` +
-        `Phone: ${phone || "(not provided)"}\n` +
+        `Website: ${displayOrFallback(website)}\n` +
+        `Mobile #: ${displayOrFallback(mobilePhone)}\n` +
+        `Office Phone: ${displayOrFallback(officePhone)}\n` +
+        `Office Fax: ${displayOrFallback(officeFax)}\n` +
+        `Current After-hours Intake Method: ${displayOrFallback(intakeMethod)}\n` +
         `Practice Areas: ${practiceAreasText}\n` +
         `Submitted: ${submittedAt}\n\n` +
-        `Message:\n${message}\n`,
+        `Message:\n${displayOrFallback(message)}\n`,
       html: adminHtml,
       replyTo: email,
     });
@@ -418,11 +559,22 @@ export async function POST(req: Request) {
         `Thank you for contacting Legal Client Intake. We received your message and will review it shortly.\n\n` +
         `Submitted Information:\n` +
         `Name: ${fullName}\n` +
-        `Firm Name: ${firmName}\n` +
-        `Jurisdiction: ${jurisdiction || "(not provided)"}\n` +
+        `Request Type: ${requestTypesText}\n` +
+        `Firm Name: ${displayOrFallback(firmName)}\n` +
+        `Number of Attorneys: ${displayOrFallback(attorneyCount)}\n` +
+        `Address: ${displayOrFallback(address)}\n` +
+        `City: ${displayOrFallback(city)}\n` +
+        `County: ${displayOrFallback(county)}\n` +
+        `State: ${displayOrFallback(state)}\n` +
+        `Zip: ${displayOrFallback(zip)}\n` +
         `Email: ${email}\n` +
-        `Phone: ${phone || "(not provided)"}\n` +
-        `Practice Areas: ${practiceAreasText}\n\n` +
+        `Website: ${displayOrFallback(website)}\n` +
+        `Mobile #: ${displayOrFallback(mobilePhone)}\n` +
+        `Office Phone: ${displayOrFallback(officePhone)}\n` +
+        `Office Fax: ${displayOrFallback(officeFax)}\n` +
+        `Current After-hours Intake Method: ${displayOrFallback(intakeMethod)}\n` +
+        `Practice Areas: ${practiceAreasText}\n` +
+        `Message: ${displayOrFallback(message)}\n\n` +
         `NOTICE: Submission of this form does not create an attorney-client relationship.\n` +
         `Do not include confidential, privileged, or time-sensitive information in this form.\n\n` +
         `— Legal Client Intake\n` +
