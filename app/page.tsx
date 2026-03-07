@@ -1441,108 +1441,114 @@ footer{
   <legend className="checkboxLegend">Practice Areas</legend>
 
   <div className="checkboxGrid">
-    <div className="checkboxCol">
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Bankruptcy" />
-        <span>Bankruptcy</span>
-      </label>
+ <div className="checkboxCol">
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Business / Corporate" />
-        <span>Business / Corporate</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Bankruptcy" />
+<span>Bankruptcy</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Civil Lawsuit" />
-        <span>Civil Lawsuit</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Business / Corporate" />
+<span>Business / Corporate</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Criminal Defense" />
-        <span>Criminal Defense</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Civil Lawsuit" />
+<span>Civil Lawsuit</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Custody" />
-        <span>Custody</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Criminal Defense" />
+<span>Criminal Defense</span>
+</label>
 
-      <div className="practiceOtherWrap">
-        <input id="otherPractice1" name="otherPractice" placeholder="Other Practice Area (optional)" />
-      </div>
-    </div>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Custody" />
+<span>Custody</span>
+</label>
 
-    <div className="checkboxCol">
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Divorce" />
-        <span>Divorce</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Divorce" />
+<span>Divorce</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
-        <span>DUI / Traffic</span>
-      </label>
+<div className="practiceOtherWrap">
+<input id="otherPractice1" name="otherPractice" placeholder="Other Practice Area" />
+</div>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
-        <span>Estate Planning / Probate</span>
-      </label>
+</div>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Family Law" />
-        <span>Family Law</span>
-      </label>
+<div className="checkboxCol">
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Labor & Employment" />
-        <span>Labor &amp; Employment</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
+<span>DUI / Traffic</span>
+</label>
 
-      <div className="practiceOtherWrap">
-        <input id="otherPractice2" name="otherPractice" placeholder="Other Practice Area (optional)" />
-      </div>
-    </div>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
+<span>Estate Planning / Probate</span>
+</label>
 
-    <div className="checkboxCol">
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
-        <span>Landlord / Tenant</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Family Law" />
+<span>Family Law</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
-        <span>Litigation &amp; Dispute Resolution</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Labor & Employment" />
+<span>Labor & Employment</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
-        <span>Medical Malpractice</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
+<span>Landlord / Tenant</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Personal Injury" />
-        <span>Personal Injury</span>
-      </label>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
+<span>Litigation & Dispute Resolution</span>
+</label>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Real Estate" />
-        <span>Real Estate</span>
-      </label>
+<div className="practiceOtherWrap">
+<input id="otherPractice2" name="otherPractice" placeholder="Other Practice Area" />
+</div>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
-        <span>Trusts &amp; Estates</span>
-      </label>
+</div>
 
-      <label className="checkItem">
-        <input type="checkbox" name="practiceAreas" value="Workers Compensation" />
-        <span>Workers Compensation</span>
-      </label>
+ <div className="checkboxCol">
 
-      <div className="practiceOtherWrap">
-        <input id="otherPractice3" name="otherPractice" placeholder="Other Practice Area (optional)" />
-      </div>
-    </div>
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
+<span>Medical Malpractice</span>
+</label>
+
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Personal Injury" />
+<span>Personal Injury</span>
+</label>
+
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Real Estate" />
+<span>Real Estate</span>
+</label>
+
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
+<span>Trusts & Estates</span>
+</label>
+
+<label className="checkItem">
+<input type="checkbox" name="practiceAreas" value="Workers Compensation" />
+<span>Workers Compensation</span>
+</label>
+
+<div className="practiceOtherWrap">
+<input id="otherPractice3" name="otherPractice" placeholder="Other Practice Area" />
+</div>
+
+</div>
   </div>
 </fieldset>
 
