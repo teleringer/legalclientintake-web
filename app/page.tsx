@@ -97,21 +97,22 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-  const goToSection = (id: SectionId) => {
-    if (id === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setActiveSection("top");
-      setMobileMenuOpen(false);
-      return;
-    }
-
+  const scrollToSection = (id: Exclude<SectionId, "top">) => {
     const el = document.getElementById(id);
     if (!el) return;
-
     const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     setActiveSection(id);
     setMobileMenuOpen(false);
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: SectionId) => {
+    setMobileMenuOpen(false);
+    if (id === "top") {
+      return;
+    }
+    e.preventDefault();
+    scrollToSection(id);
   };
 
   useEffect(() => {
@@ -121,7 +122,6 @@ export default function Home() {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
-
           const id = entry.target.id;
           if (id === "how" || id === "plans" || id === "demo") {
             setActiveSection(id);
@@ -194,15 +194,17 @@ export default function Home() {
     const lastName = String(fd.get("lastName") || "").trim();
     const firmName = String(fd.get("firmName") || "").trim();
     const attorneyCount = String(fd.get("attorneyCount") || "").trim();
-    const firmAddress = String(fd.get("firmAddress") || "").trim();
-    const firmCity = String(fd.get("firmCity") || "").trim();
-    const firmCounty = String(fd.get("firmCounty") || "").trim();
-    const firmState = String(fd.get("firmState") || "").trim();
-    const firmZip = String(fd.get("firmZip") || "").trim();
+    const address = String(fd.get("address") || "").trim();
+    const city = String(fd.get("city") || "").trim();
+    const county = String(fd.get("county") || "").trim();
+    const state = String(fd.get("state") || "").trim();
+    const zip = String(fd.get("zip") || "").trim();
     const email = String(fd.get("email") || "").trim();
     const website = String(fd.get("website") || "").trim();
-    const phone = String(fd.get("phone") || "").trim();
-    const fax = String(fd.get("fax") || "").trim();
+    const mobilePhone = String(fd.get("mobilePhone") || "").trim();
+    const officePhone = String(fd.get("officePhone") || "").trim();
+    const officeFax = String(fd.get("officeFax") || "").trim();
+    const intakeMethod = String(fd.get("intakeMethod") || "").trim();
     const message = String(fd.get("message") || "").trim();
 
     const requestTypes = fd
@@ -235,15 +237,17 @@ export default function Home() {
       firmName,
       attorneyCount,
       requestTypes,
-      firmAddress,
-      firmCity,
-      firmCounty,
-      firmState,
-      firmZip,
+      address,
+      city,
+      county,
+      state,
+      zip,
       email,
       website,
-      phone,
-      fax,
+      mobilePhone,
+      officePhone,
+      officeFax,
+      intakeMethod,
       practiceAreas: finalPracticeAreas,
       turnstileToken,
       message,
@@ -281,7 +285,7 @@ export default function Home() {
       setFormStatus({
         type: "err",
         text:
-          "Your form layout is updated, but the backend route still needs the matching field update before all new fields can appear correctly in the admin and user emails.",
+          "The page layout is updated, but the backend route still needs to be updated to include all of these new fields in the admin and user emails.",
       });
       setSubmitText("Submit Request");
       setSubmitDisabled(false);
@@ -406,12 +410,6 @@ img{max-width:100%;display:block}
 
 .navlinks{display:flex;align-items:center;gap:10px}
 
-.navBtn{
-  appearance:none;
-  border:none;
-  font:inherit;
-}
-
 .menuBtn{
   display:none;
   width:44px;height:44px;
@@ -470,7 +468,7 @@ img{max-width:100%;display:block}
   background: rgba(11,18,32,.96);
   border-color: rgba(255,255,255,.12);
 }
-.mobileMenu button{ width:100%; justify-content:center; }
+.mobileMenu a{ width:100%; justify-content:center; }
 
 @media (max-width: 820px){
   .nav{ padding:10px 0; }
@@ -877,10 +875,11 @@ section.ctaBand{
 .formCard > div{
   margin-bottom:18px;
 }
-  
+
 .row2 > div,
-.row3 > div,
-.narrowRow > div{
+.rowFirm > div,
+.rowAddr2 > div,
+.rowEmail > div{
   min-width:0;
 }
 
@@ -917,18 +916,20 @@ input,select,textarea{
 
 form{display:grid;gap:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.row3{display:grid;grid-template-columns:1fr .75fr .75fr;gap:12px}
+.rowFirm{display:grid;grid-template-columns:3fr 1fr;gap:12px}
+.rowAddr2{display:grid;grid-template-columns:1.3fr .7fr .6fr;gap:12px}
+.rowEmail{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
-.narrowRowWrap{
+.narrowPhonesWrap{
   display:flex;
   justify-content:center;
 }
-.narrowRow{
+.narrowPhones{
+  width:100%;
+  max-width:720px;
   display:grid;
-  grid-template-columns:minmax(220px,300px) minmax(220px,300px);
+  grid-template-columns:repeat(3, minmax(150px, 1fr));
   gap:18px;
-  justify-content:center;
-  width:auto;
 }
 
 label{font-size:12px;font-weight:1000;color:#0f172a}
@@ -969,12 +970,13 @@ textarea{min-height:110px;resize:vertical}
   justify-content:center;
   align-items:center;
   gap:18px;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
 }
 .intentBox{
   position:relative;
   width:170px;
-  max-width:100%;
+  flex:0 0 170px;
+  max-width:170px;
 }
 .intentBox input{
   position:absolute;
@@ -994,6 +996,7 @@ textarea{min-height:110px;resize:vertical}
   color:#fff;
   transition:.15s border-color, .15s box-shadow, .15s background, .15s transform, .15s filter;
   min-height:54px;
+  text-align:center;
   box-shadow:0 10px 24px rgba(15,118,110,.16);
 }
 .intentCard::before{
@@ -1011,6 +1014,8 @@ textarea{min-height:110px;resize:vertical}
   font-weight:900;
   color:#fff;
   letter-spacing:-0.01em;
+  line-height:1.1;
+  white-space:nowrap;
 }
 .intentBox input:checked + .intentCard{
   background: linear-gradient(180deg, #0b5f59, #084b46);
@@ -1027,19 +1032,22 @@ textarea{min-height:110px;resize:vertical}
   box-shadow:0 0 0 4px rgba(15,118,110,.14), 0 12px 26px rgba(11,95,89,.18);
 }
 
-.checkboxFieldset{
+.checkboxFieldset,
+.radioFieldset{
   border:1px solid var(--border);
   border-radius:14px;
   padding:12px;
   margin:0;
   min-width:0;
 }
-.checkboxLegend{
+.checkboxLegend,
+.radioLegend{
   padding:0 6px;
   font-size:12px;
   font-weight:1000;
   color:#0f172a;
 }
+
 .checkboxGrid{
   display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
@@ -1077,6 +1085,27 @@ textarea{min-height:110px;resize:vertical}
 .practiceOtherWrap input{
   font-size:12px;
   padding:10px 11px;
+}
+
+.radioGrid{
+  display:grid;
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:12px;
+}
+.radioItem{
+  display:flex;
+  align-items:flex-start;
+  gap:8px;
+  font-size:13px;
+  font-weight:700;
+  color:#0f172a;
+  line-height:1.2;
+}
+.radioItem input{
+  width:16px;
+  height:16px;
+  margin:1px 0 0 0;
+  flex:none;
 }
 
 .notice{
@@ -1159,8 +1188,11 @@ footer{
   .planCard{ min-height:0; }
   .formIntroGrid{ grid-template-columns:1fr; }
   .row2,
-  .row3,
-  .narrowRow{grid-template-columns:1fr}
+  .rowFirm,
+  .rowAddr2,
+  .rowEmail,
+  .narrowPhones,
+  .radioGrid{grid-template-columns:1fr}
   .checkboxGrid{grid-template-columns:1fr}
   .footerGrid{ grid-template-columns:1fr; }
 }
@@ -1172,9 +1204,16 @@ footer{
     width:175px;
     font-size:11px;
   }
+  .intentGrid{
+    flex-wrap:wrap;
+  }
   .intentBox{
     width:100%;
-    max-width:260px;
+    max-width:220px;
+    flex:0 1 220px;
+  }
+  .intentText{
+    white-space:normal;
   }
 }
 
@@ -1186,39 +1225,34 @@ footer{
       <div className="topbar" id="topbar">
         <div className="container">
           <div className="nav">
-            <button
-              className="brand navBtn"
-              aria-label="Legal Client Intake"
-              onClick={() => goToSection("top")}
-              type="button"
-            >
+            <a className="brand" href="https://legalclientintake.com" aria-label="Legal Client Intake">
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
-            </button>
+            </a>
 
             <div className="navlinks">
-              <button
-                className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("how")}
+              <a
+                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                href="#how"
+                onClick={(e) => handleNavClick(e, "how")}
               >
                 How it works
-              </button>
+              </a>
 
-              <button
-                className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("plans")}
+              <a
+                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                href="#plans"
+                onClick={(e) => handleNavClick(e, "plans")}
               >
                 Plans
-              </button>
+              </a>
 
-              <button
-                className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("demo")}
+              <a
+                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                href="#demo"
+                onClick={(e) => handleNavClick(e, "demo")}
               >
                 Contact Us
-              </button>
+              </a>
             </div>
 
             <button
@@ -1236,29 +1270,29 @@ footer{
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
             <div className="menuPanel">
-              <button
-                className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("how")}
+              <a
+                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                href="#how"
+                onClick={(e) => handleNavClick(e, "how")}
               >
                 How it works
-              </button>
+              </a>
 
-              <button
-                className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("plans")}
+              <a
+                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                href="#plans"
+                onClick={(e) => handleNavClick(e, "plans")}
               >
                 Plans
-              </button>
+              </a>
 
-              <button
-                className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                type="button"
-                onClick={() => goToSection("demo")}
+              <a
+                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                href="#demo"
+                onClick={(e) => handleNavClick(e, "demo")}
               >
                 Contact Us
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -1284,12 +1318,12 @@ footer{
               </p>
 
               <div className="heroActions">
-                <button className="btn btn-primary navBtn" type="button" onClick={() => goToSection("demo")}>
+                <a className="btn btn-primary" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
                   Book a Demo
-                </button>
-                <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("how")}>
+                </a>
+                <a className="btn btn-outline" href="#how" onClick={(e) => handleNavClick(e, "how")}>
                   See How It Works
-                </button>
+                </a>
               </div>
 
               <div className="heroTrustRow">
@@ -1498,9 +1532,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("demo")}>
+                  <a className="btn btn-outline" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
                     Book a Demo
-                  </button>
+                  </a>
                 </div>
                 <div className="planFoot">
                   Best for solo attorneys who want professional after-hours coverage without complexity.
@@ -1563,9 +1597,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-primary navBtn" type="button" onClick={() => goToSection("demo")}>
+                  <a className="btn btn-primary" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
                     Book a Demo
-                  </button>
+                  </a>
                 </div>
                 <div className="planFoot">
                   Best for firms that want intake to directly drive booked consults and faster response times.
@@ -1628,9 +1662,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <button className="btn btn-outline navBtn" type="button" onClick={() => goToSection("demo")}>
+                  <a className="btn btn-outline" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
                     Book a Demo
-                  </button>
+                  </a>
                 </div>
                 <div className="planFoot">
                   Best for growing firms that want integrations, advanced routing, and deeper automation.
@@ -1716,7 +1750,7 @@ footer{
                   </div>
                 </div>
 
-                <div className="row2">
+                <div className="rowFirm">
                   <div>
                     <label htmlFor="firmName">Law Firm Name *</label>
                     <input id="firmName" name="firmName" required placeholder="Smith & Associates" />
@@ -1741,23 +1775,23 @@ footer{
 
                 <div className="row2">
                   <div>
-                    <label htmlFor="firmAddress">Firm Address</label>
-                    <input id="firmAddress" name="firmAddress" placeholder="123 Main Street" />
+                    <label htmlFor="address">Address</label>
+                    <input id="address" name="address" placeholder="123 Main Street" />
                   </div>
                   <div>
-                    <label htmlFor="firmCity">Firm City</label>
-                    <input id="firmCity" name="firmCity" placeholder="Scranton" />
+                    <label htmlFor="city">City</label>
+                    <input id="city" name="city" placeholder="Scranton" />
                   </div>
                 </div>
 
-                <div className="row3">
+                <div className="rowAddr2">
                   <div>
-                    <label htmlFor="firmCounty">Firm County</label>
-                    <input id="firmCounty" name="firmCounty" placeholder="Lackawanna" />
+                    <label htmlFor="county">County</label>
+                    <input id="county" name="county" placeholder="Lackawanna" />
                   </div>
                   <div>
-                    <label htmlFor="firmState">Firm State</label>
-                    <select id="firmState" name="firmState" defaultValue="">
+                    <label htmlFor="state">State</label>
+                    <select id="state" name="state" defaultValue="">
                       {US_STATES.map((item) => (
                         <option key={item.value || "blank"} value={item.value}>
                           {item.label}
@@ -1766,20 +1800,20 @@ footer{
                     </select>
                   </div>
                   <div>
-                    <label htmlFor="firmZip">Firm Zip</label>
+                    <label htmlFor="zip">Zip</label>
                     <IMaskInput
                       mask="00000[-0000]"
                       unmask={false}
-                      placeholder="18505 or 18505-2908"
-                      id="firmZip"
-                      name="firmZip"
+                      placeholder="18505"
+                      id="zip"
+                      name="zip"
                       inputMode="numeric"
                       onAccept={() => {}}
                     />
                   </div>
                 </div>
 
-                <div className="row2">
+                <div className="rowEmail">
                   <div>
                     <label htmlFor="email">Email *</label>
                     <input id="email" name="email" type="email" required placeholder="john@lawfirm.com" />
@@ -1790,28 +1824,41 @@ footer{
                   </div>
                 </div>
 
-                <div className="narrowRowWrap">
-                  <div className="narrowRow">
+                <div className="narrowPhonesWrap">
+                  <div className="narrowPhones">
                     <div>
-                      <label htmlFor="phone">Phone *</label>
+                      <label htmlFor="mobilePhone">Mobile #</label>
                       <IMaskInput
                         mask="(000) 000-0000"
                         unmask={false}
                         placeholder="(555) 123-4567"
-                        id="phone"
-                        name="phone"
+                        id="mobilePhone"
+                        name="mobilePhone"
+                        onAccept={() => {}}
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="officePhone">Office Phone *</label>
+                      <IMaskInput
+                        mask="(000) 000-0000"
+                        unmask={false}
+                        placeholder="(555) 123-4567"
+                        id="officePhone"
+                        name="officePhone"
                         required
                         onAccept={() => {}}
                       />
                     </div>
+
                     <div>
-                      <label htmlFor="fax">Office Fax</label>
+                      <label htmlFor="officeFax">Office Fax</label>
                       <IMaskInput
                         mask="(000) 000-0000"
                         unmask={false}
                         placeholder="(555) 987-6543"
-                        id="fax"
-                        name="fax"
+                        id="officeFax"
+                        name="officeFax"
                         onAccept={() => {}}
                       />
                     </div>
@@ -1933,14 +1980,39 @@ footer{
                   </div>
                 </fieldset>
 
+                <fieldset className="radioFieldset">
+                  <legend className="radioLegend">Current After-hours Intake Method *</legend>
+
+                  <div className="radioGrid">
+                    <label className="radioItem">
+                      <input type="radio" name="intakeMethod" value="Voicemail" required />
+                      <span>Voicemail</span>
+                    </label>
+
+                    <label className="radioItem">
+                      <input type="radio" name="intakeMethod" value="Answering Service" required />
+                      <span>Answering Service</span>
+                    </label>
+
+                    <label className="radioItem">
+                      <input type="radio" name="intakeMethod" value="None" required />
+                      <span>None</span>
+                    </label>
+
+                    <label className="radioItem">
+                      <input type="radio" name="intakeMethod" value="Other" required />
+                      <span>Other</span>
+                    </label>
+                  </div>
+                </fieldset>
+
                 <div>
-                  <label htmlFor="msg">Message *</label>
+                  <label htmlFor="msg">Message</label>
                   <textarea
                     id="msg"
                     name="message"
                     maxLength={700}
-                    required
-                    placeholder="Tell us about your after-hours call situation..."
+                    placeholder="Any additional comments, questions or message?"
                     value={msg}
                     onChange={(e) => setMsg(e.target.value)}
                   />
@@ -2014,29 +2086,46 @@ footer{
         <div className="container">
           <div className="footerGrid">
             <div>
-              <button className="footerBrand navBtn" aria-label="Back to top" onClick={() => goToSection("top")} type="button">
+              <a className="footerBrand" href="https://legalclientintake.com" aria-label="Back to home">
                 <img src="/images/logo-LCI-light2.png" alt="Legal Client Intake" />
-              </button>
+              </a>
               <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
             </div>
 
             <div className="footerCol">
               <h5>Company</h5>
-              <a onClick={() => goToSection("how")}>How it works</a>
-              <a onClick={() => goToSection("plans")}>Plans</a>
-              <a onClick={() => goToSection("demo")}>Contact Us</a>
+              <a href="#how" onClick={(e) => handleNavClick(e, "how")}>
+                How it works
+              </a>
+              <a href="#plans" onClick={(e) => handleNavClick(e, "plans")}>
+                Plans
+              </a>
+              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                Contact Us
+              </a>
             </div>
 
             <div className="footerCol">
               <h5>Contact</h5>
-              <a onClick={() => goToSection("demo")}>Book a demo / send a message</a>
-              <a onClick={() => goToSection("demo")}>demo@legalclientintake.com</a>
+              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                Book a demo / send a message
+              </a>
+              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                demo@legalclientintake.com
+              </a>
+              <a href="https://app.legalclientintake.com" target="_blank" rel="noopener noreferrer">
+                Client Login
+              </a>
             </div>
 
             <div className="footerCol">
               <h5>Legal</h5>
-              <a onClick={() => goToSection("demo")}>No attorney-client relationship</a>
-              <a onClick={() => goToSection("demo")}>Do not send confidential information</a>
+              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                No attorney-client relationship
+              </a>
+              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                Do not send confidential information
+              </a>
             </div>
           </div>
 
@@ -2055,14 +2144,14 @@ footer{
         </div>
       </footer>
 
-      <button
+      <a
+        href="https://legalclientintake.com"
         className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
+        id="toTopBtn"
         aria-label="Back to top"
-        onClick={() => goToSection("top")}
-        type="button"
       >
         ↑ Top
-      </button>
+      </a>
     </main>
   );
 }
