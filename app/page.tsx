@@ -1664,7 +1664,7 @@ footer{
                   </div>
                 )}
 
- <div className="turnstileWrap">
+<div className="turnstileWrap">
   {TURNSTILE_SITE_KEY ? (
     <div className="turnstileInner">
       <Turnstile
@@ -1677,12 +1677,6 @@ footer{
     </div>
   ) : (
     <div className="notice err" style={{ maxWidth: 520, margin: "0 auto" }}>
-      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
-    </div>
-  )}
-</div>
-  ) : (
-    <div className="notice err" style={{ maxWidth: 520 }}>
       Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
     </div>
   )}
