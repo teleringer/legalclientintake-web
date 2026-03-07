@@ -1470,12 +1470,7 @@ footer{
               </ul>
             </div>
 
-            <div className="infoCard">
-              <h3 className="infoCardTitle">Email delivery</h3>
-              <p className="infoCardP">
-                Internal notifications will go to <strong>operations@legalclientintake.com</strong>.
-              </p>
-            </div>
+          
           </div>
 
           <div className="formWrap">
