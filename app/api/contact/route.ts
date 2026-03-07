@@ -277,14 +277,22 @@ export async function POST(req: Request) {
     </a>
   </div>
 
-  <div style="font-size:12px;color:#64748b;margin-bottom:10px;">
-    Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
-  </div>
+  <div style="font-size:12px;color:#64748b;margin-bottom:14px;">
+  Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
+</div>
 
-  <div style="font-size:11px;color:#64748b;line-height:1.6;">
-    <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-    Do not treat website submissions as confidential or time-sensitive without direct follow-up.
-  </div>
+<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+<div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:12px;">
+  <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+  Do not treat website submissions as confidential or time-sensitive without direct follow-up.
+</div>
+
+<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
+<div style="font-size:11px;color:#94a3b8;">
+  LegalClientIntake.com • AI Receptionist for Law Firms
+</div>
 
 </div>
       `,
@@ -359,10 +367,14 @@ export async function POST(req: Request) {
     Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
   </div>
 
+<div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
+
   <div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:10px;">
     <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
     Do not include confidential, privileged, or time-sensitive information in this form.
   </div>
+
+  <div style="height:1px;background:#e5e7eb;margin:12px 0;"></div>
 
   <div style="font-size:11px;color:#64748b;line-height:1.6;">
     This is an automated confirmation. If you need to add details, reply to this email.

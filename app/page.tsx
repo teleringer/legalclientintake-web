@@ -778,7 +778,11 @@ section.ctaBand{
   border-radius:18px;
   border:1px solid rgba(255,255,255,.35);
   box-shadow:0 18px 45px rgba(2,8,23,.25);
-  padding:22px;
+  padding:24px;
+
+  max-width:900px;
+  margin:40px auto;
+
   min-width:0;
   overflow:hidden;
 }
