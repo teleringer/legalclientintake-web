@@ -1446,7 +1446,7 @@ footer{
               <h1 className="heroTitle">
                 Solo Attorneys &amp; Small Law Firms:
                 <br />
-                Stop Missing New Client Calls After Hours.
+                Stop Missing Potential Client Calls After Hours.
               </h1>
 
               <div className="heroGoldRule" aria-hidden="true" />
