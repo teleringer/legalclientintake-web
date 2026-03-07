@@ -341,13 +341,38 @@ export async function POST(req: Request) {
         </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
-          — Legal Client Intake<br />
-          <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
-        </div>
+  — Legal Client Intake<br />
+  <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
+</div>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#64748b;">
-          This is an automated confirmation. If you need to add details, reply to this email.
-        </div>
+<div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+  <div style="margin-bottom:16px;">
+    <a href="https://legalclientintake.com"
+       target="_blank"
+       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+       Home
+    </a>
+
+    <a href="https://app.legalclientintake.com"
+       target="_blank"
+       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+       Client Login
+    </a>
+  </div>
+
+  <div style="font-size:12px;color:#64748b;margin-bottom:10px;">
+    Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
+  </div>
+
+  <div style="font-size:11px;color:#64748b;line-height:1.6;margin-bottom:10px;">
+    <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+    Do not include confidential, privileged, or time-sensitive information in this form.
+  </div>
+
+  <div style="font-size:11px;color:#64748b;line-height:1.6;">
+    This is an automated confirmation. If you need to add details, reply to this email.
+  </div>
+</div>
       `,
     });
 
