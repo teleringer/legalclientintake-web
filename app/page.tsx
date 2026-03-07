@@ -1438,7 +1438,7 @@ footer{
                     scrollToId("demo");
                   }}
                 >
-                  Book a Demo
+                  Request a Demo
                 </a>
                 <a
                   className="btn btn-outline"
@@ -1666,7 +1666,7 @@ footer{
                       scrollToId("demo");
                     }}
                   >
-                    Book a Demo
+                    Request a Demo
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1738,7 +1738,7 @@ footer{
                       scrollToId("demo");
                     }}
                   >
-                    Book a Demo
+                    Request a Demo
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1810,7 +1810,7 @@ footer{
                       scrollToId("demo");
                     }}
                   >
-                    Book a Demo
+                    Request a Demo
                   </a>
                 </div>
                 <div className="planFoot">
@@ -1829,7 +1829,7 @@ footer{
 
             <section id="demo" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
         <div className="container">
-          <h2 className="sectionTitle">Book a Demo / Contact Us</h2>
+          <h2 className="sectionTitle">Request a Demo / Contact Us</h2>
           <p className="sectionSub">
             Tell us about your firm and after-hours call volume. We’ll follow up to schedule a demo and confirm routing
             preferences.
@@ -2282,7 +2282,7 @@ footer{
                   scrollToId("demo");
                 }}
               >
-                Book a demo / send a message
+                Request a demo / send a message
               </a>
               <a
                 href="#demo"
