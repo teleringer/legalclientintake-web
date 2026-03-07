@@ -19,6 +19,7 @@ export default function Home() {
   const msgCount = msg.length;
 
   const [turnstileToken, setTurnstileToken] = useState("");
+  const [turnstileRenderKey, setTurnstileRenderKey] = useState(0);
 
   const [formStatus, setFormStatus] = useState<{
     type: "idle" | "ok" | "err" | "sending";
@@ -48,7 +49,6 @@ export default function Home() {
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     setActiveSection(id);
   };
-
 
   // Track visible section to update nav button highlight
   useEffect(() => {
@@ -128,28 +128,37 @@ export default function Home() {
     const form = e.currentTarget;
     const fd = new FormData(form);
 
-    const name = String(fd.get("name") || "").trim();
-    const firm = String(fd.get("firm") || "").trim();
+    const firstName = String(fd.get("firstName") || "").trim();
+    const lastName = String(fd.get("lastName") || "").trim();
+    const firmName = String(fd.get("firmName") || "").trim();
+    const jurisdiction = String(fd.get("jurisdiction") || "").trim();
     const email = String(fd.get("email") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
-    const practice = String(fd.get("practice") || "").trim();
     const message = String(fd.get("message") || "").trim();
+    const otherPractice = String(fd.get("otherPractice") || "").trim();
+
+    const practiceAreas = fd
+      .getAll("practiceAreas")
+      .map((value) => String(value).trim())
+      .filter(Boolean);
+
+    const finalPracticeAreas =
+      otherPractice.length > 0 ? [...practiceAreas, `Other: ${otherPractice}`] : practiceAreas;
 
     setFormStatus({ type: "sending", text: "Sending…" });
     setSubmitDisabled(true);
     setSubmitText("Sending…");
 
-    const parts = name.split(" ").filter(Boolean);
-const firstName = parts[0] || "";
-const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
-
     const payload = {
       firstName,
       lastName,
+      firmName,
+      jurisdiction,
       email,
       phone,
+      practiceAreas: finalPracticeAreas,
       turnstileToken,
-      message: `Firm: ${firm}\nPractice Area: ${practice}\n\n${message}`,
+      message,
       company: "",
     };
 
@@ -174,6 +183,7 @@ const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
       form.reset();
       setMsg("");
       setTurnstileToken("");
+      setTurnstileRenderKey((k) => k + 1);
 
       setTimeout(() => {
         setSubmitText("Submit Request");
@@ -183,7 +193,7 @@ const lastName = parts.length > 1 ? parts.slice(1).join(" ") : "";
       setFormStatus({
         type: "err",
         text:
-          "This form is ready, but the email-sending endpoint isn’t connected yet. Next step: create /api/contact so it can email office@legalclientintake.com and send a confirmation to you.",
+          "The form was updated successfully, but the backend email layout still needs the next update so the new structured fields appear correctly.",
       });
       setSubmitText("Submit Request");
       setSubmitDisabled(false);
@@ -784,6 +794,41 @@ textarea{min-height:110px;resize:vertical}
 .agree input{width:18px;height:18px;margin-top:3px}
 .formActions{display:flex;justify-content:center;margin-top:6px}
 
+.checkboxFieldset{
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+  margin:0;
+  min-width:0;
+}
+.checkboxLegend{
+  padding:0 6px;
+  font-size:12px;
+  font-weight:1000;
+  color:#0f172a;
+}
+.checkboxGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px 12px;
+}
+.checkItem{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  font-size:14px;
+  font-weight:700;
+  color:#0f172a;
+  line-height:1.35;
+}
+.checkItem input{
+  width:18px;
+  height:18px;
+  margin:1px 0 0 0;
+  flex:none;
+}
+.inlineTopSpace{margin-top:10px;}
+
 .notice{
   border-radius:14px;
   padding:12px 12px;
@@ -851,6 +896,7 @@ footer{
   .planCard{ min-height: 0; }
   .formWrap{ grid-template-columns: 1fr; }
   .row2{grid-template-columns:1fr}
+  .checkboxGrid{grid-template-columns:1fr}
   .footerGrid{ grid-template-columns: 1fr; }
 }
 @media (max-width: 520px){
@@ -873,28 +919,19 @@ footer{
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
- <div className="navlinks">
-  <a
-    className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-    href="#how"
-  >
-    How it works
-  </a>
+            <div className="navlinks">
+              <a className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`} href="#how">
+                How it works
+              </a>
 
-  <a
-    className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-    href="#plans"
-  >
-    Plans
-  </a>
+              <a className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`} href="#plans">
+                Plans
+              </a>
 
-  <a
-    className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-    href="#demo"
-  >
-    Contact Us
-  </a>
-</div>
+              <a className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`} href="#demo">
+                Contact Us
+              </a>
+            </div>
 
             <button
               className="menuBtn"
@@ -909,33 +946,33 @@ footer{
             </button>
           </div>
 
- <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-  <div className="menuPanel">
-    <a
-      className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-      href="#how"
-      onClick={() => setMobileMenuOpen(false)}
-    >
-      How it works
-    </a>
+          <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
+            <div className="menuPanel">
+              <a
+                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                href="#how"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                How it works
+              </a>
 
-    <a
-      className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-      href="#plans"
-      onClick={() => setMobileMenuOpen(false)}
-    >
-      Plans
-    </a>
+              <a
+                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                href="#plans"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Plans
+              </a>
 
-    <a
-      className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-      href="#demo"
-      onClick={() => setMobileMenuOpen(false)}
-    >
-      Contact Us
-    </a>
-  </div>
-</div>
+              <a
+                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                href="#demo"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Contact Us
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -958,14 +995,14 @@ footer{
                 details that matter, and sends you an instant intake summary—so you can call back first.
               </p>
 
- <div className="heroActions">
-  <a className="btn btn-primary" href="#demo">
-    Book a Demo
-  </a>
-  <a className="btn btn-outline" href="#how">
-    See How It Works
-  </a>
-</div>
+              <div className="heroActions">
+                <a className="btn btn-primary" href="#demo">
+                  Book a Demo
+                </a>
+                <a className="btn btn-outline" href="#how">
+                  See How It Works
+                </a>
+              </div>
 
               <div className="heroTrustRow">
                 <span>
@@ -1338,26 +1375,38 @@ footer{
             <div className="formCard">
               <div className="notice" style={{ marginBottom: 12 }}>
                 <strong>Note:</strong> This form is designed to notify <strong>office@legalclientintake.com</strong> and
-                send a confirmation email to the submitter once we connect the backend endpoint.
+                send a confirmation email to the submitter.
               </div>
 
               <form id="contactForm" onSubmit={submitContact}>
                 <div className="row2">
                   <div>
-                    <label htmlFor="name">Name *</label>
-                    <input id="name" name="name" required placeholder="John Doe" />
+                    <label htmlFor="firstName">First Name *</label>
+                    <input id="firstName" name="firstName" required placeholder="John" />
                   </div>
                   <div>
-                    <label htmlFor="firm">Law Firm Name *</label>
-                    <input id="firm" name="firm" required placeholder="Smith & Associates" />
+                    <label htmlFor="lastName">Last Name *</label>
+                    <input id="lastName" name="lastName" required placeholder="Doe" />
                   </div>
+                </div>
+
+                <div>
+                  <label htmlFor="firmName">Law Firm Name *</label>
+                  <input id="firmName" name="firmName" required placeholder="Smith & Associates" />
                 </div>
 
                 <div className="row2">
                   <div>
+                    <label htmlFor="jurisdiction">State / Jurisdiction</label>
+                    <input id="jurisdiction" name="jurisdiction" placeholder="Pennsylvania" />
+                  </div>
+                  <div>
                     <label htmlFor="email">Email *</label>
                     <input id="email" name="email" type="email" required placeholder="john@lawfirm.com" />
                   </div>
+                </div>
+
+                <div className="row2">
                   <div>
                     <label htmlFor="phone">Phone *</label>
                     <IMaskInput
@@ -1370,37 +1419,90 @@ footer{
                       onAccept={() => {}}
                     />
                   </div>
+                  <div>
+                    <label htmlFor="otherPractice">Other Practice Area</label>
+                    <input id="otherPractice" name="otherPractice" placeholder="Optional" />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="practice">Practice Area *</label>
-                  <select id="practice" name="practice" required defaultValue="">
-                    <option value="" disabled>
-                      Select a practice area
-                    </option>
-                    <option>Personal Injury</option>
-                    <option>Criminal Defense</option>
-                    <option>Family Law</option>
-                    <option>DUI</option>
-                    <option>Immigration</option>
-                    <option>Bankruptcy</option>
-                    <option>Civil Law</option>
-                    <option>Real Estate Law</option>
-                    <option>Business/Corporate Law</option>
-                    <option>Labor &amp; Employment</option>
-                    <option>Trusts &amp; Estates</option>
-                    <option>Litigation &amp; Dispute Resolution</option>
-                    <option>General Practice</option>
-                    <option>Other</option>
-                  </select>
-                </div>
+                <fieldset className="checkboxFieldset">
+                  <legend className="checkboxLegend">Practice Areas</legend>
+
+                  <div className="checkboxGrid">
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Personal Injury" />
+                      <span>Personal Injury</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
+                      <span>Medical Malpractice</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Workers Compensation" />
+                      <span>Workers Compensation</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Criminal Defense" />
+                      <span>Criminal Defense</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Family Law" />
+                      <span>Family Law</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Real Estate" />
+                      <span>Real Estate</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Business / Corporate" />
+                      <span>Business / Corporate</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
+                      <span>Trusts &amp; Estates</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
+                      <span>Litigation &amp; Dispute Resolution</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Labor & Employment" />
+                      <span>Labor &amp; Employment</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
+                      <span>Landlord / Tenant</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
+                      <span>Estate Planning / Probate</span>
+                    </label>
+
+                    <label className="checkItem">
+                      <input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
+                      <span>DUI / Traffic</span>
+                    </label>
+                  </div>
+                </fieldset>
 
                 <div>
-                  <label htmlFor="msg">Message</label>
+                  <label htmlFor="msg">Message *</label>
                   <textarea
                     id="msg"
                     name="message"
                     maxLength={700}
+                    required
                     placeholder="Tell us about your after-hours call situation..."
                     value={msg}
                     onChange={(e) => setMsg(e.target.value)}
@@ -1410,10 +1512,16 @@ footer{
                   </div>
                 </div>
 
+                <div className="notice">
+                  <strong>Notice:</strong> Submission of this form does not create an attorney-client relationship.
+                  Please do not include confidential, privileged, or time-sensitive information.
+                </div>
+
                 <div className="agree">
                   <input id="agree" name="agree" type="checkbox" required />
                   <label htmlFor="agree" style={{ fontSize: 13, fontWeight: 800, color: "var(--muted)" }}>
-                    I understand that submitting this form does not create an attorney-client relationship. *
+                    I understand that submitting this form does not create an attorney-client relationship and I will
+                    not include confidential or time-sensitive information. *
                   </label>
                 </div>
 
@@ -1430,6 +1538,7 @@ footer{
                 <div className="turnstileWrap" style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
                   {TURNSTILE_SITE_KEY ? (
                     <Turnstile
+                      key={turnstileRenderKey}
                       sitekey={TURNSTILE_SITE_KEY}
                       onVerify={(token) => setTurnstileToken(token)}
                       onExpire={() => setTurnstileToken("")}
@@ -1508,24 +1617,24 @@ footer{
               <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
             </div>
 
- <div className="footerCol">
-  <h5>Company</h5>
-  <a href="#how">How it works</a>
-  <a href="#plans">Plans</a>
-  <a href="#demo">Contact Us</a>
-</div>
+            <div className="footerCol">
+              <h5>Company</h5>
+              <a href="#how">How it works</a>
+              <a href="#plans">Plans</a>
+              <a href="#demo">Contact Us</a>
+            </div>
 
-<div className="footerCol">
-  <h5>Contact</h5>
-  <a href="#demo">Book a demo / send a message</a>
-  <a href="#demo">office@legalclientintake.com</a>
-</div>
+            <div className="footerCol">
+              <h5>Contact</h5>
+              <a href="#demo">Book a demo / send a message</a>
+              <a href="#demo">office@legalclientintake.com</a>
+            </div>
 
-<div className="footerCol">
-  <h5>Contact</h5>
- <a href="#demo">Book a demo / send a message</a>
-  <a href="#demo">office@legalclientintake.com</a>
-</div>
+            <div className="footerCol">
+              <h5>Contact</h5>
+              <a href="#demo">Book a demo / send a message</a>
+              <a href="#demo">office@legalclientintake.com</a>
+            </div>
           </div>
 
           <div className="footerBottom">
@@ -1543,14 +1652,14 @@ footer{
         </div>
       </footer>
 
-<a
-  href="#top"
-  className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
-  id="toTopBtn"
-  aria-label="Back to top"
->
-  ↑ Top
-</a>
+      <a
+        href="#top"
+        className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
+        id="toTopBtn"
+        aria-label="Back to top"
+      >
+        ↑ Top
+      </a>
     </main>
   );
 }
