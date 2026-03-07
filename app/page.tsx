@@ -62,14 +62,13 @@ const US_STATES = [
 ];
 
 type BillingState = "monthly" | "annual";
-type SectionId = "top" | "how" | "plans" | "demo";
 
 export default function Home() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showToTop, setShowToTop] = useState(false);
   const [billing, setBilling] = useState<BillingState>("monthly");
   const year = new Date().getFullYear();
-  const [activeSection, setActiveSection] = useState<SectionId>("top");
+  const [activeSection, setActiveSection] = useState<"top" | "how" | "plans" | "demo">("top");
 
   const [msg, setMsg] = useState("");
   const msgCount = msg.length;
@@ -97,22 +96,21 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-  const scrollToSection = (id: Exclude<SectionId, "top">) => {
+  const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+    if (id === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("top");
+      setMobileMenuOpen(false);
+      return;
+    }
+
     const el = document.getElementById(id);
     if (!el) return;
+
     const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     setActiveSection(id);
     setMobileMenuOpen(false);
-  };
-
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: SectionId) => {
-    setMobileMenuOpen(false);
-    if (id === "top") {
-      return;
-    }
-    e.preventDefault();
-    scrollToSection(id);
   };
 
   useEffect(() => {
@@ -122,6 +120,7 @@ export default function Home() {
       (entries) => {
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
+
           const id = entry.target.id;
           if (id === "how" || id === "plans" || id === "demo") {
             setActiveSection(id);
@@ -1233,7 +1232,10 @@ footer{
               <a
                 className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
                 href="#how"
-                onClick={(e) => handleNavClick(e, "how")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
               >
                 How it works
               </a>
@@ -1241,7 +1243,10 @@ footer{
               <a
                 className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
                 href="#plans"
-                onClick={(e) => handleNavClick(e, "plans")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
               >
                 Plans
               </a>
@@ -1249,7 +1254,10 @@ footer{
               <a
                 className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
                 href="#demo"
-                onClick={(e) => handleNavClick(e, "demo")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
               >
                 Contact Us
               </a>
@@ -1273,7 +1281,10 @@ footer{
               <a
                 className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
                 href="#how"
-                onClick={(e) => handleNavClick(e, "how")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
               >
                 How it works
               </a>
@@ -1281,7 +1292,10 @@ footer{
               <a
                 className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
                 href="#plans"
-                onClick={(e) => handleNavClick(e, "plans")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
               >
                 Plans
               </a>
@@ -1289,7 +1303,10 @@ footer{
               <a
                 className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
                 href="#demo"
-                onClick={(e) => handleNavClick(e, "demo")}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
               >
                 Contact Us
               </a>
@@ -1318,10 +1335,24 @@ footer{
               </p>
 
               <div className="heroActions">
-                <a className="btn btn-primary" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                <a
+                  className="btn btn-primary"
+                  href="#demo"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToId("demo");
+                  }}
+                >
                   Book a Demo
                 </a>
-                <a className="btn btn-outline" href="#how" onClick={(e) => handleNavClick(e, "how")}>
+                <a
+                  className="btn btn-outline"
+                  href="#how"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToId("how");
+                  }}
+                >
                   See How It Works
                 </a>
               </div>
@@ -1532,7 +1563,14 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-outline" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                  <a
+                    className="btn btn-outline"
+                    href="#demo"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToId("demo");
+                    }}
+                  >
                     Book a Demo
                   </a>
                 </div>
@@ -1597,7 +1635,14 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-primary" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                  <a
+                    className="btn btn-primary"
+                    href="#demo"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToId("demo");
+                    }}
+                  >
                     Book a Demo
                   </a>
                 </div>
@@ -1662,7 +1707,14 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-outline" href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+                  <a
+                    className="btn btn-outline"
+                    href="#demo"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToId("demo");
+                    }}
+                  >
                     Book a Demo
                   </a>
                 </div>
@@ -2021,11 +2073,6 @@ footer{
                   </div>
                 </div>
 
-                <div className="notice">
-                  <strong>Notice:</strong> Submission of this form does not create an attorney-client relationship.
-                  Please do not include confidential, privileged, or time-sensitive information.
-                </div>
-
                 <div className="agree">
                   <input id="agree" name="agree" type="checkbox" required />
                   <label htmlFor="agree" style={{ fontSize: 13, fontWeight: 800, color: "var(--muted)" }}>
@@ -2094,23 +2141,53 @@ footer{
 
             <div className="footerCol">
               <h5>Company</h5>
-              <a href="#how" onClick={(e) => handleNavClick(e, "how")}>
+              <a
+                href="#how"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
+              >
                 How it works
               </a>
-              <a href="#plans" onClick={(e) => handleNavClick(e, "plans")}>
+              <a
+                href="#plans"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
+              >
                 Plans
               </a>
-              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
                 Contact Us
               </a>
             </div>
 
             <div className="footerCol">
               <h5>Contact</h5>
-              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
                 Book a demo / send a message
               </a>
-              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
                 demo@legalclientintake.com
               </a>
               <a href="https://app.legalclientintake.com" target="_blank" rel="noopener noreferrer">
@@ -2120,10 +2197,22 @@ footer{
 
             <div className="footerCol">
               <h5>Legal</h5>
-              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
                 No attorney-client relationship
               </a>
-              <a href="#demo" onClick={(e) => handleNavClick(e, "demo")}>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
                 Do not send confidential information
               </a>
             </div>
@@ -2145,10 +2234,14 @@ footer{
       </footer>
 
       <a
-        href="https://legalclientintake.com"
+        href="#top"
         className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
         id="toTopBtn"
         aria-label="Back to top"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToId("top");
+        }}
       >
         ↑ Top
       </a>
