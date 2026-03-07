@@ -1818,14 +1818,14 @@ footer{
 
                   <div className="intentGrid">
                     <label className="intentBox">
-                      <input type="checkbox" name="requestTypes" value="Request Demo" />
+                      <input type="checkbox" name="requestTypes" value="Demo" />
                       <span className="intentCard">
                         <span className="intentText">Request Demo</span>
                       </span>
                     </label>
 
                     <label className="intentBox">
-                      <input type="checkbox" name="requestTypes" value="Request Callback" />
+                      <input type="checkbox" name="requestTypes" value="Callback" />
                       <span className="intentCard">
                         <span className="intentText">Request Callback</span>
                       </span>
