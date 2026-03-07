@@ -6,6 +6,61 @@ import { IMaskInput } from "react-imask";
 
 const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || "";
 
+const US_STATES = [
+  { value: "", label: "Select State" },
+  { value: "AL", label: "Alabama" },
+  { value: "AK", label: "Alaska" },
+  { value: "AZ", label: "Arizona" },
+  { value: "AR", label: "Arkansas" },
+  { value: "CA", label: "California" },
+  { value: "CO", label: "Colorado" },
+  { value: "CT", label: "Connecticut" },
+  { value: "DE", label: "Delaware" },
+  { value: "FL", label: "Florida" },
+  { value: "GA", label: "Georgia" },
+  { value: "HI", label: "Hawaii" },
+  { value: "ID", label: "Idaho" },
+  { value: "IL", label: "Illinois" },
+  { value: "IN", label: "Indiana" },
+  { value: "IA", label: "Iowa" },
+  { value: "KS", label: "Kansas" },
+  { value: "KY", label: "Kentucky" },
+  { value: "LA", label: "Louisiana" },
+  { value: "ME", label: "Maine" },
+  { value: "MD", label: "Maryland" },
+  { value: "MA", label: "Massachusetts" },
+  { value: "MI", label: "Michigan" },
+  { value: "MN", label: "Minnesota" },
+  { value: "MS", label: "Mississippi" },
+  { value: "MO", label: "Missouri" },
+  { value: "MT", label: "Montana" },
+  { value: "NE", label: "Nebraska" },
+  { value: "NV", label: "Nevada" },
+  { value: "NH", label: "New Hampshire" },
+  { value: "NJ", label: "New Jersey" },
+  { value: "NM", label: "New Mexico" },
+  { value: "NY", label: "New York" },
+  { value: "NC", label: "North Carolina" },
+  { value: "ND", label: "North Dakota" },
+  { value: "OH", label: "Ohio" },
+  { value: "OK", label: "Oklahoma" },
+  { value: "OR", label: "Oregon" },
+  { value: "PA", label: "Pennsylvania" },
+  { value: "RI", label: "Rhode Island" },
+  { value: "SC", label: "South Carolina" },
+  { value: "SD", label: "South Dakota" },
+  { value: "TN", label: "Tennessee" },
+  { value: "TX", label: "Texas" },
+  { value: "UT", label: "Utah" },
+  { value: "VT", label: "Vermont" },
+  { value: "VA", label: "Virginia" },
+  { value: "WA", label: "Washington" },
+  { value: "WV", label: "West Virginia" },
+  { value: "WI", label: "Wisconsin" },
+  { value: "WY", label: "Wyoming" },
+  { value: "DC", label: "District of Columbia" },
+];
+
 type BillingState = "monthly" | "annual";
 
 export default function Home() {
@@ -48,6 +103,7 @@ export default function Home() {
     const y = el.getBoundingClientRect().top + window.scrollY - HEADER_OFFSET;
     window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
     setActiveSection(id);
+    setMobileMenuOpen(false);
   };
 
   useEffect(() => {
@@ -129,10 +185,21 @@ export default function Home() {
     const firstName = String(fd.get("firstName") || "").trim();
     const lastName = String(fd.get("lastName") || "").trim();
     const firmName = String(fd.get("firmName") || "").trim();
-    const jurisdiction = String(fd.get("jurisdiction") || "").trim();
+    const attorneyCount = String(fd.get("attorneyCount") || "").trim();
+    const address = String(fd.get("address") || "").trim();
+    const city = String(fd.get("city") || "").trim();
+    const state = String(fd.get("state") || "").trim();
+    const zip = String(fd.get("zip") || "").trim();
     const email = String(fd.get("email") || "").trim();
+    const website = String(fd.get("website") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
+    const fax = String(fd.get("fax") || "").trim();
     const message = String(fd.get("message") || "").trim();
+
+    const requestTypes = fd
+      .getAll("requestTypes")
+      .map((value) => String(value).trim())
+      .filter(Boolean);
 
     const otherPractices = fd
       .getAll("otherPractice")
@@ -157,9 +224,16 @@ export default function Home() {
       firstName,
       lastName,
       firmName,
-      jurisdiction,
+      attorneyCount,
+      requestTypes,
+      address,
+      city,
+      state,
+      zip,
       email,
+      website,
       phone,
+      fax,
       practiceAreas: finalPracticeAreas,
       turnstileToken,
       message,
@@ -197,7 +271,7 @@ export default function Home() {
       setFormStatus({
         type: "err",
         text:
-          "The form was updated successfully, but the backend email layout still needs the next update so the new structured fields appear correctly.",
+          "Your form could not be fully processed yet because the backend route still needs the matching field update.",
       });
       setSubmitText("Submit Request");
       setSubmitDisabled(false);
@@ -321,6 +395,12 @@ img{max-width:100%;display:block}
 
 .navlinks{display:flex;align-items:center;gap:10px}
 
+.navBtn{
+  appearance:none;
+  border:none;
+  font:inherit;
+}
+
 .menuBtn{
   display:none;
   width:44px;height:44px;
@@ -379,7 +459,7 @@ img{max-width:100%;display:block}
   background: rgba(11,18,32,.96);
   border-color: rgba(255,255,255,.12);
 }
-.mobileMenu a{ width:100%; justify-content:center; }
+.mobileMenu button{ width:100%; justify-content:center; }
 
 @media (max-width: 820px){
   .nav{ padding:10px 0; }
@@ -792,7 +872,9 @@ section.ctaBand{
   margin-bottom:18px;
 }
   
-.row2 > div{
+.row2 > div,
+.row4 > div,
+.rowAddress > div{
   min-width: 0;
 }
 
@@ -828,6 +910,7 @@ input,select,textarea{
 }
 form{display:grid;gap:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row4{display:grid;grid-template-columns:1.4fr 1fr .8fr .8fr;gap:12px}
 label{font-size:12px;font-weight:1000;color:#0f172a}
 input,select,textarea{
   width:100%;
@@ -848,6 +931,73 @@ textarea{min-height:110px;resize:vertical}
 .agree{display:flex;gap:10px;align-items:flex-start}
 .agree input{width:18px;height:18px;margin-top:3px}
 .formActions{display:flex;justify-content:center;margin-top:6px}
+
+.intentFieldset{
+  border:0;
+  padding:0;
+  margin:0;
+}
+.intentLegend{
+  font-size:12px;
+  font-weight:1000;
+  color:#0f172a;
+  margin-bottom:8px;
+}
+.intentGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.intentBox{
+  position:relative;
+}
+.intentBox input{
+  position:absolute;
+  inset:0;
+  opacity:0;
+  cursor:pointer;
+}
+.intentCard{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  border:1px solid #cfd8e3;
+  border-radius:16px;
+  padding:16px 18px;
+  background:#fff;
+  transition:.15s border-color, .15s box-shadow, .15s background, .15s transform;
+  min-height:64px;
+}
+.intentCard::before{
+  content:"";
+  width:22px;
+  height:22px;
+  border-radius:7px;
+  border:2px solid #94a3b8;
+  background:#fff;
+  flex:none;
+  box-sizing:border-box;
+}
+.intentText{
+  font-size:15px;
+  font-weight:900;
+  color:#0f172a;
+  letter-spacing:-0.01em;
+}
+.intentBox input:checked + .intentCard{
+  border-color:rgba(15,118,110,.70);
+  box-shadow:0 0 0 4px rgba(15,118,110,.12);
+  background:#f7fffe;
+}
+.intentBox input:checked + .intentCard::before{
+  background:var(--teal);
+  border-color:var(--teal);
+  box-shadow: inset 0 0 0 4px #ffffff;
+}
+.intentBox input:focus-visible + .intentCard{
+  border-color:rgba(15,118,110,.70);
+  box-shadow:0 0 0 4px rgba(15,118,110,.12);
+}
 
 .checkboxFieldset{
   border:1px solid var(--border);
@@ -968,7 +1118,9 @@ footer{
   .plansGrid{grid-template-columns:1fr}
   .planCard{ min-height: 0; }
   .formIntroGrid{ grid-template-columns: 1fr; }
-  .row2{grid-template-columns:1fr}
+  .row2,
+  .row4,
+  .intentGrid{grid-template-columns:1fr}
   .checkboxGrid{grid-template-columns:1fr}
   .footerGrid{ grid-template-columns: 1fr; }
 }
@@ -988,22 +1140,42 @@ footer{
       <div className="topbar" id="topbar">
         <div className="container">
           <div className="nav">
-            <a className="brand" href="#top" aria-label="Legal Client Intake">
+            <a
+              className="brand"
+              href="#top"
+              aria-label="Legal Client Intake"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToId("top");
+              }}
+            >
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
             <div className="navlinks">
-              <a className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`} href="#how">
+              <button
+                className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("how")}
+              >
                 How it works
-              </a>
+              </button>
 
-              <a className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`} href="#plans">
+              <button
+                className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("plans")}
+              >
                 Plans
-              </a>
+              </button>
 
-              <a className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`} href="#demo">
+              <button
+                className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("demo")}
+              >
                 Contact Us
-              </a>
+              </button>
             </div>
 
             <button
@@ -1021,29 +1193,29 @@ footer{
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
             <div className="menuPanel">
-              <a
-                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                href="#how"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                className={`btn navBtn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("how")}
               >
                 How it works
-              </a>
+              </button>
 
-              <a
-                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                href="#plans"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                className={`btn navBtn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("plans")}
               >
                 Plans
-              </a>
+              </button>
 
-              <a
-                className={`btn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
-                href="#demo"
-                onClick={() => setMobileMenuOpen(false)}
+              <button
+                className={`btn navBtn ${activeSection === "demo" ? "btn-primary" : "btn-outline"}`}
+                type="button"
+                onClick={() => scrollToId("demo")}
               >
                 Contact Us
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -1069,12 +1241,20 @@ footer{
               </p>
 
               <div className="heroActions">
-                <a className="btn btn-primary" href="#demo">
+                <button
+                  className="btn btn-primary navBtn"
+                  type="button"
+                  onClick={() => scrollToId("demo")}
+                >
                   Book a Demo
-                </a>
-                <a className="btn btn-outline" href="#how">
+                </button>
+                <button
+                  className="btn btn-outline navBtn"
+                  type="button"
+                  onClick={() => scrollToId("how")}
+                >
                   See How It Works
-                </a>
+                </button>
               </div>
 
               <div className="heroTrustRow">
@@ -1288,9 +1468,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-outline" href="#demo">
+                  <button className="btn btn-outline navBtn" type="button" onClick={() => scrollToId("demo")}>
                     Book a Demo
-                  </a>
+                  </button>
                 </div>
                 <div className="planFoot">
                   Best for solo attorneys who want professional after-hours coverage without complexity.
@@ -1353,9 +1533,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-primary" href="#demo">
+                  <button className="btn btn-primary navBtn" type="button" onClick={() => scrollToId("demo")}>
                     Book a Demo
-                  </a>
+                  </button>
                 </div>
                 <div className="planFoot">
                   Best for firms that want intake to directly drive booked consults and faster response times.
@@ -1418,9 +1598,9 @@ footer{
 
               <div className="planBottom">
                 <div className="planCta">
-                  <a className="btn btn-outline" href="#demo">
+                  <button className="btn btn-outline navBtn" type="button" onClick={() => scrollToId("demo")}>
                     Book a Demo
-                  </a>
+                  </button>
                 </div>
                 <div className="planFoot">
                   Best for growing firms that want integrations, advanced routing, and deeper automation.
@@ -1470,18 +1650,30 @@ footer{
                 </li>
               </ul>
             </div>
-
-          
           </div>
 
           <div className="formWrap">
             <div className="formCard">
-              <div className="notice" style={{ marginBottom: 12 }}>
-                <strong>Note:</strong> This form is designed to notify <strong>operations@legalclientintake.com</strong> and
-                send a confirmation email to the submitter.
-              </div>
-
               <form id="contactForm" onSubmit={submitContact}>
+                <fieldset className="intentFieldset">
+                  <legend className="intentLegend">What would you like us to do? *</legend>
+                  <div className="intentGrid">
+                    <label className="intentBox">
+                      <input type="checkbox" name="requestTypes" value="Request Demo" />
+                      <span className="intentCard">
+                        <span className="intentText">Request Demo</span>
+                      </span>
+                    </label>
+
+                    <label className="intentBox">
+                      <input type="checkbox" name="requestTypes" value="Request Callback" />
+                      <span className="intentCard">
+                        <span className="intentText">Request Callback</span>
+                      </span>
+                    </label>
+                  </div>
+                </fieldset>
+
                 <div className="row2">
                   <div>
                     <label htmlFor="firstName">First Name *</label>
@@ -1493,33 +1685,99 @@ footer{
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="firmName">Law Firm Name *</label>
-                  <input id="firmName" name="firmName" required placeholder="Smith & Associates" />
+                <div className="row2">
+                  <div>
+                    <label htmlFor="firmName">Law Firm Name *</label>
+                    <input id="firmName" name="firmName" required placeholder="Smith & Associates" />
+                  </div>
+                  <div>
+                    <label htmlFor="attorneyCount">Number of Attorneys *</label>
+                    <select id="attorneyCount" name="attorneyCount" required defaultValue="">
+                      <option value="" disabled>
+                        Select
+                      </option>
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                      <option value="6">6</option>
+                      <option value="7">7</option>
+                      <option value="8+">8+</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="row4">
+                  <div>
+                    <label htmlFor="address">Address</label>
+                    <input id="address" name="address" placeholder="123 Main Street" />
+                  </div>
+                  <div>
+                    <label htmlFor="city">City</label>
+                    <input id="city" name="city" placeholder="Scranton" />
+                  </div>
+                  <div>
+                    <label htmlFor="state">State</label>
+                    <select id="state" name="state" defaultValue="">
+                      {US_STATES.map((item) => (
+                        <option key={item.value || "blank"} value={item.value}>
+                          {item.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label htmlFor="zip">Zip Code</label>
+                    <input
+                      id="zip"
+                      name="zip"
+                      placeholder="18503"
+                      inputMode="numeric"
+                      maxLength={10}
+                      onInput={(e) => {
+                        const target = e.currentTarget;
+                        target.value = target.value.replace(/\D/g, "");
+                      }}
+                    />
+                  </div>
                 </div>
 
                 <div className="row2">
                   <div>
-                    <label htmlFor="jurisdiction">State / Jurisdiction</label>
-                    <input id="jurisdiction" name="jurisdiction" placeholder="Pennsylvania" />
-                  </div>
-                  <div>
                     <label htmlFor="email">Email *</label>
                     <input id="email" name="email" type="email" required placeholder="john@lawfirm.com" />
                   </div>
+                  <div>
+                    <label htmlFor="website">Firm Website</label>
+                    <input id="website" name="website" type="url" placeholder="https://MyWebsite.com" />
+                  </div>
                 </div>
 
-                <div>
-                  <label htmlFor="phone">Phone *</label>
-                  <IMaskInput
-                    mask="(000) 000-0000"
-                    unmask={false}
-                    placeholder="(555) 123-4567"
-                    id="phone"
-                    name="phone"
-                    required
-                    onAccept={() => {}}
-                  />
+                <div className="row2">
+                  <div>
+                    <label htmlFor="phone">Phone *</label>
+                    <IMaskInput
+                      mask="(000) 000-0000"
+                      unmask={false}
+                      placeholder="(555) 123-4567"
+                      id="phone"
+                      name="phone"
+                      required
+                      onAccept={() => {}}
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="fax">Office Fax</label>
+                    <IMaskInput
+                      mask="(000) 000-0000"
+                      unmask={false}
+                      placeholder="(555) 987-6543"
+                      id="fax"
+                      name="fax"
+                      onAccept={() => {}}
+                    />
+                  </div>
                 </div>
 
                 <fieldset className="checkboxFieldset">
@@ -1676,23 +1934,24 @@ footer{
                   </div>
                 )}
 
-<div className="turnstileWrap">
-  {TURNSTILE_SITE_KEY ? (
-    <div className="turnstileInner">
-      <Turnstile
-        key={turnstileRenderKey}
-        sitekey={TURNSTILE_SITE_KEY}
-        onVerify={(token) => setTurnstileToken(token)}
-        onExpire={() => setTurnstileToken("")}
-        onError={() => setTurnstileToken("")}
-      />
-    </div>
-  ) : (
-    <div className="notice err" style={{ maxWidth: 520, margin: "0 auto" }}>
-      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
-    </div>
-  )}
-</div>
+                <div className="turnstileWrap">
+                  {TURNSTILE_SITE_KEY ? (
+                    <div className="turnstileInner">
+                      <Turnstile
+                        key={turnstileRenderKey}
+                        sitekey={TURNSTILE_SITE_KEY}
+                        onVerify={(token) => setTurnstileToken(token)}
+                        onExpire={() => setTurnstileToken("")}
+                        onError={() => setTurnstileToken("")}
+                      />
+                    </div>
+                  ) : (
+                    <div className="notice err" style={{ maxWidth: 520, margin: "0 auto" }}>
+                      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and
+                      refresh.
+                    </div>
+                  )}
+                </div>
 
                 <div className="formActions">
                   <button
@@ -1719,7 +1978,15 @@ footer{
         <div className="container">
           <div className="footerGrid">
             <div>
-              <a className="footerBrand" href="#top" aria-label="Back to top">
+              <a
+                className="footerBrand"
+                href="#top"
+                aria-label="Back to top"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("top");
+                }}
+              >
                 <img src="/images/logo-LCI-light2.png" alt="Legal Client Intake" />
               </a>
               <p className="footerP">Intelligent after-hours intake for law firms. Never miss a potential client again.</p>
@@ -1727,21 +1994,77 @@ footer{
 
             <div className="footerCol">
               <h5>Company</h5>
-              <a href="#how">How it works</a>
-              <a href="#plans">Plans</a>
-              <a href="#demo">Contact Us</a>
+              <a
+                href="#how"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
+              >
+                How it works
+              </a>
+              <a
+                href="#plans"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
+              >
+                Plans
+              </a>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                Contact Us
+              </a>
             </div>
 
             <div className="footerCol">
               <h5>Contact</h5>
-              <a href="#demo">Book a demo / send a message</a>
-              <a href="#demo">demo@legalclientintake.com</a>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                Book a demo / send a message
+              </a>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                demo@legalclientintake.com
+              </a>
             </div>
 
             <div className="footerCol">
               <h5>Legal</h5>
-              <a href="#demo">No attorney-client relationship</a>
-              <a href="#demo">Do not send confidential information</a>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                No attorney-client relationship
+              </a>
+              <a
+                href="#demo"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("demo");
+                }}
+              >
+                Do not send confidential information
+              </a>
             </div>
           </div>
 
@@ -1765,6 +2088,10 @@ footer{
         className={`btn btn-outline toTop ${showToTop ? "show" : ""}`}
         id="toTopBtn"
         aria-label="Back to top"
+        onClick={(e) => {
+          e.preventDefault();
+          scrollToId("top");
+        }}
       >
         ↑ Top
       </a>
