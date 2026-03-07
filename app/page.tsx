@@ -50,7 +50,6 @@ export default function Home() {
     setActiveSection(id);
   };
 
-  // Track visible section to update nav button highlight
   useEffect(() => {
     const sections = ["how", "plans", "demo"] as const;
 
@@ -93,7 +92,6 @@ export default function Home() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Back-to-top + header scrolled styling
   useEffect(() => {
     const topbar = document.getElementById("topbar");
 
@@ -135,20 +133,21 @@ export default function Home() {
     const email = String(fd.get("email") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
     const message = String(fd.get("message") || "").trim();
-const otherPractices = fd
-  .getAll("otherPractice")
-  .map((value) => String(value).trim())
-  .filter(Boolean);
 
-const practiceAreas = fd
-  .getAll("practiceAreas")
-  .map((value) => String(value).trim())
-  .filter(Boolean);
+    const otherPractices = fd
+      .getAll("otherPractice")
+      .map((value) => String(value).trim())
+      .filter(Boolean);
 
-const finalPracticeAreas = [
-  ...practiceAreas,
-  ...otherPractices.map((item) => `Other: ${item}`),
-];
+    const practiceAreas = fd
+      .getAll("practiceAreas")
+      .map((value) => String(value).trim())
+      .filter(Boolean);
+
+    const finalPracticeAreas = [
+      ...practiceAreas,
+      ...otherPractices.map((item) => `Other: ${item}`),
+    ];
 
     setFormStatus({ type: "sending", text: "Sending…" });
     setSubmitDisabled(true);
@@ -712,43 +711,51 @@ section.ctaBand{
 .ctaBand .sectionTitle{color:#fff}
 .ctaBand .sectionSub{color:rgba(255,255,255,.86)}
 
-.formWrap{
-  max-width: 920px;
-  margin: 22px auto 0;
+.formIntroGrid{
+  max-width: 1040px;
+  margin: 18px auto 14px;
   display:grid;
-  grid-template-columns: 1.05fr .95fr;
-  gap: 16px;
-  align-items:stretch;
-  width: 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap:14px;
 }
-
-.formWrap > *{
-  min-width: 0;
-}
-.formCard{
-  background:#fff;color:var(--text);
-  border-radius:18px;
-  border:1px solid rgba(255,255,255,.35);
-  box-shadow:0 18px 45px rgba(2,8,23,.25);
-  padding:18px;
-}
-.formAside{
+.infoCard{
   border-radius:18px;
   border:1px solid rgba(255,255,255,.18);
   background: rgba(255,255,255,.08);
   box-shadow:0 18px 45px rgba(2,8,23,.20);
-  padding:18px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  gap:14px;
+  padding:16px;
+  min-width:0;
 }
-.asideTitle{margin:0;font-size:16px;font-weight:1000;letter-spacing:-.02em;}
-.asideP{margin:8px 0 0;color: rgba(255,255,255,.86);font-weight:700;font-size:14px;line-height:1.5;}
-.asideBox{background: rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.14);border-radius:14px;padding:14px;}
-.asideList{margin:10px 0 0;padding:0;list-style:none;display:grid;gap:10px;color: rgba(255,255,255,.88);font-weight:800;font-size:14px;}
-.asideList li{display:flex;gap:10px;align-items:flex-start;line-height:1.35;}
-.asideList i{
+.infoCardTitle{
+  margin:0;
+  font-size:16px;
+  font-weight:1000;
+  letter-spacing:-.02em;
+}
+.infoCardP{
+  margin:8px 0 0;
+  color: rgba(255,255,255,.86);
+  font-weight:700;
+  font-size:14px;
+  line-height:1.5;
+}
+.infoList{
+  margin:10px 0 0;
+  padding:0;
+  list-style:none;
+  display:grid;
+  gap:10px;
+  color: rgba(255,255,255,.88);
+  font-weight:800;
+  font-size:14px;
+}
+.infoList li{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  line-height:1.35;
+}
+.infoList i{
   width:22px;height:22px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;
   background: rgba(214,178,74,.18);
   border:1px solid rgba(214,178,74,.35);
@@ -758,10 +765,22 @@ section.ctaBand{
   flex:none;
   margin-top:1px;
 }
-.formCard,
-.formAside{
-  min-width: 0;
-  overflow: hidden;
+
+.formWrap{
+  max-width: 1040px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.formCard{
+  background:#fff;
+  color:var(--text);
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.35);
+  box-shadow:0 18px 45px rgba(2,8,23,.25);
+  padding:22px;
+  min-width:0;
+  overflow:hidden;
 }
 
 .row2 > div{
@@ -815,13 +834,17 @@ textarea{min-height:110px;resize:vertical}
 .checkboxGrid{
   display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
-  gap:8px 14px;
-  align-items:start;
+  gap:12px 14px;
+  align-items:stretch;
 }
 .checkboxCol{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+.checkboxItems{
   display:grid;
   gap:7px;
-  min-width:0;
 }
 .checkItem{
   display:flex;
@@ -839,7 +862,8 @@ textarea{min-height:110px;resize:vertical}
   flex:none;
 }
 .practiceOtherWrap{
-  margin-top:8px;
+  margin-top:auto;
+  padding-top:10px;
 }
 .practiceOtherWrap input{
   font-size:12px;
@@ -912,7 +936,7 @@ footer{
   .practice{grid-template-columns:1fr}
   .plansGrid{grid-template-columns:1fr}
   .planCard{ min-height: 0; }
-  .formWrap{ grid-template-columns: 1fr; }
+  .formIntroGrid{ grid-template-columns: 1fr; }
   .row2{grid-template-columns:1fr}
   .checkboxGrid{grid-template-columns:1fr}
   .footerGrid{ grid-template-columns: 1fr; }
@@ -1389,6 +1413,41 @@ footer{
             preferences.
           </p>
 
+          <div className="formIntroGrid">
+            <div className="infoCard">
+              <h3 className="infoCardTitle">What happens after you submit</h3>
+              <p className="infoCardP">
+                You’ll receive a confirmation email, and our team will follow up to schedule your demo and confirm
+                your after-hours routing preferences.
+              </p>
+            </div>
+
+            <div className="infoCard">
+              <h3 className="infoCardTitle">You’ll see</h3>
+              <ul className="infoList">
+                <li>
+                  <i>✓</i> A firm-branded assistant demo
+                </li>
+                <li>
+                  <i>✓</i> Intake summary + routing examples
+                </li>
+                <li>
+                  <i>✓</i> White-glove onboarding overview
+                </li>
+                <li>
+                  <i>✓</i> Plan fit by call volume
+                </li>
+              </ul>
+            </div>
+
+            <div className="infoCard">
+              <h3 className="infoCardTitle">Email delivery</h3>
+              <p className="infoCardP">
+                Internal notifications will go to <strong>office@legalclientintake.com</strong>.
+              </p>
+            </div>
+          </div>
+
           <div className="formWrap">
             <div className="formCard">
               <div className="notice" style={{ marginBottom: 12 }}>
@@ -1424,133 +1483,133 @@ footer{
                   </div>
                 </div>
 
- <div>
-  <label htmlFor="phone">Phone *</label>
-  <IMaskInput
-    mask="(000) 000-0000"
-    unmask={false}
-    placeholder="(555) 123-4567"
-    id="phone"
-    name="phone"
-    required
-    onAccept={() => {}}
-  />
-</div>
+                <div>
+                  <label htmlFor="phone">Phone *</label>
+                  <IMaskInput
+                    mask="(000) 000-0000"
+                    unmask={false}
+                    placeholder="(555) 123-4567"
+                    id="phone"
+                    name="phone"
+                    required
+                    onAccept={() => {}}
+                  />
+                </div>
 
-<fieldset className="checkboxFieldset">
-  <legend className="checkboxLegend">Practice Areas</legend>
+                <fieldset className="checkboxFieldset">
+                  <legend className="checkboxLegend">Practice Areas</legend>
 
-  <div className="checkboxGrid">
- <div className="checkboxCol">
+                  <div className="checkboxGrid">
+                    <div className="checkboxCol">
+                      <div className="checkboxItems">
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Bankruptcy" />
+                          <span>Bankruptcy</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Bankruptcy" />
-<span>Bankruptcy</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Business / Corporate" />
+                          <span>Business / Corporate</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Business / Corporate" />
-<span>Business / Corporate</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Civil Lawsuit" />
+                          <span>Civil Lawsuit</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Civil Lawsuit" />
-<span>Civil Lawsuit</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Criminal Defense" />
+                          <span>Criminal Defense</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Criminal Defense" />
-<span>Criminal Defense</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Custody" />
+                          <span>Custody</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Custody" />
-<span>Custody</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Divorce" />
+                          <span>Divorce</span>
+                        </label>
+                      </div>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Divorce" />
-<span>Divorce</span>
-</label>
+                      <div className="practiceOtherWrap">
+                        <input id="otherPractice1" name="otherPractice" placeholder="Other Practice Area" />
+                      </div>
+                    </div>
 
-<div className="practiceOtherWrap">
-<input id="otherPractice1" name="otherPractice" placeholder="Other Practice Area" />
-</div>
+                    <div className="checkboxCol">
+                      <div className="checkboxItems">
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
+                          <span>DUI / Traffic</span>
+                        </label>
 
-</div>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
+                          <span>Estate Planning / Probate</span>
+                        </label>
 
-<div className="checkboxCol">
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Family Law" />
+                          <span>Family Law</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
-<span>DUI / Traffic</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Labor & Employment" />
+                          <span>Labor &amp; Employment</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
-<span>Estate Planning / Probate</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
+                          <span>Landlord / Tenant</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Family Law" />
-<span>Family Law</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
+                          <span>Litigation &amp; Dispute Resolution</span>
+                        </label>
+                      </div>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Labor & Employment" />
-<span>Labor & Employment</span>
-</label>
+                      <div className="practiceOtherWrap">
+                        <input id="otherPractice2" name="otherPractice" placeholder="Other Practice Area" />
+                      </div>
+                    </div>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
-<span>Landlord / Tenant</span>
-</label>
+                    <div className="checkboxCol">
+                      <div className="checkboxItems">
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
+                          <span>Medical Malpractice</span>
+                        </label>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
-<span>Litigation & Dispute Resolution</span>
-</label>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Personal Injury" />
+                          <span>Personal Injury</span>
+                        </label>
 
-<div className="practiceOtherWrap">
-<input id="otherPractice2" name="otherPractice" placeholder="Other Practice Area" />
-</div>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Real Estate" />
+                          <span>Real Estate</span>
+                        </label>
 
-</div>
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
+                          <span>Trusts &amp; Estates</span>
+                        </label>
 
- <div className="checkboxCol">
+                        <label className="checkItem">
+                          <input type="checkbox" name="practiceAreas" value="Workers Compensation" />
+                          <span>Workers Compensation</span>
+                        </label>
+                      </div>
 
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
-<span>Medical Malpractice</span>
-</label>
-
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Personal Injury" />
-<span>Personal Injury</span>
-</label>
-
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Real Estate" />
-<span>Real Estate</span>
-</label>
-
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
-<span>Trusts & Estates</span>
-</label>
-
-<label className="checkItem">
-<input type="checkbox" name="practiceAreas" value="Workers Compensation" />
-<span>Workers Compensation</span>
-</label>
-
-<div className="practiceOtherWrap">
-<input id="otherPractice3" name="otherPractice" placeholder="Other Practice Area" />
-</div>
-
-</div>
-  </div>
-</fieldset>
+                      <div className="practiceOtherWrap">
+                        <input id="otherPractice3" name="otherPractice" placeholder="Other Practice Area" />
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
 
                 <div>
                   <label htmlFor="msg">Message *</label>
@@ -1624,41 +1683,6 @@ footer{
                 </div>
               </form>
             </div>
-
-            <div className="formAside">
-              <div>
-                <h3 className="asideTitle">What happens after you submit</h3>
-                <p className="asideP">
-                  You’ll receive a confirmation email, and our team will follow up to schedule your demo and confirm
-                  your after-hours routing preferences.
-                </p>
-              </div>
-
-              <div className="asideBox">
-                <h3 className="asideTitle">You’ll see:</h3>
-                <ul className="asideList">
-                  <li>
-                    <i>✓</i> A firm-branded assistant demo
-                  </li>
-                  <li>
-                    <i>✓</i> Intake summary + routing examples
-                  </li>
-                  <li>
-                    <i>✓</i> White-glove onboarding overview
-                  </li>
-                  <li>
-                    <i>✓</i> Plan fit by call volume
-                  </li>
-                </ul>
-              </div>
-
-              <div className="asideBox">
-                <h3 className="asideTitle">Email delivery</h3>
-                <p className="asideP" style={{ margin: "8px 0 0" }}>
-                  Internal notifications will go to <strong>office@legalclientintake.com</strong>.
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -1687,9 +1711,9 @@ footer{
             </div>
 
             <div className="footerCol">
-              <h5>Contact</h5>
-              <a href="#demo">Book a demo / send a message</a>
-              <a href="#demo">office@legalclientintake.com</a>
+              <h5>Legal</h5>
+              <a href="#demo">No attorney-client relationship</a>
+              <a href="#demo">Do not send confidential information</a>
             </div>
           </div>
 
