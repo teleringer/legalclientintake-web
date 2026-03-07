@@ -58,7 +58,7 @@ function emailShell({
   <img
     src="https://legalclientintake.com/images/logo-LCI-light2.png"
     alt="Legal Client Intake"
-    style="height:62px;display:block;"
+    style="height:44px;max-width:100%;width:auto;display:block;"
   />
 </div>
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
@@ -223,7 +223,7 @@ export async function POST(req: Request) {
         <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:140px;">Name:</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:110px;">Name:</td>
               <td style="padding:6px 0;">${safeFullName}</td>
             </tr>
             <tr>
@@ -236,7 +236,11 @@ export async function POST(req: Request) {
             </tr>
             <tr>
               <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email:</td>
-              <td style="padding:6px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
+              <td style="padding:6px 0;word-break:break-word;overflow-wrap:anywhere;">
+  <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+    ${safeEmail}
+  </a>
+</td>
             </tr>
             <tr>
               <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Phone:</td>
@@ -317,7 +321,7 @@ export async function POST(req: Request) {
 
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:140px;">Name:</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:110px;">Name:</td>
               <td style="padding:5px 0;">${safeFullName}</td>
             </tr>
             <tr>
@@ -330,7 +334,11 @@ export async function POST(req: Request) {
             </tr>
             <tr>
               <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email:</td>
-              <td style="padding:5px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
+              <td style="padding:5px 0;word-break:break-word;overflow-wrap:anywhere;">
+  <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+    ${safeEmail}
+  </a>
+</td>
             </tr>
             <tr>
               <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Phone:</td>
