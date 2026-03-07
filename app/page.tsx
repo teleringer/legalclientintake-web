@@ -646,14 +646,41 @@ section.alt{
   margin:0;
 }
 
-.heroActions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.heroActions{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:26px;
+}
+
+.heroActions .btn{
+  padding:14px 20px;
+  font-size:15px;
+  border-radius:14px;
+}
+
 .heroActions .btn-primary{
   background:var(--execGold);
   color:#0B1220;
   border:1px solid rgba(255,255,255,.10);
-  box-shadow:0 16px 34px rgba(0,0,0,.28);
+  box-shadow:0 18px 38px rgba(0,0,0,.32);
 }
-.heroActions .btn-primary:hover{ filter:brightness(.98); }
+
+.heroActions .btn-primary:hover{
+  filter:brightness(.98);
+  transform:translateY(-1px);
+}
+
+.heroActions .btn-outline{
+  border-color:rgba(255,255,255,.30);
+  color:var(--execText);
+  background:rgba(255,255,255,.06);
+}
+
+.heroActions .btn-outline:hover{
+  background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.45);
+}
 
 .heroTrustRow{
   display:flex;
