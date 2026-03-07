@@ -38,6 +38,40 @@ function normalizePhone(phone?: string) {
   return phone.replace(/\D/g, "");
 }
 
+function emailShell({
+  title,
+  eyebrow,
+  body,
+}: {
+  title: string;
+  eyebrow?: string;
+  body: string;
+}) {
+  return `
+    <div style="margin:0;padding:24px 12px;background:#f3f7f7;">
+      <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe7e7;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <div style="background:linear-gradient(180deg,#0f766e,#0b5f59);padding:20px 24px;">
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.82);margin:0 0 8px 0;">
+            ${eyebrow ? escapeHtml(eyebrow) : "Legal Client Intake"}
+          </div>
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.15;font-weight:700;color:#ffffff;margin:0;">
+            Legal Client Intake
+          </div>
+          <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
+        </div>
+
+        <div style="padding:24px;">
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.2;font-weight:700;color:#0f172a;margin:0 0 18px 0;">
+            ${escapeHtml(title)}
+          </div>
+
+          ${body}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as Partial<ContactPayload>;
@@ -170,6 +204,125 @@ export async function POST(req: Request) {
     const safePracticeAreas = escapeHtml(practiceAreasText);
     const safeSubmittedAt = escapeHtml(submittedAt);
     const safeMessage = escapeHtml(message).replace(/\n/g, "<br />");
+    const safeReplyToInbox = escapeHtml(replyToInbox);
+    const safeFirstName = escapeHtml(firstName);
+
+    const adminHtml = emailShell({
+      title: "New contact submission",
+      eyebrow: "Website Lead Notification",
+      body: `
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.65;color:#334155;margin:0 0 18px 0;">
+          A new inquiry was submitted through the Legal Client Intake website.
+        </div>
+
+        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
+          <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:140px;">Name</td>
+              <td style="padding:6px 0;">${safeFullName}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Firm Name</td>
+              <td style="padding:6px 0;">${safeFirmName}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Jurisdiction</td>
+              <td style="padding:6px 0;">${safeJurisdiction}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email</td>
+              <td style="padding:6px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Phone</td>
+              <td style="padding:6px 0;">${safePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Practice Areas</td>
+              <td style="padding:6px 0;">${safePracticeAreas}</td>
+            </tr>
+            <tr>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Submitted</td>
+              <td style="padding:6px 0;">${safeSubmittedAt}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:700;color:#0f172a;margin:0 0 8px 0;">
+          Message
+        </div>
+
+        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#ffffff;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
+          ${safeMessage}
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#64748b;">
+          <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+          Do not treat website submissions as confidential or time-sensitive without direct follow-up.
+        </div>
+      `,
+    });
+
+    const confirmationHtml = emailShell({
+      title: "We received your message",
+      eyebrow: "Confirmation",
+      body: `
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:16px;line-height:1.7;color:#0f172a;margin:0 0 14px 0;">
+          Hi ${safeFirstName},
+        </div>
+
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#334155;margin:0 0 18px 0;">
+          Thank you for contacting <strong>Legal Client Intake</strong>. We received your message and will review it shortly.
+        </div>
+
+        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
+          <div style="font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:700;color:#0f172a;margin:0 0 10px 0;">
+            Submitted Information
+          </div>
+
+          <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:140px;">Name</td>
+              <td style="padding:5px 0;">${safeFullName}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Firm Name</td>
+              <td style="padding:5px 0;">${safeFirmName}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Jurisdiction</td>
+              <td style="padding:5px 0;">${safeJurisdiction}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email</td>
+              <td style="padding:5px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Phone</td>
+              <td style="padding:5px 0;">${safePhone}</td>
+            </tr>
+            <tr>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Practice Areas</td>
+              <td style="padding:5px 0;">${safePracticeAreas}</td>
+            </tr>
+          </table>
+        </div>
+
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.7;color:#475569;margin:0 0 18px 0;">
+          <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+          Do not include confidential, privileged, or time-sensitive information in this form.
+        </div>
+
+        <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
+          — Legal Client Intake<br />
+          <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
+        </div>
+
+        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#64748b;">
+          This is an automated confirmation. If you need to add details, reply to this email.
+        </div>
+      `,
+    });
 
     await transporter.sendMail({
       from: `${fromName} <${fromEmail}>`,
@@ -185,52 +338,7 @@ export async function POST(req: Request) {
         `Practice Areas: ${practiceAreasText}\n` +
         `Submitted: ${submittedAt}\n\n` +
         `Message:\n${message}\n`,
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.55;color:#111827;">
-          <h2 style="margin:0 0 14px 0;">New LegalClientIntake contact submission</h2>
-
-          <table cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Name</strong></td>
-              <td style="padding:4px 0;">${safeFullName}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Firm Name</strong></td>
-              <td style="padding:4px 0;">${safeFirmName}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Jurisdiction</strong></td>
-              <td style="padding:4px 0;">${safeJurisdiction}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Email</strong></td>
-              <td style="padding:4px 0;">${safeEmail}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Phone</strong></td>
-              <td style="padding:4px 0;">${safePhone}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0; vertical-align:top;"><strong>Practice Areas</strong></td>
-              <td style="padding:4px 0;">${safePracticeAreas}</td>
-            </tr>
-            <tr>
-              <td style="padding:4px 14px 4px 0;"><strong>Submitted</strong></td>
-              <td style="padding:4px 0;">${safeSubmittedAt}</td>
-            </tr>
-          </table>
-
-          <h3 style="margin:18px 0 8px 0;">Message</h3>
-          <div style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;background:#fafafa;">
-            ${safeMessage}
-          </div>
-
-          <p style="margin-top:18px;font-size:12px;color:#6b7280;">
-            NOTICE: Submission of this form does not create an attorney-client relationship.
-            Do not treat website submissions as confidential or time-sensitive without direct follow-up.
-          </p>
-        </div>
-      `,
+      html: adminHtml,
       replyTo: email,
     });
 
@@ -252,41 +360,7 @@ export async function POST(req: Request) {
         `Do not include confidential, privileged, or time-sensitive information in this form.\n\n` +
         `— Legal Client Intake\n` +
         `${replyToInbox}\n`,
-      html: `
-        <div style="font-family:Arial,Helvetica,sans-serif;line-height:1.6;color:#111827;">
-          <p>Hi ${escapeHtml(firstName)},</p>
-
-          <p>
-            Thank you for contacting <strong>Legal Client Intake</strong>.
-            We received your message and will review it shortly.
-          </p>
-
-          <div style="margin:18px 0;padding:14px;border:1px solid #e5e7eb;border-radius:10px;background:#f9fafb;">
-            <div style="margin-bottom:4px;"><strong>Name:</strong> ${safeFullName}</div>
-            <div style="margin-bottom:4px;"><strong>Firm Name:</strong> ${safeFirmName}</div>
-            <div style="margin-bottom:4px;"><strong>Jurisdiction:</strong> ${safeJurisdiction}</div>
-            <div style="margin-bottom:4px;"><strong>Email:</strong> ${safeEmail}</div>
-            <div style="margin-bottom:4px;"><strong>Phone:</strong> ${safePhone}</div>
-            <div><strong>Practice Areas:</strong> ${safePracticeAreas}</div>
-          </div>
-
-          <p style="font-size:13px;color:#4b5563;">
-            <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-            Do not include confidential, privileged, or time-sensitive information in this form.
-          </p>
-
-          <p style="margin-top:18px;">
-            — Legal Client Intake<br />
-            <a href="mailto:${escapeHtml(replyToInbox)}">${escapeHtml(replyToInbox)}</a>
-          </p>
-
-          <hr style="border:none;border-top:1px solid #e5e7eb;margin:18px 0;" />
-
-          <p style="font-size:12px;color:#6b7280;margin:0;">
-            This is an automated confirmation. If you need to add details, reply to this email.
-          </p>
-        </div>
-      `,
+      html: confirmationHtml,
       replyTo: replyToInbox,
     });
 
