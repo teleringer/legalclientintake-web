@@ -284,7 +284,7 @@ export async function POST(req: Request) {
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFirmName}</td>
     </tr>
     <tr>
-      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;"># of Attys:</td>
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAttorneyCount}</td>
     </tr>
     <tr>
@@ -334,7 +334,7 @@ export async function POST(req: Request) {
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficeFax}</td>
     </tr>
     <tr>
-      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Current Intake:</td>
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeIntakeMethod}</td>
     </tr>
     <tr>
@@ -422,7 +422,7 @@ export async function POST(req: Request) {
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFirmName}</td>
     </tr>
     <tr>
-      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;"># of Attys:</td>
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAttorneyCount}</td>
     </tr>
     <tr>
@@ -472,7 +472,7 @@ export async function POST(req: Request) {
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficeFax}</td>
     </tr>
     <tr>
-      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Current Intake:</td>
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeIntakeMethod}</td>
     </tr>
     <tr>
@@ -487,7 +487,8 @@ export async function POST(req: Request) {
 </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
-          — Legal Client Intake<br />
+          Cheers,<br />
+          Legal Client Intake Team<br />
           <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
         </div>
 
