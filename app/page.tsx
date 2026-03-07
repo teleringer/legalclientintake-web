@@ -1524,6 +1524,81 @@ footer{
         </div>
       </section>
 
+<section className="alt">
+  <div className="container">
+    <h2 className="sectionTitle">Example After-Hours Call</h2>
+    <p className="sectionSub">
+      When someone calls your firm after hours, Legal Client Intake captures
+      key details automatically and delivers a structured summary so you can
+      quickly decide whether to follow up.
+    </p>
+
+    <div className="grid3">
+      <div className="card">
+        <h4>Caller</h4>
+        <p>
+          “Hi, I was in a car accident last night and I’m not sure what I should
+          do. Someone told me to call a lawyer.”
+        </p>
+      </div>
+
+      <div className="card">
+        <h4>AI Intake Assistant</h4>
+        <p>
+          “I’m sorry to hear that. I can collect a few details so the attorney
+          can review your situation. May I ask when the accident occurred and
+          whether anyone was injured?”
+        </p>
+      </div>
+
+      <div className="card">
+        <h4>Attorney Receives</h4>
+        <p>
+          Structured intake summary delivered instantly with caller contact
+          details, incident date, location, and urgency level so you can follow
+          up quickly.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section className="alt">
+  <div className="container">
+    <h2 className="sectionTitle">Why Law Firms Choose LCI</h2>
+    <p className="sectionSub">
+      Designed specifically for solo attorneys and small firms that cannot
+      afford to miss potential clients after hours.
+    </p>
+
+    <div className="grid3">
+      <div className="card">
+        <h4>Never Miss a Potential Client</h4>
+        <p>
+          Instead of voicemail, callers reach a professional intake assistant
+          that collects structured case information for your review.
+        </p>
+      </div>
+
+      <div className="card">
+        <h4>Built for Legal Workflows</h4>
+        <p>
+          Intake questions adapt to practice areas such as personal injury,
+          criminal defense, family law, immigration, and more.
+        </p>
+      </div>
+
+      <div className="card">
+        <h4>Instant Intake Summaries</h4>
+        <p>
+          Receive organized summaries, transcripts, and recordings so you can
+          quickly determine which calls deserve immediate follow-up.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
       <section>
         <div className="container">
           <h2 className="sectionTitle">Practice Area Use Cases</h2>
