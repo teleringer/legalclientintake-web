@@ -1446,7 +1446,7 @@ footer{
                 details that matter, and sends you an instant intake summary—so you can call back first.
               </p>
 
-                            <div className="heroActions">
+                             <div className="heroActions">
                 <a
                   className="btn btn-primary"
                   href="#demo"
@@ -1457,6 +1457,7 @@ footer{
                 >
                   Book a Demo
                 </a>
+
                 <a
                   className="btn btn-outline"
                   href="#how"
