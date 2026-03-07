@@ -509,7 +509,6 @@ export async function POST(req: Request) {
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
           <b>Legal Client Intake Team<br /></b>
           <a href="https://legalclientintake.com">www.legalclientintake.com</a><br />
-          <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
         </div>
 
         <div style="margin-top:22px;padding-top:16px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">

@@ -96,7 +96,7 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-  const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
+    const scrollToId = (id: "top" | "how" | "plans" | "demo") => {
     const runScroll = () => {
       if (id === "top") {
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -104,25 +104,33 @@ export default function Home() {
         return;
       }
 
-      const el =
+      const target =
         document.getElementById(id) ||
         (id === "demo" ? document.getElementById("contactForm") : null);
 
-      if (!el) return;
+      if (!target) return;
 
       const topbar = document.getElementById("topbar");
-      const headerHeight = topbar?.getBoundingClientRect().height || HEADER_OFFSET;
-      const y = el.getBoundingClientRect().top + window.scrollY - headerHeight - 12;
+      const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
 
-      window.scrollTo({ top: Math.max(0, y), behavior: "smooth" });
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      window.setTimeout(() => {
+        window.scrollBy({
+          top: -(headerHeight + 12),
+          behavior: "smooth",
+        });
+      }, 60);
+
       setActiveSection(id);
     };
 
     if (mobileMenuOpen) {
       setMobileMenuOpen(false);
-      requestAnimationFrame(() => {
-        requestAnimationFrame(runScroll);
-      });
+      window.setTimeout(runScroll, 120);
     } else {
       runScroll();
     }
@@ -1792,7 +1800,7 @@ footer{
         </div>
       </section>
 
-      <section id="demo" className="ctaBand">
+            <section id="demo" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
         <div className="container">
           <h2 className="sectionTitle">Book a Demo / Contact Us</h2>
           <p className="sectionSub">
