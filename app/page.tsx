@@ -135,15 +135,20 @@ export default function Home() {
     const email = String(fd.get("email") || "").trim();
     const phone = String(fd.get("phone") || "").trim();
     const message = String(fd.get("message") || "").trim();
-    const otherPractice = String(fd.get("otherPractice") || "").trim();
+const otherPractices = fd
+  .getAll("otherPractice")
+  .map((value) => String(value).trim())
+  .filter(Boolean);
 
-    const practiceAreas = fd
-      .getAll("practiceAreas")
-      .map((value) => String(value).trim())
-      .filter(Boolean);
+const practiceAreas = fd
+  .getAll("practiceAreas")
+  .map((value) => String(value).trim())
+  .filter(Boolean);
 
-    const finalPracticeAreas =
-      otherPractice.length > 0 ? [...practiceAreas, `Other: ${otherPractice}`] : practiceAreas;
+const finalPracticeAreas = [
+  ...practiceAreas,
+  ...otherPractices.map((item) => `Other: ${item}`),
+];
 
     setFormStatus({ type: "sending", text: "Sending…" });
     setSubmitDisabled(true);
@@ -809,23 +814,36 @@ textarea{min-height:110px;resize:vertical}
 }
 .checkboxGrid{
   display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px 12px;
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:8px 14px;
+  align-items:start;
+}
+.checkboxCol{
+  display:grid;
+  gap:7px;
+  min-width:0;
 }
 .checkItem{
   display:flex;
   align-items:flex-start;
-  gap:10px;
-  font-size:14px;
+  gap:8px;
+  font-size:12px;
   font-weight:700;
   color:#0f172a;
-  line-height:1.35;
+  line-height:1.2;
 }
 .checkItem input{
-  width:18px;
-  height:18px;
+  width:15px;
+  height:15px;
   margin:1px 0 0 0;
   flex:none;
+}
+.practiceOtherWrap{
+  margin-top:8px;
+}
+.practiceOtherWrap input{
+  font-size:12px;
+  padding:10px 11px;
 }
 .inlineTopSpace{margin-top:10px;}
 
@@ -1406,95 +1424,127 @@ footer{
                   </div>
                 </div>
 
-                <div className="row2">
-                  <div>
-                    <label htmlFor="phone">Phone *</label>
-                    <IMaskInput
-                      mask="(000) 000-0000"
-                      unmask={false}
-                      placeholder="(555) 123-4567"
-                      id="phone"
-                      name="phone"
-                      required
-                      onAccept={() => {}}
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="otherPractice">Other Practice Area</label>
-                    <input id="otherPractice" name="otherPractice" placeholder="Optional" />
-                  </div>
-                </div>
+ <div>
+  <label htmlFor="phone">Phone *</label>
+  <IMaskInput
+    mask="(000) 000-0000"
+    unmask={false}
+    placeholder="(555) 123-4567"
+    id="phone"
+    name="phone"
+    required
+    onAccept={() => {}}
+  />
+</div>
 
-                <fieldset className="checkboxFieldset">
-                  <legend className="checkboxLegend">Practice Areas</legend>
+<fieldset className="checkboxFieldset">
+  <legend className="checkboxLegend">Practice Areas</legend>
 
-                  <div className="checkboxGrid">
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Personal Injury" />
-                      <span>Personal Injury</span>
-                    </label>
+  <div className="checkboxGrid">
+    <div className="checkboxCol">
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Bankruptcy" />
+        <span>Bankruptcy</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
-                      <span>Medical Malpractice</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Business / Corporate" />
+        <span>Business / Corporate</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Workers Compensation" />
-                      <span>Workers Compensation</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Civil Lawsuit" />
+        <span>Civil Lawsuit</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Criminal Defense" />
-                      <span>Criminal Defense</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Criminal Defense" />
+        <span>Criminal Defense</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Family Law" />
-                      <span>Family Law</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Custody" />
+        <span>Custody</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Real Estate" />
-                      <span>Real Estate</span>
-                    </label>
+      <div className="practiceOtherWrap">
+        <input id="otherPractice1" name="otherPractice" placeholder="Other Practice Area (optional)" />
+      </div>
+    </div>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Business / Corporate" />
-                      <span>Business / Corporate</span>
-                    </label>
+    <div className="checkboxCol">
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Divorce" />
+        <span>Divorce</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
-                      <span>Trusts &amp; Estates</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
+        <span>DUI / Traffic</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
-                      <span>Litigation &amp; Dispute Resolution</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
+        <span>Estate Planning / Probate</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Labor & Employment" />
-                      <span>Labor &amp; Employment</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Family Law" />
+        <span>Family Law</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
-                      <span>Landlord / Tenant</span>
-                    </label>
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Labor & Employment" />
+        <span>Labor &amp; Employment</span>
+      </label>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="Estate Planning / Probate" />
-                      <span>Estate Planning / Probate</span>
-                    </label>
+      <div className="practiceOtherWrap">
+        <input id="otherPractice2" name="otherPractice" placeholder="Other Practice Area (optional)" />
+      </div>
+    </div>
 
-                    <label className="checkItem">
-                      <input type="checkbox" name="practiceAreas" value="DUI / Traffic" />
-                      <span>DUI / Traffic</span>
-                    </label>
-                  </div>
-                </fieldset>
+    <div className="checkboxCol">
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Landlord / Tenant" />
+        <span>Landlord / Tenant</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Litigation & Dispute Resolution" />
+        <span>Litigation &amp; Dispute Resolution</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Medical Malpractice" />
+        <span>Medical Malpractice</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Personal Injury" />
+        <span>Personal Injury</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Real Estate" />
+        <span>Real Estate</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Trusts & Estates" />
+        <span>Trusts &amp; Estates</span>
+      </label>
+
+      <label className="checkItem">
+        <input type="checkbox" name="practiceAreas" value="Workers Compensation" />
+        <span>Workers Compensation</span>
+      </label>
+
+      <div className="practiceOtherWrap">
+        <input id="otherPractice3" name="otherPractice" placeholder="Other Practice Area (optional)" />
+      </div>
+    </div>
+  </div>
+</fieldset>
 
                 <div>
                   <label htmlFor="msg">Message *</label>
