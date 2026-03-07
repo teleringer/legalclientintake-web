@@ -420,7 +420,7 @@ export async function POST(req: Request) {
         </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#334155;margin:0 0 18px 0;">
-          Thank you for contacting <strong>Legal Client Intake</strong>. We received your message and will review it shortly.
+          Thank you for your interest in <strong>Legal Client Intake</strong>. We’ll review your firm details and follow up shortly with next steps and a possible demo time.
         </div>
 
         <div style="border:1px solid #dbe7e7;border-radius:14px;padding:12px;background:#f8fbfb;margin-bottom:18px;">
@@ -580,7 +580,7 @@ export async function POST(req: Request) {
       subject: "We received your message — Legal Client Intake",
       text:
         `Hi ${firstName},\n\n` +
-        `Thank you for contacting Legal Client Intake. We received your message and will review it shortly.\n\n` +
+        `Thank you for contacting Legal Client Intake. We received your message and will get back to you shortly.\n\n` +
         `Submitted Information:\n` +
         `Name: ${fullName}\n` +
         `Request: ${requestTypesText}\n` +
