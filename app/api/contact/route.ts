@@ -54,9 +54,13 @@ function emailShell({
           <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.82);margin:0 0 8px 0;">
             ${eyebrow ? escapeHtml(eyebrow) : "Legal Client Intake"}
           </div>
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.15;font-weight:700;color:#ffffff;margin:0;">
-            Legal Client Intake
-          </div>
+          <div style="margin:0;">
+  <img
+    src="https://legalclientintake.com/images/logo-LCI-light2.png"
+    alt="Legal Client Intake"
+    style="height:38px;display:block;"
+  />
+</div>
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
         </div>
 
