@@ -58,9 +58,9 @@ function emailShell({
   body: string;
 }) {
   return `
-    <div style="margin:0;padding:24px 12px;background:#f3f7f7;">
-      <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #dbe7e7;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.08);">
-        <div style="background:linear-gradient(180deg,#0f766e,#0b5f59);padding:20px 24px;">
+    <div style="margin:0;padding:12px;background:#f3f7f7;">
+      <div style="max-width:680px;width:100%;margin:0 auto;background:#ffffff;border:1px solid #dbe7e7;border-radius:18px;overflow:hidden;box-shadow:0 10px 30px rgba(15,23,42,.08);">
+        <div style="background:linear-gradient(180deg,#0f766e,#0b5f59);padding:16px 18px;">
           <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.82);margin:0 0 8px 0;">
             ${eyebrow ? escapeHtml(eyebrow) : "Legal Client Intake"}
           </div>
@@ -74,7 +74,7 @@ function emailShell({
           <div style="width:72px;height:3px;background:#f6d44b;border-radius:999px;margin-top:14px;"></div>
         </div>
 
-        <div style="padding:24px;">
+        <div style="padding:18px 16px;">
           <div style="font-family:Arial,Helvetica,sans-serif;font-size:28px;line-height:1.2;font-weight:700;color:#0f172a;margin:0 0 18px 0;">
             ${escapeHtml(title)}
           </div>
@@ -269,82 +269,84 @@ export async function POST(req: Request) {
           A new inquiry was submitted through the Legal Client Intake website.
         </div>
 
-        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
-          <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:170px;">Name:</td>
-              <td style="padding:6px 0;">${safeFullName}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Request Type:</td>
-              <td style="padding:6px 0;">${safeRequestTypes}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
-              <td style="padding:6px 0;">${safeFirmName}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
-              <td style="padding:6px 0;">${safeAttorneyCount}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Address:</td>
-              <td style="padding:6px 0;">${safeAddress}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">City:</td>
-              <td style="padding:6px 0;">${safeCity}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">County:</td>
-              <td style="padding:6px 0;">${safeCounty}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">State:</td>
-              <td style="padding:6px 0;">${safeState}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Zip:</td>
-              <td style="padding:6px 0;">${safeZip}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email:</td>
-              <td style="padding:6px 0;word-break:break-word;overflow-wrap:anywhere;">
-                <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
-                  ${safeEmail}
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Website:</td>
-              <td style="padding:6px 0;">${safeWebsite}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
-              <td style="padding:6px 0;">${safeMobilePhone}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
-              <td style="padding:6px 0;">${safeOfficePhone}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
-              <td style="padding:6px 0;">${safeOfficeFax}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
-              <td style="padding:6px 0;">${safeIntakeMethod}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
-              <td style="padding:6px 0;">${safePracticeAreas}</td>
-            </tr>
-            <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Submitted:</td>
-              <td style="padding:6px 0;">${safeSubmittedAt}</td>
-            </tr>
-          </table>
-        </div>
+        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:12px;background:#f8fbfb;margin-bottom:18px;">
+  <table cellpadding="0" cellspacing="0" style="width:100%;table-layout:fixed;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;width:34%;">Name:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFullName}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeRequestTypes}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFirmName}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAttorneyCount}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Address:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAddress}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">City:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeCity}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">County:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeCounty}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">State:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeState}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Zip:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeZip}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Email:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
+        <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+          ${safeEmail}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Website:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
+        ${website ? `<a href="${escapeHtml(website)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeMobilePhone}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficePhone}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficeFax}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeIntakeMethod}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safePracticeAreas}</td>
+    </tr>
+    <tr>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Submitted:</td>
+      <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeSubmittedAt}</td>
+    </tr>
+  </table>
+</div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:18px;font-weight:700;color:#0f172a;margin:0 0 8px 0;">
           Message
@@ -354,7 +356,7 @@ export async function POST(req: Request) {
           ${safeMessage}
         </div>
 
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+        <div style="margin-top:22px;padding-top:16px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
           <div style="margin-bottom:16px;">
             <a href="https://legalclientintake.com"
                target="_blank"
@@ -401,93 +403,95 @@ export async function POST(req: Request) {
           Thank you for contacting <strong>Legal Client Intake</strong>. We received your message and will review it shortly.
         </div>
 
-        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
-          <div style="font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:700;color:#0f172a;margin:0 0 10px 0;">
-            Submitted Information
-          </div>
+        <div style="border:1px solid #dbe7e7;border-radius:14px;padding:12px;background:#f8fbfb;margin-bottom:18px;">
+  <div style="font-family:Arial,Helvetica,sans-serif;font-size:17px;font-weight:700;color:#0f172a;margin:0 0 10px 0;">
+    Submitted Information
+  </div>
 
-          <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:170px;">Name:</td>
-              <td style="padding:5px 0;">${safeFullName}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Request Type:</td>
-              <td style="padding:5px 0;">${safeRequestTypes}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
-              <td style="padding:5px 0;">${safeFirmName}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
-              <td style="padding:5px 0;">${safeAttorneyCount}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Address:</td>
-              <td style="padding:5px 0;">${safeAddress}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">City:</td>
-              <td style="padding:5px 0;">${safeCity}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">County:</td>
-              <td style="padding:5px 0;">${safeCounty}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">State:</td>
-              <td style="padding:5px 0;">${safeState}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Zip:</td>
-              <td style="padding:5px 0;">${safeZip}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email:</td>
-              <td style="padding:5px 0;word-break:break-word;overflow-wrap:anywhere;">
-                <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
-                  ${safeEmail}
-                </a>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Website:</td>
-              <td style="padding:5px 0;">${safeWebsite}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
-              <td style="padding:5px 0;">${safeMobilePhone}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
-              <td style="padding:5px 0;">${safeOfficePhone}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
-              <td style="padding:5px 0;">${safeOfficeFax}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
-              <td style="padding:5px 0;">${safeIntakeMethod}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
-              <td style="padding:5px 0;">${safePracticeAreas}</td>
-            </tr>
-            <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Message:</td>
-              <td style="padding:5px 0;">${safeMessage}</td>
-            </tr>
-          </table>
-        </div>
+  <table cellpadding="0" cellspacing="0" style="width:100%;table-layout:fixed;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;width:34%;">Name:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFullName}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeRequestTypes}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFirmName}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Number of Attorneys:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAttorneyCount}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Address:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeAddress}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">City:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeCity}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">County:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeCounty}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">State:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeState}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Zip:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeZip}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Email:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
+        <a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">
+          ${safeEmail}
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Website:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">
+        ${website ? `<a href="${escapeHtml(website)}" style="color:#2563eb;text-decoration:none;word-break:break-word;overflow-wrap:anywhere;">${safeWebsite}</a>` : safeWebsite}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Mobile #:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeMobilePhone}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Office Phone:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficePhone}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Office Fax:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeOfficeFax}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Current After-hours Intake Method:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeIntakeMethod}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safePracticeAreas}</td>
+    </tr>
+    <tr>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Message:</td>
+      <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeMessage}</td>
+    </tr>
+  </table>
+</div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
           — Legal Client Intake<br />
           <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
         </div>
 
-        <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+        <div style="margin-top:22px;padding-top:16px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
           <div style="margin-bottom:16px;">
             <a href="https://legalclientintake.com"
                target="_blank"
