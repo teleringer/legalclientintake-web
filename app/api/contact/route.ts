@@ -535,7 +535,7 @@ export async function POST(req: Request) {
       text:
         `New LegalClientIntake contact submission\n\n` +
         `Name: ${fullName}\n` +
-        `Request Type: ${requestTypesText}\n` +
+        `Request: ${requestTypesText}\n` +
         `Firm Name: ${displayOrFallback(firmName)}\n` +
         `Number of Attorneys: ${displayOrFallback(attorneyCount)}\n` +
         `Address: ${displayOrFallback(address)}\n` +
@@ -565,7 +565,7 @@ export async function POST(req: Request) {
         `Thank you for contacting Legal Client Intake. We received your message and will review it shortly.\n\n` +
         `Submitted Information:\n` +
         `Name: ${fullName}\n` +
-        `Request Type: ${requestTypesText}\n` +
+        `Request: ${requestTypesText}\n` +
         `Firm Name: ${displayOrFallback(firmName)}\n` +
         `Number of Attorneys: ${displayOrFallback(attorneyCount)}\n` +
         `Address: ${displayOrFallback(address)}\n` +
