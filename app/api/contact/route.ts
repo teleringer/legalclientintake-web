@@ -276,7 +276,7 @@ export async function POST(req: Request) {
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFullName}</td>
     </tr>
     <tr>
-      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+      <td style="padding:6px 10px 6px 0;font-weight:700;vertical-align:top;">Request:</td>
       <td style="padding:6px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeRequestTypes}</td>
     </tr>
     <tr>
@@ -414,7 +414,7 @@ export async function POST(req: Request) {
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeFullName}</td>
     </tr>
     <tr>
-      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Request Type:</td>
+      <td style="padding:5px 10px 5px 0;font-weight:700;vertical-align:top;">Request:</td>
       <td style="padding:5px 0;vertical-align:top;word-break:break-word;overflow-wrap:anywhere;">${safeRequestTypes}</td>
     </tr>
     <tr>
@@ -487,8 +487,9 @@ export async function POST(req: Request) {
 </div>
 
         <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.7;color:#0f172a;">
-          Cheers,<br />
-          Legal Client Intake Team<br />
+          <b>Best Regards,<br />
+          Legal Client Intake Team<br /></b>
+          <a href="https://legalclientintake.com">www.legalclientintake.com</a><br />
           <a href="mailto:${safeReplyToInbox}" style="color:#0f766e;text-decoration:none;">${safeReplyToInbox}</a>
         </div>
 
