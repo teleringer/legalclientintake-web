@@ -1504,7 +1504,7 @@ footer{
           <p className="sectionSub">
             Customized intake workflows for every type of legal practice:
             <br />
-            regardless of the number of practice areas you serve.
+            multiple practice area modules matching your services.
           </p>
 
           <div className="practice">
