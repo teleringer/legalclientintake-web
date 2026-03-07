@@ -1425,8 +1425,7 @@ footer{
               <div className="heroGoldRule" aria-hidden="true" />
 
               <p className="heroSub">
-                When your office closes, potential clients don’t stop calling. LCI answers after-hours, captures the
-                details that matter, and sends you an instant intake summary—so you can call back first.
+                When your office closes, potential clients don’t stop calling. LCI captures those calls and sends you qualified intake summaries instantly.
               </p>
 
                             <div className="heroActions">
@@ -1441,15 +1440,15 @@ footer{
                   Request a Demo
                 </a>
                 <a
-                  className="btn btn-outline"
-                  href="#how"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    scrollToId("how");
-                  }}
-                >
-                  See How It Works
-                </a>
+  className="btn btn-outline"
+  href="#demo"
+  onClick={(e) => {
+    e.preventDefault();
+    scrollToId("demo");
+  }}
+>
+  Send a Message
+</a>
               </div>
 
                          <div className="heroTrustRow">
