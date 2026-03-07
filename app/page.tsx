@@ -1457,7 +1457,7 @@ footer{
             <div className="infoCard">
               <h3 className="infoCardTitle">Email delivery</h3>
               <p className="infoCardP">
-                Internal notifications will go to <strong>office@legalclientintake.com</strong>.
+                Internal notifications will go to <strong>operations@legalclientintake.com</strong>.
               </p>
             </div>
           </div>
@@ -1465,7 +1465,7 @@ footer{
           <div className="formWrap">
             <div className="formCard">
               <div className="notice" style={{ marginBottom: 12 }}>
-                <strong>Note:</strong> This form is designed to notify <strong>office@legalclientintake.com</strong> and
+                <strong>Note:</strong> This form is designed to notify <strong>operations@legalclientintake.com</strong> and
                 send a confirmation email to the submitter.
               </div>
 
@@ -1723,7 +1723,7 @@ footer{
             <div className="footerCol">
               <h5>Contact</h5>
               <a href="#demo">Book a demo / send a message</a>
-              <a href="#demo">office@legalclientintake.com</a>
+              <a href="#demo">demo@legalclientintake.com</a>
             </div>
 
             <div className="footerCol">
