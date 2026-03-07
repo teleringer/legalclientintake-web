@@ -793,8 +793,22 @@ input, select, textarea{
 
 .turnstileWrap{
   max-width: 100%;
-  overflow-x: auto;
+  overflow: visible;
   padding-bottom: 2px;
+  display:flex;
+  justify-content:center;
+}
+
+.turnstileInner{
+  display:flex;
+  justify-content:center;
+  transform-origin:center top;
+}
+
+@media (max-width: 520px){
+  .turnstileInner{
+    transform: scale(0.88);
+  }
 }
 form{display:grid;gap:12px}
 .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -1650,21 +1664,23 @@ footer{
                   </div>
                 )}
 
-                <div className="turnstileWrap" style={{ display: "flex", justifyContent: "center", marginTop: 10 }}>
-                  {TURNSTILE_SITE_KEY ? (
-                    <Turnstile
-                      key={turnstileRenderKey}
-                      sitekey={TURNSTILE_SITE_KEY}
-                      onVerify={(token) => setTurnstileToken(token)}
-                      onExpire={() => setTurnstileToken("")}
-                      onError={() => setTurnstileToken("")}
-                    />
-                  ) : (
-                    <div className="notice err" style={{ maxWidth: 520 }}>
-                      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
-                    </div>
-                  )}
-                </div>
+ <div className="turnstileWrap" style={{ marginTop: 10 }}>
+  {TURNSTILE_SITE_KEY ? (
+    <div className="turnstileInner">
+      <Turnstile
+        key={turnstileRenderKey}
+        sitekey={TURNSTILE_SITE_KEY}
+        onVerify={(token) => setTurnstileToken(token)}
+        onExpire={() => setTurnstileToken("")}
+        onError={() => setTurnstileToken("")}
+      />
+    </div>
+  ) : (
+    <div className="notice err" style={{ maxWidth: 520 }}>
+      Missing NEXT_PUBLIC_TURNSTILE_SITE_KEY in your environment. Add it, restart dev server, and refresh.
+    </div>
+  )}
+</div>
 
                 <div className="formActions">
                   <button
