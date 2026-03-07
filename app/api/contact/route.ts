@@ -223,31 +223,31 @@ export async function POST(req: Request) {
         <div style="border:1px solid #dbe7e7;border-radius:14px;padding:16px 18px;background:#f8fbfb;margin-bottom:18px;">
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:140px;">Name</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;width:140px;">Name:</td>
               <td style="padding:6px 0;">${safeFullName}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Firm Name</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
               <td style="padding:6px 0;">${safeFirmName}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Jurisdiction</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Jurisdiction:</td>
               <td style="padding:6px 0;">${safeJurisdiction}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Email:</td>
               <td style="padding:6px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Phone</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Phone:</td>
               <td style="padding:6px 0;">${safePhone}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Practice Areas</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
               <td style="padding:6px 0;">${safePracticeAreas}</td>
             </tr>
             <tr>
-              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Submitted</td>
+              <td style="padding:6px 16px 6px 0;font-weight:700;vertical-align:top;">Submitted:</td>
               <td style="padding:6px 0;">${safeSubmittedAt}</td>
             </tr>
           </table>
@@ -317,27 +317,27 @@ export async function POST(req: Request) {
 
           <table cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.55;color:#0f172a;">
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:140px;">Name</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;width:140px;">Name:</td>
               <td style="padding:5px 0;">${safeFullName}</td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Firm Name</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Firm Name:</td>
               <td style="padding:5px 0;">${safeFirmName}</td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Jurisdiction</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Jurisdiction:</td>
               <td style="padding:5px 0;">${safeJurisdiction}</td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Email:</td>
               <td style="padding:5px 0;"><a href="mailto:${safeEmail}" style="color:#0f766e;text-decoration:none;">${safeEmail}</a></td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Phone</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Phone:</td>
               <td style="padding:5px 0;">${safePhone}</td>
             </tr>
             <tr>
-              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Practice Areas</td>
+              <td style="padding:5px 16px 5px 0;font-weight:700;vertical-align:top;">Practice Areas:</td>
               <td style="padding:5px 0;">${safePracticeAreas}</td>
             </tr>
           </table>
