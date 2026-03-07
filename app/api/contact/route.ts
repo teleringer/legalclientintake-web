@@ -199,6 +199,7 @@ export async function POST(req: Request) {
     const submittedAt = new Date().toLocaleString("en-US", {
       timeZone: "America/New_York",
     });
+    const currentYear = new Date().getFullYear();
 
     const safeFullName = escapeHtml(fullName);
     const safeFirmName = escapeHtml(firmName);
@@ -260,10 +261,32 @@ export async function POST(req: Request) {
           ${safeMessage}
         </div>
 
-        <div style="margin-top:20px;padding-top:16px;border-top:1px solid #e2e8f0;font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:1.6;color:#64748b;">
-          <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
-          Do not treat website submissions as confidential or time-sensitive without direct follow-up.
-        </div>
+        <div style="margin-top:28px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+
+  <div style="margin-bottom:16px;">
+    <a href="https://legalclientintake.com"
+       target="_blank"
+       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+       Home
+    </a>
+
+    <a href="https://app.legalclientintake.com"
+       target="_blank"
+       style="display:inline-block;margin:6px 6px;padding:10px 18px;background:#0f766e;color:#ffffff;text-decoration:none;border-radius:8px;font-size:14px;font-weight:600;">
+       Client Login
+    </a>
+  </div>
+
+  <div style="font-size:12px;color:#64748b;margin-bottom:10px;">
+    Copyright ©${currentYear}. Legal Client Intake owned & operated by Teleringer LLC. All rights reserved.
+  </div>
+
+  <div style="font-size:11px;color:#64748b;line-height:1.6;">
+    <strong>NOTICE:</strong> Submission of this form does not create an attorney-client relationship.
+    Do not treat website submissions as confidential or time-sensitive without direct follow-up.
+  </div>
+
+</div>
       `,
     });
 
