@@ -97,59 +97,73 @@ export default function Home() {
   const HEADER_OFFSET = 110;
 
   const scrollToId = (id: "top" | "how" | "plans" | "info") => {
-  const runScroll = () => {
-    if (id === "top") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setActiveSection("top");
-      return;
-    }
+    const runScroll = () => {
+      if (id === "top") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        setActiveSection("top");
+        return;
+      }
 
-    const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
-  setMobileMenuOpen(false);
+      const target =
+        document.getElementById(id) ||
+        (id === "info" ? document.getElementById("contactForm") : null);
 
-  window.setTimeout(() => {
-    scrollToId(id);
-  }, 180);
-};
-    const target =
-      document.getElementById(id) ||
-      (id === "info" ? document.getElementById("contactForm") : null);
+      if (!target) return;
 
-    if (!target) return;
+      const topbar = document.getElementById("topbar");
+      const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
 
-    const topbar = document.getElementById("topbar");
-    const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
-
-    target.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-
-    window.setTimeout(() => {
-      window.scrollBy({
-        top: -(headerHeight + 12),
+      target.scrollIntoView({
         behavior: "smooth",
+        block: "start",
       });
-    }, 60);
 
-    setActiveSection(id);
+      window.setTimeout(() => {
+        window.scrollBy({
+          top: -(headerHeight + 12),
+          behavior: "smooth",
+        });
+      }, 60);
+
+      setActiveSection(id);
+    };
+
+    if (mobileMenuOpen) {
+      setMobileMenuOpen(false);
+      window.setTimeout(runScroll, 120);
+    } else {
+      runScroll();
+    }
   };
 
-  if (mobileMenuOpen) {
+  const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
     setMobileMenuOpen(false);
-    window.setTimeout(runScroll, 120);
-  } else {
-    runScroll();
-  }
-};
 
-const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
-  setMobileMenuOpen(false);
+    window.setTimeout(() => {
+      const target =
+        document.getElementById(id) ||
+        (id === "info" ? document.getElementById("contactForm") : null);
 
-  window.setTimeout(() => {
-    scrollToId(id);
-  }, 180);
-};
+      if (!target) return;
+
+      const topbar = document.getElementById("topbar");
+      const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
+
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+
+      window.setTimeout(() => {
+        window.scrollBy({
+          top: -(headerHeight + 12),
+          behavior: "smooth",
+        });
+      }, 60);
+
+      setActiveSection(id);
+    }, 180);
+  };
 
   useEffect(() => {
     const sections = ["how", "plans", "info"] as const;
@@ -551,6 +565,7 @@ img{max-width:100%;display:block}
   border-color: rgba(255,255,255,.12);
 }
 .mobileMenu a{ width:100%; justify-content:center; }
+.mobileMenu button{ width:100%; justify-content:center; }
 
 @media (max-width: 820px){
   .nav{ padding:10px 0; }
@@ -1338,7 +1353,7 @@ footer{
               <img id="brandLogo" src="/images/logo-LCI-dark2.png" alt="Legal Client Intake" />
             </a>
 
-                        <div className="navlinks">
+            <div className="navlinks">
               <a
                 className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
                 href="#how"
@@ -1395,7 +1410,7 @@ footer{
             </button>
           </div>
 
-                    <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
+          <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
             <div className="menuPanel">
               <a
                 className="btn btn-outline"
@@ -1405,38 +1420,29 @@ footer{
                 Home
               </a>
 
-              <a
+              <button
+                type="button"
                 className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                href="#how"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToIdFromMobileMenu("how");
-                }}
+                onClick={() => scrollToIdFromMobileMenu("how")}
               >
                 How it works
-              </a>
+              </button>
 
-              <a
+              <button
+                type="button"
                 className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                href="#plans"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToIdFromMobileMenu("plans");
-                }}
+                onClick={() => scrollToIdFromMobileMenu("plans")}
               >
                 Plans
-              </a>
+              </button>
 
-              <a
+              <button
+                type="button"
                 className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
-                href="#info"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToIdFromMobileMenu("info");
-                }}
+                onClick={() => scrollToIdFromMobileMenu("info")}
               >
                 Contact Us
-              </a>
+              </button>
 
               <a
                 className="btn btn-outline"
@@ -1470,7 +1476,7 @@ footer{
                 When your office closes, potential clients don’t stop calling. LCI captures those calls and sends you qualified intake summaries instantly.
               </p>
 
-                            <div className="heroActions">
+              <div className="heroActions">
                 <a
                   className="btn btn-primary"
                   href="#info"
@@ -1482,18 +1488,18 @@ footer{
                   Request Info
                 </a>
                 <a
-  className="btn btn-outline"
-  href="#info"
-  onClick={(e) => {
-    e.preventDefault();
-    scrollToId("info");
-  }}
->
-  Send a Message
-</a>
+                  className="btn btn-outline"
+                  href="#info"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToId("info");
+                  }}
+                >
+                  Send a Message
+                </a>
               </div>
 
-                         <div className="heroTrustRow">
+              <div className="heroTrustRow">
                 <span>
                   <i>✓</i> Built for law firms
                 </span>
@@ -1539,92 +1545,92 @@ footer{
         </div>
       </section>
 
-<section className="alt">
-  <div className="container">
-    <h2 className="sectionTitle">Example After-Hours Call</h2>
-    <p className="sectionSub">
-      When someone calls your firm after hours, Legal Client Intake captures
-      key details automatically and delivers a structured summary so you can
-      quickly decide whether to follow up.
-    </p>
+      <section className="alt">
+        <div className="container">
+          <h2 className="sectionTitle">Example After-Hours Call</h2>
+          <p className="sectionSub">
+            When someone calls your firm after hours, Legal Client Intake captures
+            key details automatically and delivers a structured summary so you can
+            quickly decide whether to follow up.
+          </p>
 
-    <div className="grid3">
-      <div className="card">
-        <h4>Caller</h4>
-        <p>
-          “Hi, I was in a car accident last night and I’m not sure what I should
-          do. Someone told me to call a lawyer.”
-        </p>
+          <div className="grid3">
+            <div className="card">
+              <h4>Caller</h4>
+              <p>
+                “Hi, I was in a car accident last night and I’m not sure what I should
+                do. Someone told me to call a lawyer.”
+              </p>
+            </div>
+
+            <div className="card">
+              <h4>AI Intake Assistant</h4>
+              <p>
+                “I’m sorry to hear that. I can collect a few details so the attorney
+                can review your situation. May I ask when the accident occurred and
+                whether anyone was injured?”
+              </p>
+            </div>
+
+            <div className="card">
+              <h4>Attorney Receives</h4>
+              <p>
+                Structured intake summary delivered instantly with caller contact
+                details, incident date, location, and urgency level so you can follow
+                up quickly.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="alt">
+        <div className="container">
+          <h2 className="sectionTitle">Why Law Firms Choose LCI</h2>
+          <p className="sectionSub">
+            Designed specifically for solo attorneys and small firms that cannot
+            afford to miss potential clients after hours.
+          </p>
+
+          <div className="grid3">
+            <div className="card">
+              <h4>Never Miss a Potential Client</h4>
+              <p>
+                Instead of voicemail, callers reach a professional intake assistant
+                that collects structured case information for your review.
+              </p>
+            </div>
+
+            <div className="card">
+              <h4>Built for Legal Workflows</h4>
+              <p>
+                Intake questions adapt to practice areas such as personal injury,
+                criminal defense, family law, immigration, and more.
+              </p>
+            </div>
+
+            <div className="card">
+              <h4>Instant Intake Summaries</h4>
+              <p>
+                Receive organized summaries, transcripts, and recordings so you can
+                quickly determine which calls deserve immediate follow-up.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div style={{ marginTop: 32, textAlign: "center" }}>
+        <h4 style={{ marginBottom: 12 }}>Sample Intake Call</h4>
+
+        <audio controls style={{ width: "100%", maxWidth: 520 }}>
+          <source src="/audio/sample-intake-call.mp3" type="audio/mpeg" />
+        </audio>
+
+        <div className="small" style={{ marginTop: 8 }}>
+          Example of how Legal Client Intake interacts with a caller after hours.
+        </div>
       </div>
-
-      <div className="card">
-        <h4>AI Intake Assistant</h4>
-        <p>
-          “I’m sorry to hear that. I can collect a few details so the attorney
-          can review your situation. May I ask when the accident occurred and
-          whether anyone was injured?”
-        </p>
-      </div>
-
-      <div className="card">
-        <h4>Attorney Receives</h4>
-        <p>
-          Structured intake summary delivered instantly with caller contact
-          details, incident date, location, and urgency level so you can follow
-          up quickly.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section className="alt">
-  <div className="container">
-    <h2 className="sectionTitle">Why Law Firms Choose LCI</h2>
-    <p className="sectionSub">
-      Designed specifically for solo attorneys and small firms that cannot
-      afford to miss potential clients after hours.
-    </p>
-
-    <div className="grid3">
-      <div className="card">
-        <h4>Never Miss a Potential Client</h4>
-        <p>
-          Instead of voicemail, callers reach a professional intake assistant
-          that collects structured case information for your review.
-        </p>
-      </div>
-
-      <div className="card">
-        <h4>Built for Legal Workflows</h4>
-        <p>
-          Intake questions adapt to practice areas such as personal injury,
-          criminal defense, family law, immigration, and more.
-        </p>
-      </div>
-
-      <div className="card">
-        <h4>Instant Intake Summaries</h4>
-        <p>
-          Receive organized summaries, transcripts, and recordings so you can
-          quickly determine which calls deserve immediate follow-up.
-        </p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<div style={{ marginTop: 32, textAlign: "center" }}>
-  <h4 style={{ marginBottom: 12 }}>Sample Intake Call</h4>
-
-  <audio controls style={{ width: "100%", maxWidth: 520 }}>
-    <source src="/audio/sample-intake-call.mp3" type="audio/mpeg" />
-  </audio>
-
-  <div className="small" style={{ marginTop: 8 }}>
-    Example of how Legal Client Intake interacts with a caller after hours.
-  </div>
-</div>
 
       <section>
         <div className="container">
@@ -1955,7 +1961,7 @@ footer{
         </div>
       </section>
 
-            <section id="info" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
+      <section id="info" className="ctaBand" style={{ scrollMarginTop: "120px" }}>
         <div className="container">
           <h2 className="sectionTitle">Request Info / Contact Us</h2>
           <p className="sectionSub">
