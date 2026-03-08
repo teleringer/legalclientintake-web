@@ -96,45 +96,40 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-    const scrollToId = (id: "top" | "how" | "plans" | "info") => {
-    const runScroll = () => {
-      if (id === "top") {
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        setActiveSection("top");
-        return;
-      }
-
-      const target =
-        document.getElementById(id) ||
-        (id === "info" ? document.getElementById("contactForm") : null);
-
-      if (!target) return;
-
-      const topbar = document.getElementById("topbar");
-      const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
-
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-
-      window.setTimeout(() => {
-        window.scrollBy({
-          top: -(headerHeight + 12),
-          behavior: "smooth",
-        });
-      }, 60);
-
-      setActiveSection(id);
-    };
-
-    if (mobileMenuOpen) {
-      setMobileMenuOpen(false);
-      window.setTimeout(runScroll, 120);
-    } else {
-      runScroll();
+   const scrollToId = (id: "top" | "how" | "plans" | "info") => {
+  const runScroll = () => {
+    if (id === "top") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      setActiveSection("top");
+      return;
     }
+
+    const target =
+      document.getElementById(id) ||
+      (id === "info" ? document.getElementById("contactForm") : null);
+
+    if (!target) return;
+
+    const topbar = document.getElementById("topbar");
+    const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
+
+    const targetTop = window.scrollY + target.getBoundingClientRect().top - headerHeight - 12;
+
+    window.scrollTo({
+      top: Math.max(targetTop, 0),
+      behavior: "smooth",
+    });
+
+    setActiveSection(id);
   };
+
+  if (mobileMenuOpen) {
+    setMobileMenuOpen(false);
+    window.setTimeout(runScroll, 180);
+  } else {
+    runScroll();
+  }
+};
 
   useEffect(() => {
     const sections = ["how", "plans", "info"] as const;
@@ -1598,6 +1593,18 @@ footer{
     </div>
   </div>
 </section>
+
+<div style={{ marginTop: 32, textAlign: "center" }}>
+  <h4 style={{ marginBottom: 12 }}>Sample Intake Call</h4>
+
+  <audio controls style={{ width: "100%", maxWidth: 520 }}>
+    <source src="/audio/sample-intake-call.mp3" type="audio/mpeg" />
+  </audio>
+
+  <div className="small" style={{ marginTop: 8 }}>
+    Example of how Legal Client Intake interacts with a caller after hours.
+  </div>
+</div>
 
       <section>
         <div className="container">
