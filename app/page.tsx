@@ -143,6 +143,14 @@ export default function Home() {
   }
 };
 
+const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
+  setMobileMenuOpen(false);
+
+  window.setTimeout(() => {
+    scrollToId(id);
+  }, 180);
+};
+
   useEffect(() => {
     const sections = ["how", "plans", "info"] as const;
 
