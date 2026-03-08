@@ -136,35 +136,6 @@ export default function Home() {
     }
   };
 
-  const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
-    setMobileMenuOpen(false);
-
-    window.setTimeout(() => {
-      const target =
-        document.getElementById(id) ||
-        (id === "info" ? document.getElementById("contactForm") : null);
-
-      if (!target) return;
-
-      const topbar = document.getElementById("topbar");
-      const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
-
-      target.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-
-      window.setTimeout(() => {
-        window.scrollBy({
-          top: -(headerHeight + 12),
-          behavior: "smooth",
-        });
-      }, 60);
-
-      setActiveSection(id);
-    }, 180);
-  };
-
   useEffect(() => {
     const sections = ["how", "plans", "info"] as const;
 
@@ -1420,29 +1391,29 @@ footer{
                 Home
               </a>
 
-              <button
-                type="button"
-                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                onClick={() => scrollToIdFromMobileMenu("how")}
-              >
-                How it works
-              </button>
+              <a
+  className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+  href="#how"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  How it works
+</a>
 
-              <button
-                type="button"
-                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                onClick={() => scrollToIdFromMobileMenu("plans")}
-              >
-                Plans
-              </button>
+<a
+  className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+  href="#plans"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  Plans
+</a>
 
-              <button
-                type="button"
-                className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
-                onClick={() => scrollToIdFromMobileMenu("info")}
-              >
-                Contact Us
-              </button>
+<a
+  className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+  href="#info"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  Contact Us
+</a>
 
               <a
                 className="btn btn-outline"
