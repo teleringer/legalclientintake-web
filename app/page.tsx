@@ -96,7 +96,7 @@ export default function Home() {
   const isAnnual = billing === "annual";
   const HEADER_OFFSET = 110;
 
-   const scrollToId = (id: "top" | "how" | "plans" | "info") => {
+  const scrollToId = (id: "top" | "how" | "plans" | "info") => {
   const runScroll = () => {
     if (id === "top") {
       window.scrollTo({ top: 0, behavior: "smooth" });
@@ -104,6 +104,13 @@ export default function Home() {
       return;
     }
 
+    const scrollToIdFromMobileMenu = (id: "how" | "plans" | "info") => {
+  setMobileMenuOpen(false);
+
+  window.setTimeout(() => {
+    scrollToId(id);
+  }, 180);
+};
     const target =
       document.getElementById(id) ||
       (id === "info" ? document.getElementById("contactForm") : null);
@@ -113,19 +120,24 @@ export default function Home() {
     const topbar = document.getElementById("topbar");
     const headerHeight = Math.ceil(topbar?.getBoundingClientRect().height || HEADER_OFFSET);
 
-    const targetTop = window.scrollY + target.getBoundingClientRect().top - headerHeight - 12;
-
-    window.scrollTo({
-      top: Math.max(targetTop, 0),
+    target.scrollIntoView({
       behavior: "smooth",
+      block: "start",
     });
+
+    window.setTimeout(() => {
+      window.scrollBy({
+        top: -(headerHeight + 12),
+        behavior: "smooth",
+      });
+    }, 60);
 
     setActiveSection(id);
   };
 
   if (mobileMenuOpen) {
     setMobileMenuOpen(false);
-    window.setTimeout(runScroll, 180);
+    window.setTimeout(runScroll, 120);
   } else {
     runScroll();
   }
@@ -1390,7 +1402,7 @@ footer{
                 href="#how"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("how");
+                  scrollToIdFromMobileMenu("how");
                 }}
               >
                 How it works
@@ -1401,7 +1413,7 @@ footer{
                 href="#plans"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("plans");
+                  scrollToIdFromMobileMenu("plans");
                 }}
               >
                 Plans
@@ -1412,7 +1424,7 @@ footer{
                 href="#info"
                 onClick={(e) => {
                   e.preventDefault();
-                  scrollToId("info");
+                  scrollToIdFromMobileMenu("info");
                 }}
               >
                 Contact Us
