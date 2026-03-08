@@ -14,7 +14,7 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "/lci-icon-192.png",
         sizes: "192x192",
         type: "image/png",
-        purpose: "any maskable",
+        purpose: "maskable",
       },
       {
         src: "/lci-icon-512.png",
