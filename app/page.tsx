@@ -1,6 +1,6 @@
 import LiveHomepage from "./LiveHomepage";
 
-const MAINTENANCE_MODE = false; // Set to true to enable maintenance mode
+const MAINTENANCE_MODE = true; // Set to true to enable maintenance mode
 
 function MaintenancePage() {
   const year = new Date().getFullYear();
