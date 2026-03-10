@@ -306,7 +306,8 @@ export default function Home() {
         setSubmitDisabled(false);
       }, 1600);
     } catch (err) {
-      const messageText = err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      const messageText =
+        err instanceof Error ? err.message : "UNKNOWN_ERROR";
 
       let userMessage = "Something went wrong while submitting the form.";
 
@@ -1356,6 +1357,8 @@ footer{
               >
                 Contact Us
               </a>
+
+             
             </div>
 
             <button
@@ -1372,40 +1375,42 @@ footer{
           </div>
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-  <div className="menuPanel">
-    <button
-      type="button"
-      className="btn btn-outline"
-      onClick={() => scrollToId("top")}
-    >
-      Home
-    </button>
+            <div className="menuPanel">
+              <a
+                className="btn btn-outline"
+                href="https://legalclientintake.com"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Home
+              </a>
 
-    <button
-      type="button"
-      className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-      onClick={() => scrollToId("how")}
-    >
-      How it works
-    </button>
+              <a
+  className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+  href="#how"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  How it works
+</a>
 
-    <button
-      type="button"
-      className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-      onClick={() => scrollToId("plans")}
-    >
-      Plans
-    </button>
+<a
+  className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+  href="#plans"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  Plans
+</a>
 
-    <button
-      type="button"
-      className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
-      onClick={() => scrollToId("info")}
-    >
-      Contact Us
-    </button>
-  </div>
-</div>
+<a
+  className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+  href="#info"
+  onClick={() => setMobileMenuOpen(false)}
+>
+  Contact Us
+</a>
+
+              
+            </div>
+          </div>
         </div>
       </div>
 
@@ -2367,7 +2372,7 @@ footer{
                   scrollToId("info");
                 }}
               >
-                Request info / send a message
+                Request a info / send a message
               </a>
               <a
                 href="#info"
@@ -2378,6 +2383,7 @@ footer{
               >
                 demo@legalclientintake.com
               </a>
+              
             </div>
 
             <div className="footerCol">
