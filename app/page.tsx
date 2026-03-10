@@ -306,8 +306,7 @@ export default function Home() {
         setSubmitDisabled(false);
       }, 1600);
     } catch (err) {
-      const messageText =
-        err instanceof Error ? err.message : "UNKNOWN_ERROR";
+      const messageText = err instanceof Error ? err.message : "UNKNOWN_ERROR";
 
       let userMessage = "Something went wrong while submitting the form.";
 
@@ -1357,15 +1356,6 @@ footer{
               >
                 Contact Us
               </a>
-
-              <a
-                className="btn btn-outline"
-                href="https://app.legalclientintake.com"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Client Login
-              </a>
             </div>
 
             <button
@@ -1386,43 +1376,45 @@ footer{
               <a
                 className="btn btn-outline"
                 href="https://legalclientintake.com"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("top");
+                }}
               >
                 Home
               </a>
 
               <a
-  className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-  href="#how"
-  onClick={() => setMobileMenuOpen(false)}
->
-  How it works
-</a>
-
-<a
-  className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-  href="#plans"
-  onClick={() => setMobileMenuOpen(false)}
->
-  Plans
-</a>
-
-<a
-  className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
-  href="#info"
-  onClick={() => setMobileMenuOpen(false)}
->
-  Contact Us
-</a>
+                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+                href="#how"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("how");
+                }}
+              >
+                How it works
+              </a>
 
               <a
-                className="btn btn-outline"
-                href="https://app.legalclientintake.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setMobileMenuOpen(false)}
+                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+                href="#plans"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("plans");
+                }}
               >
-                Client Login
+                Plans
+              </a>
+
+              <a
+                className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+                href="#info"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToId("info");
+                }}
+              >
+                Contact Us
               </a>
             </div>
           </div>
@@ -2387,7 +2379,7 @@ footer{
                   scrollToId("info");
                 }}
               >
-                Request a info / send a message
+                Request info / send a message
               </a>
               <a
                 href="#info"
@@ -2397,9 +2389,6 @@ footer{
                 }}
               >
                 demo@legalclientintake.com
-              </a>
-              <a href="https://app.legalclientintake.com" target="_blank" rel="noopener noreferrer">
-                Client Login
               </a>
             </div>
 
