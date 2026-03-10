@@ -1372,52 +1372,40 @@ footer{
           </div>
 
           <div className={`mobileMenu ${mobileMenuOpen ? "open" : ""}`} id="mobileMenu">
-            <div className="menuPanel">
-              <a
-                className="btn btn-outline"
-                href="https://legalclientintake.com"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("top");
-                }}
-              >
-                Home
-              </a>
+  <div className="menuPanel">
+    <button
+      type="button"
+      className="btn btn-outline"
+      onClick={() => scrollToId("top")}
+    >
+      Home
+    </button>
 
-              <a
-                className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
-                href="#how"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("how");
-                }}
-              >
-                How it works
-              </a>
+    <button
+      type="button"
+      className={`btn ${activeSection === "how" ? "btn-primary" : "btn-outline"}`}
+      onClick={() => scrollToId("how")}
+    >
+      How it works
+    </button>
 
-              <a
-                className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
-                href="#plans"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("plans");
-                }}
-              >
-                Plans
-              </a>
+    <button
+      type="button"
+      className={`btn ${activeSection === "plans" ? "btn-primary" : "btn-outline"}`}
+      onClick={() => scrollToId("plans")}
+    >
+      Plans
+    </button>
 
-              <a
-                className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
-                href="#info"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToId("info");
-                }}
-              >
-                Contact Us
-              </a>
-            </div>
-          </div>
+    <button
+      type="button"
+      className={`btn ${activeSection === "info" ? "btn-primary" : "btn-outline"}`}
+      onClick={() => scrollToId("info")}
+    >
+      Contact Us
+    </button>
+  </div>
+</div>
         </div>
       </div>
 
