@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
-  const maintenance = process.env.MAINTENANCE_MODE === "true";
+  const maintenance = process.env.MAINTENANCE_MODE === "false";
 
   // Allow local development to bypass maintenance mode
   const isLocalhost =
